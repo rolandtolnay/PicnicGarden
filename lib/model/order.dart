@@ -40,6 +40,9 @@ class Order {
 
   Map<String, dynamic> toJson() => _$OrderToJson(this);
 
+  @override
+  String toString() => '${toJson()}';
+
   Duration get currentDuration {
     final now = DateTime.now();
     return Duration(

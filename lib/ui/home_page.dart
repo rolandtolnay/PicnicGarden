@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart' hide Table;
 import 'package:flutter/scheduler.dart';
+import 'package:picnicgarden/ui/common/empty_refreshable.dart';
 import 'package:provider/provider.dart';
 
 import '../logic/pg_error.dart';
 import '../provider/table_provider.dart';
+import 'add_order.dart';
 import 'phase_loader.dart';
 import 'table_picker_dialog.dart';
 
@@ -18,12 +20,7 @@ class HomePage extends StatelessWidget {
         bottom: false,
         child: Scaffold(
           body: _HomePageBody(),
-          floatingActionButton: FloatingActionButton(
-            child: Icon(Icons.add),
-            onPressed: () {
-              print('Add order tapped');
-            },
-          ),
+          floatingActionButton: AddOrderButton(),
         ),
       ),
     );
@@ -45,16 +42,9 @@ class _HomePageBody extends StatelessWidget {
     }
 
     if (provider.tables.isEmpty) {
-      return RefreshIndicator(
+      return EmptyRefreshable(
+        'No tables found.',
         onRefresh: provider.fetchTables,
-        child: Stack(
-          children: [
-            ListView(),
-            Center(
-                child: Text('No tables found.',
-                    style: Theme.of(context).textTheme.subtitle1)),
-          ],
-        ),
       );
     }
 

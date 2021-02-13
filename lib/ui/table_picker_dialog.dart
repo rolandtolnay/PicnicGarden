@@ -14,9 +14,16 @@ class TablePickerDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Select table'),
+      elevation: 2,
+      title: Row(
+        children: [
+          Icon(Icons.tab),
+          SizedBox(width: 8.0),
+          Text('Select table'),
+        ],
+      ),
       content: Container(
-        width: MediaQuery.of(context).size.width * .7,
+        width: double.maxFinite,
         child: GridView.count(
           crossAxisCount: 3,
           mainAxisSpacing: 8.0,

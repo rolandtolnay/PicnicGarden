@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../logic/pg_error.dart';
 import '../provider/phase_provider.dart';
+import 'common/empty_refreshable.dart';
 import 'order_list_page.dart';
 
 class PhaseLoader extends StatelessWidget {
@@ -21,16 +22,9 @@ class PhaseLoader extends StatelessWidget {
     }
 
     if (provider.phases.isEmpty) {
-      return RefreshIndicator(
+      return EmptyRefreshable(
+        'No phases found.',
         onRefresh: provider.fetchPhases,
-        child: Stack(
-          children: [
-            ListView(),
-            Center(
-                child: Text('No phases found.',
-                    style: Theme.of(context).textTheme.subtitle1)),
-          ],
-        ),
       );
     }
 

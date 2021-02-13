@@ -1,11 +1,9 @@
 import 'dart:collection';
 
-import 'package:flutter/material.dart';
-
 import '../model/recipe.dart';
 import 'entity_provider.dart';
 
-abstract class RecipeProvider extends ChangeNotifier {
+abstract class RecipeProvider extends EntityProvider {
   UnmodifiableListView<Recipe> get recipes;
 
   Future fetchRecipes();
