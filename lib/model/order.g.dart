@@ -14,6 +14,9 @@ Order _$OrderFromJson(Map<String, dynamic> json) {
     table: json['table'] == null
         ? null
         : Table.fromJson(json['table'] as Map<String, dynamic>),
+    phase: json['phase'] == null
+        ? null
+        : Phase.fromJson(json['phase'] as Map<String, dynamic>),
     id: json['id'] as String,
     created: json['created'] == null
         ? null
@@ -35,6 +38,7 @@ Map<String, dynamic> _$OrderToJson(Order instance) => <String, dynamic>{
       'id': instance.id,
       'recipe': instance.recipe?.toJson(),
       'table': instance.table?.toJson(),
+      'phase': instance.phase?.toJson(),
       'currentStatus': instance.currentStatus?.toJson(),
       'created': instance.created?.toIso8601String(),
       'delivered': instance.delivered?.toIso8601String(),

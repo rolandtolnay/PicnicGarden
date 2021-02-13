@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:picnicgarden/provider/order_provider.dart';
+import 'package:picnicgarden/provider/phase_provider.dart';
 import 'package:picnicgarden/provider/recipe_provider.dart';
 import 'package:picnicgarden/provider/table_provider.dart';
 
@@ -19,5 +20,8 @@ void setupProviders() {
   );
   providers.registerFactory<RecipeProvider>(
     () => FIRRecipeProvider()..fetchRecipes(),
+  );
+  providers.registerFactory<PhaseProvider>(
+    () => FIRPhaseProvider()..fetchPhases(),
   );
 }

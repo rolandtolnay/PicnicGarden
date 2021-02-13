@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
+import 'package:picnicgarden/model/phase.dart';
 import 'package:uuid/uuid.dart';
 
 import 'order_status.dart';
@@ -14,6 +15,7 @@ class Order {
 
   final Recipe recipe;
   final Table table;
+  final Phase phase;
   OrderStatus currentStatus;
 
   final DateTime created;
@@ -24,6 +26,7 @@ class Order {
   Order({
     @required this.recipe,
     @required this.table,
+    this.phase,
     String id,
     DateTime created,
     Map<String, Duration> flow,

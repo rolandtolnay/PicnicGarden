@@ -1,14 +1,11 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart' hide Table;
 import 'package:flutter/scheduler.dart';
-import 'package:picnicgarden/model/table.dart';
-import 'package:picnicgarden/ui/table_picker_dialog.dart';
 import 'package:provider/provider.dart';
 
 import '../logic/pg_error.dart';
 import '../provider/table_provider.dart';
-import 'order_list_page.dart';
+import 'phase_loader.dart';
+import 'table_picker_dialog.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key key}) : super(key: key);
@@ -21,6 +18,12 @@ class HomePage extends StatelessWidget {
         bottom: false,
         child: Scaffold(
           body: _HomePageBody(),
+          floatingActionButton: FloatingActionButton(
+            child: Icon(Icons.add),
+            onPressed: () {
+              print('Add order tapped');
+            },
+          ),
         ),
       ),
     );
@@ -46,9 +49,10 @@ class _HomePageBody extends StatelessWidget {
         onRefresh: provider.fetchTables,
         child: Stack(
           children: [
-            // Hack for making RefreshIndicator work on any dashboard layout regardless the scrolling capability
             ListView(),
-            Center(child: Text('No tables found.')),
+            Center(
+                child: Text('No tables found.',
+                    style: Theme.of(context).textTheme.subtitle1)),
           ],
         ),
       );
@@ -71,7 +75,7 @@ class _HomePageBody extends StatelessWidget {
             }
           },
         ),
-        Expanded(child: OrderListPage()),
+        Expanded(child: PhaseLoader()),
       ],
     );
   }

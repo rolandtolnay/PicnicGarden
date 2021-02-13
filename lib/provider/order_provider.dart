@@ -1,11 +1,9 @@
 import 'dart:collection';
 
-import 'package:flutter/material.dart' hide Table;
-
 import '../model/order.dart';
 import 'entity_provider.dart';
 
-abstract class OrderProvider extends ChangeNotifier {
+abstract class OrderProvider extends EntityProvider {
   UnmodifiableListView<Order> get orders;
 
   Future fetchOrders();
