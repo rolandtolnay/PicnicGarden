@@ -15,10 +15,12 @@ class FIROrderStatusProvider extends FIREntityProvider<OrderStatus>
       : super('orderStatus', (json) => OrderStatus.fromJson(json));
 
   @override
-  UnmodifiableListView<OrderStatus> get orderStatusList => super.entities;
+  UnmodifiableListView<OrderStatus> get orderStatusList =>
+      UnmodifiableListView(entities);
 
   @override
   Future fetchOrderStatusList() async {
-    await super.fetchEntities();
+    await fetchEntities();
+    entities.sort((a, b) => a.flow.compareTo(b.flow));
   }
 }

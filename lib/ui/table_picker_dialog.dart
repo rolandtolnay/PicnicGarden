@@ -3,6 +3,8 @@ import 'dart:collection';
 import 'package:flutter/material.dart' hide Table;
 
 import '../model/table.dart';
+import 'common/dialog_item.dart';
+import 'common/dialog_title.dart';
 
 class TablePickerDialog extends StatelessWidget {
   const TablePickerDialog(this.tables, {this.selectedTable, Key key})
@@ -15,13 +17,7 @@ class TablePickerDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       elevation: 2,
-      title: Row(
-        children: [
-          Icon(Icons.tab),
-          SizedBox(width: 8.0),
-          Text('Select table'),
-        ],
-      ),
+      title: const DialogTitle(text: 'Choose table', icon: Icons.tab),
       content: Container(
         width: double.maxFinite,
         child: GridView.count(
@@ -29,7 +25,7 @@ class TablePickerDialog extends StatelessWidget {
           mainAxisSpacing: 8.0,
           crossAxisSpacing: 8.0,
           children: tables
-              .map((table) => _TableItem(
+              .map((table) => DialogItem(
                     table.name,
                     isSelected: table == selectedTable,
                     onTapped: () => Navigator.of(context).pop(table),
@@ -38,41 +34,5 @@ class TablePickerDialog extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class _TableItem extends StatelessWidget {
-  const _TableItem(
-    this.tableName, {
-    this.onTapped,
-    this.isSelected = false,
-    Key key,
-  }) : super(key: key);
-
-  final String tableName;
-  final VoidCallback onTapped;
-  final bool isSelected;
-
-  @override
-  Widget build(BuildContext context) {
-    final color = Theme.of(context).colorScheme.primaryVariant;
-    final textColor =
-        isSelected ? Theme.of(context).colorScheme.onPrimary : color;
-    final textStyle = Theme.of(context).textTheme.subtitle1.copyWith(
-          color: textColor,
-          fontWeight: FontWeight.w500,
-        );
-    final text = Text(tableName, style: textStyle);
-
-    return isSelected
-        ? FlatButton(
-            color: color,
-            child: text,
-            onPressed: () => onTapped?.call(),
-          )
-        : OutlineButton(
-            borderSide: BorderSide(color: color, width: 2),
-            child: text,
-            onPressed: () => onTapped?.call());
   }
 }

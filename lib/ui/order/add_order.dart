@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:picnicgarden/model/recipe.dart';
-import 'package:picnicgarden/provider/phase_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../logic/pg_error.dart';
-import '../provider/order_builder.dart';
-import '../provider/order_status_provider.dart';
-import '../provider/providers.dart';
-import '../provider/recipe_provider.dart';
-import '../provider/table_provider.dart';
-import 'common/empty_refreshable.dart';
+import '../../logic/pg_error.dart';
+import '../../provider/order_builder.dart';
+import '../../provider/order_provider.dart';
+import '../../provider/order_status_provider.dart';
+import '../../provider/phase_provider.dart';
+import '../../provider/providers.dart';
+import '../../provider/recipe_provider.dart';
+import '../../provider/table_provider.dart';
+import '../common/empty_refreshable.dart';
+import '../common/snackbar_builder.dart';
+import '../recipe_list.dart';
 
 class AddOrderButton extends StatelessWidget {
   const AddOrderButton({Key key}) : super(key: key);
@@ -42,6 +44,9 @@ class AddOrderButton extends StatelessWidget {
                   ),
                   ChangeNotifierProvider.value(
                     value: context.read<PhaseProvider>(),
+                  ),
+                  ChangeNotifierProvider.value(
+                    value: context.read<OrderProvider>(),
                   )
                 ],
                 child: AddOrderDialog(),
@@ -118,59 +123,32 @@ class _AddOrderDialogBody extends StatelessWidget {
           toolbarHeight: kToolbarHeight,
           bottom: TabBar(tabs: [foodTab, drinkTab]),
         ),
-        body: Container(
-          child: TabBarView(
-            children: [
-              FoodList(provider.recipes),
-              Center(
-                child: Text('Drink list'),
-              )
-            ],
-          ),
+        body: Builder(
+          builder: (context) {
+            return TabBarView(
+              children: [
+                FoodList(
+                  provider.recipes,
+                  onOrderCreated: (order) async {
+                    final error =
+                        await context.read<OrderProvider>().commitOrder(order);
+                    if (error == null) {
+                      Scaffold.of(context).showSnackBar(
+                        SnackBarBuilder.orderSucces(order, context),
+                      );
+                    } else {
+                      error.showInDialog(context);
+                    }
+                  },
+                ),
+                Center(
+                  child: Text('Drink list'),
+                )
+              ],
+            );
+          },
         ),
       ),
-    );
-  }
-}
-
-class FoodList extends StatelessWidget {
-  const FoodList(this.recipes, {Key key}) : super(key: key);
-
-  final List<Recipe> recipes;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      children: recipes
-          .map((recipe) => ListTile(
-                title: Text(recipe.name),
-                onTap: () async {
-                  final phase = await showDialog(
-                      context: context,
-                      builder: (_) {
-                        return AlertDialog(
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              ...context
-                                  .read<PhaseProvider>()
-                                  .phases
-                                  .map((phase) => FlatButton(
-                                        onPressed: () =>
-                                            Navigator.of(context).pop(phase),
-                                        child: Text(phase.name),
-                                      )),
-                            ],
-                          ),
-                        );
-                      });
-                  context.read<OrderBuilder>().setRecipe(recipe);
-                  context.read<OrderBuilder>().setPhase(phase);
-                  final order = context.read<OrderBuilder>().makeOrder();
-                  print('Made order $order');
-                },
-              ))
-          .toList(),
     );
   }
 }

@@ -14,10 +14,11 @@ class FIRRecipeProvider extends FIREntityProvider<Recipe>
   FIRRecipeProvider() : super('recipes', (json) => Recipe.fromJson(json));
 
   @override
-  UnmodifiableListView<Recipe> get recipes => super.entities;
+  UnmodifiableListView<Recipe> get recipes => UnmodifiableListView(entities);
 
   @override
   Future fetchRecipes() async {
-    await super.fetchEntities();
+    await fetchEntities();
+    entities.sort((a, b) => a.name.compareTo(b.name));
   }
 }

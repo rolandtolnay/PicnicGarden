@@ -18,6 +18,9 @@ class PGError implements Exception {
   PGError.unknown(this.message, {this.error}) : type = PGErrorType.unknown;
   PGError.auth(this.message) : type = PGErrorType.authentication;
   PGError.validation(this.message) : type = PGErrorType.validation;
+
+  @override
+  String toString() => message;
 }
 
 enum PGErrorType {

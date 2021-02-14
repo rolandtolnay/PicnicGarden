@@ -58,7 +58,8 @@ class Order {
     );
   }
 
-  String get userFriendlyDescription => '${recipe.name} @ ${table.name}';
+  String get userFriendlyDescription =>
+      '${recipe.name} @ ${table.name} ${phase.name}';
 
   static int sort(Order a, Order b) {
     var result =

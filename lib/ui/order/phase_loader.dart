@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
-import '../logic/pg_error.dart';
-import '../provider/phase_provider.dart';
-import 'common/empty_refreshable.dart';
+import '../../logic/pg_error.dart';
+import '../../provider/phase_provider.dart';
+import '../common/empty_refreshable.dart';
 import 'order_list_page.dart';
 
 class PhaseLoader extends StatelessWidget {

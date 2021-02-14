@@ -1,7 +1,5 @@
 import 'dart:collection';
 
-import 'package:flutter/material.dart';
-
 import '../model/phase.dart';
 import 'entity_provider.dart';
 
@@ -16,10 +14,11 @@ class FIRPhaseProvider extends FIREntityProvider<Phase>
   FIRPhaseProvider() : super('phases', (json) => Phase.fromJson(json));
 
   @override
-  UnmodifiableListView<Phase> get phases => super.entities;
+  UnmodifiableListView<Phase> get phases => UnmodifiableListView(entities);
 
   @override
   Future fetchPhases() async {
-    await super.fetchEntities();
+    await fetchEntities();
+    entities.sort((a, b) => a.number.compareTo(b.number));
   }
 }

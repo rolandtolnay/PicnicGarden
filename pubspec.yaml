@@ -15,6 +15,7 @@ dependencies:
   connectivity: ^2.0.2
   cupertino_icons: ^1.0.0
   duration: ^2.0.15
+  either_option: ^1.0.6
   equatable: ^1.2.6
   firebase_auth: ^0.20.0+1
   firebase_core: ^0.7.0

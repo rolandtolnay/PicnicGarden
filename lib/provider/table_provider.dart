@@ -18,14 +18,15 @@ class FIRTableProvider extends FIREntityProvider<Table>
   FIRTableProvider() : super('tables', (json) => Table.fromJson(json));
 
   @override
-  UnmodifiableListView<Table> get tables => super.entities;
+  UnmodifiableListView<Table> get tables => UnmodifiableListView(entities);
 
   @override
   Table get selectedTable => _selectedTable;
 
   @override
   Future fetchTables() async {
-    await super.fetchEntities();
+    await fetchEntities();
+    entities.sort((a, b) => a.number.compareTo(b.number));
     if (_selectedTable == null && tables.isNotEmpty) {
       selectTable(tables.first);
     }

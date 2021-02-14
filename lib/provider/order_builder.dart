@@ -1,8 +1,8 @@
-import 'package:picnicgarden/model/order.dart';
-import 'package:picnicgarden/model/order_status.dart';
-import 'package:picnicgarden/model/phase.dart';
-import 'package:picnicgarden/model/recipe.dart';
-import 'package:picnicgarden/model/table.dart';
+import '../model/order.dart';
+import '../model/order_status.dart';
+import '../model/phase.dart';
+import '../model/recipe.dart';
+import '../model/table.dart';
 
 abstract class OrderBuilder {
   void setTable(Table table);
@@ -21,6 +21,11 @@ class PGOrderBuilder implements OrderBuilder {
 
   @override
   Order makeOrder() {
+    if (_table == null ||
+        _recipe == null ||
+        _phase == null ||
+        _orderStatus == null) return null;
+
     return Order(
       recipe: _recipe,
       table: _table,

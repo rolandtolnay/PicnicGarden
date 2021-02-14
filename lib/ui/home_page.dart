@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 
 import '../logic/pg_error.dart';
 import '../provider/table_provider.dart';
-import 'add_order.dart';
-import 'phase_loader.dart';
+import 'order/add_order.dart';
+import 'order/phase_loader.dart';
 import 'table_picker_dialog.dart';
 
 class HomePage extends StatelessWidget {

@@ -1,4 +1,5 @@
 import 'package:connectivity/connectivity.dart';
+import 'package:either_option/either_option.dart';
 
 import 'pg_error.dart';
 
@@ -34,7 +35,10 @@ enum ApiStatus {
   error
 }
 
-Future<bool> hasInternet() async {
+Future<Option<PGError>> checkConnectivity() async {
   final connectivityResult = await Connectivity().checkConnectivity();
-  return connectivityResult != ConnectivityResult.none;
+  return Option.cond(
+    connectivityResult == ConnectivityResult.none,
+    PGError.noInternet(),
+  );
 }
