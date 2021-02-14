@@ -9,7 +9,9 @@ class Phase extends Equatable {
   final String name;
   final int number;
 
-  Phase({this.id, this.name, this.number});
+  final bool selectable;
+
+  Phase({this.id, this.name, this.number, this.selectable});
 
   factory Phase.fromJson(Map<String, dynamic> json) => _$PhaseFromJson(json);
 

@@ -10,10 +10,18 @@ class Recipe {
   final String id;
   final String name;
 
+  final int tabIndex;
+  final String autoPhase;
+
   List<Attribute> attributes;
 
-  Recipe({@required this.id, @required this.name, List<Attribute> attributes})
-      : attributes = attributes ?? [];
+  Recipe({
+    @required this.id,
+    @required this.name,
+    @required this.tabIndex,
+    this.autoPhase,
+    List<Attribute> attributes,
+  }) : attributes = attributes ?? [];
 
   factory Recipe.fromJson(Map<String, dynamic> json) => _$RecipeFromJson(json);
 

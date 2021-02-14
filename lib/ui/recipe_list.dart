@@ -9,8 +9,8 @@ import '../provider/phase_provider.dart';
 import 'common/dialog_item.dart';
 import 'common/dialog_title.dart';
 
-class FoodList extends StatelessWidget {
-  FoodList(this.recipes, {this.onOrderCreated, Key key}) : super(key: key);
+class RecipeList extends StatelessWidget {
+  RecipeList(this.recipes, {this.onOrderCreated, Key key}) : super(key: key);
 
   final ValueChanged<Order> onOrderCreated;
   final List<Recipe> recipes;
@@ -21,17 +21,30 @@ class FoodList extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: ListView.separated(
           itemBuilder: (context, index) {
+            final recipe = recipes[index];
+
             return ListTile(
-              title: Text(recipes[index].name),
+              title: Text(recipe.name),
               onTap: () async {
-                final phase = await showDialog(
-                  context: context,
-                  builder: (_) => PhasePickerDialog(
-                    context.read<PhaseProvider>().phases,
-                  ),
-                );
+                final phases = context.read<PhaseProvider>().phases;
+
+                Phase phase;
+                if (recipe.autoPhase == null || recipe.autoPhase.isEmpty) {
+                  phase = await showDialog(
+                    context: context,
+                    builder: (_) => PhasePickerDialog(
+                      phases.where((p) => p.selectable).toList(),
+                    ),
+                  );
+                } else {
+                  phase = phases.firstWhere(
+                    (p) => p.id == recipe.autoPhase,
+                    orElse: () => null,
+                  );
+                }
+
                 if (phase != null) {
-                  context.read<OrderBuilder>().setRecipe(recipes[index]);
+                  context.read<OrderBuilder>().setRecipe(recipe);
                   context.read<OrderBuilder>().setPhase(phase);
                   final order = context.read<OrderBuilder>().makeOrder();
                   if (order != null) {

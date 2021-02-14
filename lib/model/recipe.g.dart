@@ -10,6 +10,8 @@ Recipe _$RecipeFromJson(Map<String, dynamic> json) {
   return Recipe(
     id: json['id'] as String,
     name: json['name'] as String,
+    tabIndex: json['tabIndex'] as int,
+    autoPhase: json['autoPhase'] as String,
     attributes: (json['attributes'] as List)
         ?.map((e) =>
             e == null ? null : Attribute.fromJson(e as Map<String, dynamic>))
@@ -20,5 +22,7 @@ Recipe _$RecipeFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$RecipeToJson(Recipe instance) => <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
+      'tabIndex': instance.tabIndex,
+      'autoPhase': instance.autoPhase,
       'attributes': instance.attributes?.map((e) => e?.toJson())?.toList(),
     };

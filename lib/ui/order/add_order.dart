@@ -125,25 +125,29 @@ class _AddOrderDialogBody extends StatelessWidget {
         ),
         body: Builder(
           builder: (context) {
+            void onOrderCreated(order) async {
+              final error =
+                  await context.read<OrderProvider>().commitOrder(order);
+              if (error == null) {
+                Scaffold.of(context).showSnackBar(
+                  SnackBarBuilder.orderSucces(order, context),
+                );
+              } else {
+                error.showInDialog(context);
+              }
+            }
+
+            final food = provider.recipes
+                .where((recipe) => recipe.tabIndex == 0)
+                .toList();
+            final drinks = provider.recipes
+                .where((recipe) => recipe.tabIndex == 1)
+                .toList();
+
             return TabBarView(
               children: [
-                FoodList(
-                  provider.recipes,
-                  onOrderCreated: (order) async {
-                    final error =
-                        await context.read<OrderProvider>().commitOrder(order);
-                    if (error == null) {
-                      Scaffold.of(context).showSnackBar(
-                        SnackBarBuilder.orderSucces(order, context),
-                      );
-                    } else {
-                      error.showInDialog(context);
-                    }
-                  },
-                ),
-                Center(
-                  child: Text('Drink list'),
-                )
+                RecipeList(food, onOrderCreated: onOrderCreated),
+                RecipeList(drinks, onOrderCreated: onOrderCreated),
               ],
             );
           },

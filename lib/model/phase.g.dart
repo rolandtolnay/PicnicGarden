@@ -11,6 +11,7 @@ Phase _$PhaseFromJson(Map<String, dynamic> json) {
     id: json['id'] as String,
     name: json['name'] as String,
     number: json['number'] as int,
+    selectable: json['selectable'] as bool,
   );
 }
 
@@ -18,4 +19,5 @@ Map<String, dynamic> _$PhaseToJson(Phase instance) => <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
       'number': instance.number,
+      'selectable': instance.selectable,
     };
