@@ -1,16 +1,16 @@
 import 'dart:collection';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 
 import '../logic/pg_error.dart';
 import '../model/order.dart';
 import '../model/order_status.dart';
+import '../model/table.dart';
 import 'entity_provider.dart';
 
 abstract class OrderProvider extends EntityProvider {
-  UnmodifiableListView<Order> get orders;
-
-  Future fetchOrders();
+  Stream<UnmodifiableListView<Order>> orderStreamForTable(Table table);
 
   Future<PGError> commitOrder(Order order);
   Future<PGError> commitNextFlow({
@@ -24,12 +24,14 @@ class FIROrderProvider extends FIREntityProvider<Order>
   FIROrderProvider() : super('orders', (json) => Order.fromJson(json));
 
   @override
-  UnmodifiableListView<Order> get orders => UnmodifiableListView(entities);
-
-  @override
-  Future fetchOrders() async {
-    await fetchEntities();
-  }
+  Stream<UnmodifiableListView<Order>> orderStreamForTable(Table table) =>
+      collection
+          .where('delivered', isNull: true)
+          .where('table.id', isEqualTo: table.id)
+          .snapshots()
+          .map((snap) => UnmodifiableListView(
+                snap.docs.map(_Order.fromDoc).toList(),
+              ));
 
   @override
   Future<PGError> commitOrder(Order order) {
@@ -67,4 +69,8 @@ class FIROrderProvider extends FIREntityProvider<Order>
       return Future.value(null);
     }
   }
+}
+
+extension _Order on Order {
+  static Order fromDoc(DocumentSnapshot doc) => Order.fromJson(doc.data());
 }

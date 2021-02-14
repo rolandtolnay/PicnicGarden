@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:picnicgarden/provider/order_status_provider.dart';
+import 'package:picnicgarden/provider/table_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../logic/pg_error.dart';
 import '../../model/order.dart';
 import '../../model/phase.dart';
 import '../../provider/order_provider.dart';
+import '../../provider/order_status_provider.dart';
 import '../../provider/phase_provider.dart';
 import 'order_list.dart';
 
@@ -20,27 +20,28 @@ class OrderListPage extends StatelessWidget {
     final orderStatusList =
         context.watch<OrderStatusProvider>().orderStatusList;
 
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      provider.response.error?.showInDialog(context);
-    });
-    if (provider.isLoading) {
-      return Center(child: CircularProgressIndicator());
-    }
+    final selectedTable = context.watch<TableProvider>().selectedTable;
 
-    final builder = ItemBuilder(orders: provider.orders, phases: phases);
-    return RefreshIndicator(
-      onRefresh: provider.fetchOrders,
-      child: OrderList(
-        builder.buildListItems(),
-        onOrderTapped: (order) async {
-          final error = await provider.commitNextFlow(
-            order: order,
-            orderStatusList: orderStatusList,
+    return StreamBuilder<List<Order>>(
+        stream: provider.orderStreamForTable(selectedTable),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          final builder = ItemBuilder(orders: snapshot.data, phases: phases);
+          return OrderList(
+            builder.buildListItems(),
+            onOrderTapped: (order) async {
+              final provider = context.read<OrderProvider>();
+              final error = await provider.commitNextFlow(
+                order: order,
+                orderStatusList: orderStatusList,
+              );
+              error?.showInDialog(context);
+            },
           );
-          error?.showInDialog(context);
-        },
-      ),
-    );
+        });
   }
 }
 
@@ -73,6 +74,9 @@ class ItemBuilder {
         map[phaseKey].add(order);
       }
       return map;
+    });
+    phaseMap.values.forEach((orderList) {
+      orderList.sort((a, b) => a.created.compareTo(b.created));
     });
 
     return sortedPhases.fold(<ListItem>[], (list, phase) {

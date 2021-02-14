@@ -17,9 +17,7 @@ void setupProviders() {
   providers.registerFactory<TableProvider>(
     () => FIRTableProvider()..fetchTables(),
   );
-  providers.registerFactory<OrderProvider>(
-    () => FIROrderProvider()..fetchOrders(),
-  );
+  providers.registerFactory<OrderProvider>(() => FIROrderProvider());
   providers.registerFactory<RecipeProvider>(
     () => FIRRecipeProvider()..fetchRecipes(),
   );

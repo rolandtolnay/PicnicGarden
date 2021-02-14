@@ -39,9 +39,9 @@ class _OrderListState extends State<OrderList> {
   Widget build(BuildContext context) {
     return ListView(
       children: widget.items.map((listItem) {
-        final color =
-            listItem.backgroundColor ?? Theme.of(context).colorScheme.surface;
+        final color = listItem.backgroundColor ?? Theme.of(context).cardColor;
         return Material(
+          elevation: listItem is PhaseItem ? 4 : 0,
           color: color,
           child: InkWell(
             child: listItem.buildContent(context),
@@ -69,6 +69,7 @@ class PhaseItem implements ListItem<Phase> {
       title: DialogTitle(
         text: phase.name,
         icon: Icons.timelapse,
+        color: Theme.of(context).unselectedWidgetColor,
       ),
     );
   }
@@ -88,23 +89,26 @@ class OrderItem implements ListItem<Order> {
   @override
   Widget buildContent(BuildContext context) {
     return ListTile(
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text('${order.recipe.name.capitalized}',
-              style: Theme.of(context).textTheme.headline6),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                '${order.currentStatus.name}',
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-              Text('${order.currentDuration.description}',
-                  style: Theme.of(context).textTheme.headline5)
-            ],
-          )
-        ],
+      title: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('${order.recipe.name.capitalized}',
+                style: Theme.of(context).textTheme.headline6),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text('${order.currentStatus.name}',
+                    style: Theme.of(context).textTheme.bodyText2.copyWith(
+                        color: Theme.of(context).unselectedWidgetColor)),
+                const SizedBox(height: 4.0),
+                Text('${order.currentDuration.description}',
+                    style: Theme.of(context).textTheme.headline5)
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
