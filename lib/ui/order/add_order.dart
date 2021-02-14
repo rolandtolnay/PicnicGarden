@@ -117,12 +117,16 @@ class _AddOrderDialogBody extends StatelessWidget {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        resizeToAvoidBottomPadding: true,
         appBar: AppBar(
           toolbarHeight: kToolbarHeight,
           bottom: TabBar(tabs: [foodTab, drinkTab]),
         ),
+        persistentFooterButtons: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('CANCEL'),
+          )
+        ],
         body: Builder(
           builder: (context) {
             void onOrderCreated(order) async {
