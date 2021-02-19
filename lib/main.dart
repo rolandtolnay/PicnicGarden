@@ -29,8 +29,8 @@ class Application extends StatelessWidget {
           if (snapshot.connectionState != ConnectionState.done) {
             return Scaffold(body: Center(child: CircularProgressIndicator()));
           }
-          return ChangeNotifierProvider(
-            create: (_) => providers<AuthProvider>(),
+          return ChangeNotifierProvider.value(
+            value: providers<AuthProvider>(),
             child: RootPage(),
           );
         },

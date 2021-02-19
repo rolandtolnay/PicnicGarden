@@ -5,15 +5,17 @@ import 'package:picnicgarden/provider/order_status_provider.dart';
 import 'package:picnicgarden/provider/phase_provider.dart';
 import 'package:picnicgarden/provider/recipe_provider.dart';
 import 'package:picnicgarden/provider/table_provider.dart';
+import 'package:picnicgarden/provider/topic_provider.dart';
 
 import 'auth_provider.dart';
 
 final providers = GetIt.instance;
 
 void setupProviders() {
-  providers.registerFactory<AuthProvider>(
+  providers.registerLazySingleton<AuthProvider>(
     () => FIRAuthProvider()..signIn(),
   );
+
   providers.registerFactory<TableProvider>(
     () => FIRTableProvider()..fetchTables(),
   );
@@ -28,4 +30,7 @@ void setupProviders() {
     () => FIROrderStatusProvider()..fetchOrderStatusList(),
   );
   providers.registerFactory<OrderBuilder>(() => PGOrderBuilder());
+  providers.registerFactory<TopicProvider>(
+    () => FIRTopicProvider(authProvider: providers())..fetchTopics(),
+  );
 }
