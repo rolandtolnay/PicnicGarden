@@ -19,6 +19,6 @@ class FIRRecipeProvider extends FIREntityProvider<Recipe>
   @override
   Future fetchRecipes() async {
     await fetchEntities();
-    entities.sort((a, b) => a.name.compareTo(b.name));
+    entities.sort((a, b) => a.number.compareTo(b.number));
   }
 }
