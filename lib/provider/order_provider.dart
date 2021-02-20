@@ -1,7 +1,10 @@
+import 'dart:async';
 import 'dart:collection';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart' hide Table;
 import 'package:meta/meta.dart';
+import 'package:picnicgarden/logic/api_response.dart';
 
 import '../logic/pg_error.dart';
 import '../model/order.dart';
@@ -10,7 +13,7 @@ import '../model/table.dart';
 import 'entity_provider.dart';
 
 abstract class OrderProvider extends EntityProvider {
-  Stream<UnmodifiableListView<Order>> orderStreamForTable(Table table);
+  UnmodifiableListView<Order> ordersForTable(Table table);
 
   Future<PGError> commitOrder(Order order);
   Future<PGError> commitNextFlow({
@@ -21,17 +24,29 @@ abstract class OrderProvider extends EntityProvider {
 
 class FIROrderProvider extends FIREntityProvider<Order>
     implements OrderProvider {
-  FIROrderProvider() : super('orders', (json) => Order.fromJson(json));
+  StreamSubscription<QuerySnapshot> _snapshotListener;
+
+  FIROrderProvider() : super('orders', (json) => Order.fromJson(json)) {
+    response = ApiResponse.loading();
+    _snapshotListener = collection
+        .where('delivered', isNull: true)
+        .snapshots()
+        .listen((snapshot) {
+      final orderList = snapshot.docs.map(_Order.fromDoc).toList();
+      entities = orderList;
+      response = ApiResponse.completed();
+      notifyListeners();
+    }, onError: (error) {
+      response = ApiResponse.error(PGError.backend('$error'));
+      notifyListeners();
+    });
+  }
 
   @override
-  Stream<UnmodifiableListView<Order>> orderStreamForTable(Table table) =>
-      collection
-          .where('delivered', isNull: true)
-          .where('table.id', isEqualTo: table.id)
-          .snapshots()
-          .map((snap) => UnmodifiableListView(
-                snap.docs.map(_Order.fromDoc).toList(),
-              ));
+  UnmodifiableListView<Order> ordersForTable(Table table) =>
+      UnmodifiableListView(
+        entities.where((order) => order.table == table),
+      );
 
   @override
   Future<PGError> commitOrder(Order order) {
@@ -68,6 +83,12 @@ class FIROrderProvider extends FIREntityProvider<Order>
     } else {
       return Future.value(null);
     }
+  }
+
+  @override
+  void dispose() {
+    _snapshotListener.cancel();
+    super.dispose();
   }
 }
 

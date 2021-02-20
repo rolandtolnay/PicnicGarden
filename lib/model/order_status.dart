@@ -10,11 +10,16 @@ class OrderStatus {
   final String colorHex;
   final int flow;
 
+  /// { topic_name: [attribute_id] }
+  @JsonKey(defaultValue: {})
+  final Map<String, List<String>> notifyTopics;
+
   const OrderStatus(
       {@required this.id,
       @required this.name,
       @required this.colorHex,
-      @required this.flow});
+      @required this.flow,
+      this.notifyTopics});
 
   factory OrderStatus.fromJson(Map<String, dynamic> json) =>
       _$OrderStatusFromJson(json);

@@ -11,7 +11,7 @@ abstract class EntityProvider extends ChangeNotifier {
 }
 
 class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
-  final CollectionReference collection;
+  CollectionReference collection;
   final T Function(Map<String, dynamic> json) fromJson;
 
   List<T> entities = [];
