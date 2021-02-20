@@ -10,8 +10,10 @@ Topic _$TopicFromJson(Map<String, dynamic> json) {
   return Topic(
     id: json['id'] as String,
     name: json['name'] as String,
-    subscribedUserIds:
-        (json['subscribedUserIds'] as List)?.map((e) => e as String)?.toList(),
+    subscribedUserIds: (json['subscribedUserIds'] as List)
+            ?.map((e) => e as String)
+            ?.toList() ??
+        [],
   );
 }
 

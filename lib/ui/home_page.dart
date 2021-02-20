@@ -143,11 +143,21 @@ class TopicSubscriberDialog extends StatelessWidget {
 
     var content = <Widget>[Center(child: CircularProgressIndicator())];
     if (!provider.isLoading) {
-      content = provider.topics.map((topic) => Text(topic.name)).toList();
+      content = provider.topics
+          .map((topic) => CheckboxListTile(
+                title: Text(topic.name),
+                controlAffinity: ListTileControlAffinity.leading,
+                value: provider.isSubscribedToTopic(topic),
+                onChanged: (value) {
+                  provider.setSubscribedToTopic(value, topic: topic);
+                },
+              ))
+          .toList();
     }
 
     return AlertDialog(
       elevation: 2,
+      title: Text('Subscribed topics'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [...content],

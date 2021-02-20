@@ -16,18 +16,17 @@ class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
 
   List<T> entities = [];
 
-  ApiResponse _response = ApiResponse.initial();
+  @override
+  ApiResponse response = ApiResponse.initial();
 
   FIREntityProvider(String collection, this.fromJson)
       : collection = FirebaseFirestore.instance.collection(collection);
 
   @override
-  ApiResponse get response => _response;
-  @override
   bool get isLoading => response.status == ApiStatus.loading;
 
   Future fetchEntities() async {
-    _response = ApiResponse.loading();
+    response = ApiResponse.loading();
     notifyListeners();
 
     return (await checkConnectivity()).fold(
@@ -35,15 +34,15 @@ class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
         try {
           final snapshot = await collection.get();
           entities = snapshot.docs.map((doc) => fromJson(doc.data())).toList();
-          _response = ApiResponse.completed();
+          response = ApiResponse.completed();
         } catch (e) {
           print('[ERROR] Failed fetching ${T.runtimeType}: $e');
-          _response = ApiResponse.error(PGError.backend('$e'));
+          response = ApiResponse.error(PGError.backend('$e'));
         }
         notifyListeners();
       },
       (error) {
-        _response = ApiResponse.error(error);
+        response = ApiResponse.error(error);
         notifyListeners();
       },
     );

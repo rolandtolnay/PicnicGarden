@@ -1,8 +1,10 @@
 import 'dart:collection';
 
-import 'package:picnicgarden/provider/auth_provider.dart';
+import 'package:meta/meta.dart';
+import 'package:picnicgarden/logic/api_response.dart';
 
 import '../model/topic.dart';
+import 'auth_provider.dart';
 import 'entity_provider.dart';
 
 abstract class TopicProvider extends EntityProvider {
@@ -10,7 +12,9 @@ abstract class TopicProvider extends EntityProvider {
   Future fetchTopics();
 
   bool isSubscribedToTopic(Topic topic);
-  Future subscribeToTopic(Topic topic);
+
+  // ignore: avoid_positional_boolean_parameters
+  Future setSubscribedToTopic(bool isSubscribed, {@required Topic topic});
 }
 
 class FIRTopicProvider extends FIREntityProvider<Topic>
@@ -34,10 +38,21 @@ class FIRTopicProvider extends FIREntityProvider<Topic>
       topic.subscribedUserIds.contains(_authProvider.userId);
 
   @override
-  Future subscribeToTopic(Topic topic) {
-    return putEntity(
-      topic.id,
-      Topic.subscribingTo(topic, byUserId: _authProvider.userId).toJson(),
-    );
+  Future setSubscribedToTopic(bool isSubscribed, {Topic topic}) async {
+    response = ApiResponse.loading();
+    notifyListeners();
+
+    final userId = _authProvider.userId;
+    final updatedTopic = isSubscribed
+        ? Topic.subscribingTo(topic, byUserId: userId)
+        : Topic.unsubscribingFrom(topic, byUserId: userId);
+    final error = await putEntity(topic.id, updatedTopic.toJson());
+    if (error == null) {
+      response = ApiResponse.completed();
+      // TODO: Call FCM
+    } else {
+      response = ApiResponse.error(error);
+    }
+    notifyListeners();
   }
 }
