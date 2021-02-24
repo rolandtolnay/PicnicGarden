@@ -61,6 +61,13 @@ class Order {
   String get userFriendlyDescription =>
       '${recipe.name} @ ${table.name} ${phase.name}';
 
+  bool get shouldNotifyStatus {
+    final attributeIds = recipe.attributes.map((a) => a.id);
+    final notifyAttributeIds =
+        currentStatus.notifyTopics.values.expand((e) => e);
+    return attributeIds.any(notifyAttributeIds.contains);
+  }
+
   static int sort(Order a, Order b) {
     var result =
         b.currentDuration.inSeconds.compareTo(a.currentDuration.inSeconds);

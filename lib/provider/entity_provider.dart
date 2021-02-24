@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -15,6 +17,7 @@ class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
   final T Function(Map<String, dynamic> json) fromJson;
 
   List<T> entities = [];
+  StreamSubscription<QuerySnapshot> snapshotListener;
 
   @override
   ApiResponse response = ApiResponse.initial();
@@ -61,5 +64,22 @@ class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
       },
       (error) => error,
     );
+  }
+
+  void listenOnSnapshots(Query query) {
+    snapshotListener = query.snapshots().listen((snapshot) {
+      entities = snapshot.docs.map((doc) => fromJson(doc.data())).toList();
+      response = ApiResponse.completed();
+      notifyListeners();
+    }, onError: (error) {
+      response = ApiResponse.error(PGError.backend('$error'));
+      notifyListeners();
+    });
+  }
+
+  @override
+  void dispose() {
+    snapshotListener?.cancel();
+    super.dispose();
   }
 }

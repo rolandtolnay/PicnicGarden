@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'dart:collection';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart' hide Table;
+import 'package:flutter/material.dart' hide Table, Notification;
 import 'package:meta/meta.dart';
-import 'package:picnicgarden/logic/api_response.dart';
+import 'package:picnicgarden/model/notification.dart';
+import 'package:picnicgarden/provider/notification_provider.dart';
 
+import '../logic/api_response.dart';
 import '../logic/pg_error.dart';
 import '../model/order.dart';
 import '../model/order_status.dart';
@@ -24,22 +25,13 @@ abstract class OrderProvider extends EntityProvider {
 
 class FIROrderProvider extends FIREntityProvider<Order>
     implements OrderProvider {
-  StreamSubscription<QuerySnapshot> _snapshotListener;
+  final NotificationProvider _notificationProvider;
 
-  FIROrderProvider() : super('orders', (json) => Order.fromJson(json)) {
+  FIROrderProvider({NotificationProvider notificationProvider})
+      : _notificationProvider = notificationProvider,
+        super('orders', (json) => Order.fromJson(json)) {
     response = ApiResponse.loading();
-    _snapshotListener = collection
-        .where('delivered', isNull: true)
-        .snapshots()
-        .listen((snapshot) {
-      final orderList = snapshot.docs.map(_Order.fromDoc).toList();
-      entities = orderList;
-      response = ApiResponse.completed();
-      notifyListeners();
-    }, onError: (error) {
-      response = ApiResponse.error(PGError.backend('$error'));
-      notifyListeners();
-    });
+    listenOnSnapshots(collection.where('delivered', isNull: true));
   }
 
   @override
@@ -49,8 +41,13 @@ class FIROrderProvider extends FIREntityProvider<Order>
       );
 
   @override
-  Future<PGError> commitOrder(Order order) {
-    return putEntity(order.id, order.toJson());
+  Future<PGError> commitOrder(Order order) async {
+    final error = await putEntity(order.id, order.toJson());
+    if (order.shouldNotifyStatus) {
+      final notification = Notification.forOrder(order);
+      return _notificationProvider.postNotification(notification);
+    }
+    return error;
   }
 
   @override
@@ -84,14 +81,4 @@ class FIROrderProvider extends FIREntityProvider<Order>
       return Future.value(null);
     }
   }
-
-  @override
-  void dispose() {
-    _snapshotListener.cancel();
-    super.dispose();
-  }
-}
-
-extension _Order on Order {
-  static Order fromDoc(DocumentSnapshot doc) => Order.fromJson(doc.data());
 }

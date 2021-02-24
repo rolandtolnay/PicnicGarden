@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:picnicgarden/provider/notification_provider.dart';
 import 'package:picnicgarden/provider/order_builder.dart';
 import 'package:picnicgarden/provider/order_provider.dart';
 import 'package:picnicgarden/provider/order_status_provider.dart';
@@ -15,11 +16,16 @@ void setupProviders() {
   providers.registerLazySingleton<AuthProvider>(
     () => FIRAuthProvider()..signIn(),
   );
+  providers.registerLazySingleton<NotificationProvider>(
+    () => FIRNotificationProvider(),
+  );
 
   providers.registerFactory<TableProvider>(
     () => FIRTableProvider()..fetchTables(),
   );
-  providers.registerFactory<OrderProvider>(() => FIROrderProvider());
+  providers.registerFactory<OrderProvider>(
+    () => FIROrderProvider(notificationProvider: providers()),
+  );
   providers.registerFactory<RecipeProvider>(
     () => FIRRecipeProvider()..fetchRecipes(),
   );

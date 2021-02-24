@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:picnicgarden/model/topic.dart';
 import 'package:uuid/uuid.dart';
 
 import 'order.dart';
@@ -25,13 +24,28 @@ class Notification extends Equatable {
     this.order,
   });
 
-  factory Notification.forOrder(Order order) => Notification(
-        id: Uuid().v4(),
-        topicNames: order.currentStatus.notifyTopics.keys.toList(),
-        createdAt: DateTime.now(),
-        isUnread: true,
-        order: order,
-      );
+  factory Notification.forOrder(Order order) {
+    // ignore: omit_local_variable_types
+    final Set<String> topicNames = order.recipe.attributes.fold(
+      <String>{},
+      (topicNames, attribute) {
+        order.currentStatus.notifyTopics.forEach((key, value) {
+          if (value.contains(attribute.id)) {
+            topicNames.add(key.toLowerCase());
+          }
+        });
+        return topicNames;
+      },
+    );
+
+    return Notification(
+      id: Uuid().v4(),
+      topicNames: List.from(topicNames),
+      createdAt: DateTime.now(),
+      isUnread: true,
+      order: order,
+    );
+  }
 
   factory Notification.fromJson(Map<String, dynamic> json) =>
       _$NotificationFromJson(json);
