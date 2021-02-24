@@ -6,8 +6,8 @@ import 'package:provider/provider.dart';
 import '../../logic/pg_error.dart';
 import '../../model/order.dart';
 import '../../model/phase.dart';
-import '../../provider/order_provider.dart';
-import '../../provider/order_status_provider.dart';
+import '../../provider/order/order_provider.dart';
+import '../../provider/order/order_status_provider.dart';
 import '../../provider/phase_provider.dart';
 import 'order_list.dart';
 

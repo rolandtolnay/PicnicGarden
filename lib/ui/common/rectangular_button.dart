@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 
 enum _RectangularButtonType { outlined, flat }
@@ -91,7 +92,8 @@ class RectangularButton extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         if (icon != null) ...[Icon(icon), SizedBox(width: 8.0)],
-        Text(title.toUpperCase(), style: textStyle),
+        // TODO: Implement this properly
+        Badge(child: Text(title.toUpperCase(), style: textStyle)),
       ],
     );
   }

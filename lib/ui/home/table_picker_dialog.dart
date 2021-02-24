@@ -1,10 +1,13 @@
 import 'dart:collection';
 
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart' hide Table;
+import 'package:provider/provider.dart';
 
-import '../model/table.dart';
-import 'common/dialog_item.dart';
-import 'common/dialog_title.dart';
+import '../../model/table.dart';
+import '../../provider/notification_provider.dart';
+import '../common/dialog_item.dart';
+import '../common/dialog_title.dart';
 
 class TablePickerDialog extends StatelessWidget {
   const TablePickerDialog(this.tables, {this.selectedTable, Key key})
@@ -15,6 +18,8 @@ class TablePickerDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final provider = context.watch<NotificationProvider>();
+
     return AlertDialog(
       elevation: 2,
       title: const DialogTitle(text: 'Choose table', icon: Icons.tab),

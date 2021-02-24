@@ -1,8 +1,8 @@
-import '../model/order.dart';
-import '../model/order_status.dart';
-import '../model/phase.dart';
-import '../model/recipe.dart';
-import '../model/table.dart';
+import '../../model/order.dart';
+import '../../model/order_status.dart';
+import '../../model/phase.dart';
+import '../../model/recipe.dart';
+import '../../model/table.dart';
 
 abstract class OrderBuilder {
   void setTable(Table table);

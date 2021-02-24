@@ -54,4 +54,7 @@ class Notification extends Equatable {
 
   @override
   List<Object> get props => [id];
+
+  @override
+  String toString() => '~Notification ${topicNames} isUnread $isUnread~';
 }

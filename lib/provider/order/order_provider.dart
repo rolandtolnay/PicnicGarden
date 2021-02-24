@@ -6,12 +6,12 @@ import 'package:meta/meta.dart';
 import 'package:picnicgarden/model/notification.dart';
 import 'package:picnicgarden/provider/notification_provider.dart';
 
-import '../logic/api_response.dart';
-import '../logic/pg_error.dart';
-import '../model/order.dart';
-import '../model/order_status.dart';
-import '../model/table.dart';
-import 'entity_provider.dart';
+import '../../logic/api_response.dart';
+import '../../logic/pg_error.dart';
+import '../../model/order.dart';
+import '../../model/order_status.dart';
+import '../../model/table.dart';
+import '../entity_provider.dart';
 
 abstract class OrderProvider extends EntityProvider {
   UnmodifiableListView<Order> ordersForTable(Table table);

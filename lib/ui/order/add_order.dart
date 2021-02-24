@@ -3,9 +3,9 @@ import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 import '../../logic/pg_error.dart';
-import '../../provider/order_builder.dart';
-import '../../provider/order_provider.dart';
-import '../../provider/order_status_provider.dart';
+import '../../provider/order/order_builder.dart';
+import '../../provider/order/order_provider.dart';
+import '../../provider/order/order_status_provider.dart';
 import '../../provider/phase_provider.dart';
 import '../../provider/providers.dart';
 import '../../provider/recipe_provider.dart';

@@ -1,8 +1,8 @@
 import 'package:get_it/get_it.dart';
 import 'package:picnicgarden/provider/notification_provider.dart';
-import 'package:picnicgarden/provider/order_builder.dart';
-import 'package:picnicgarden/provider/order_provider.dart';
-import 'package:picnicgarden/provider/order_status_provider.dart';
+import 'package:picnicgarden/provider/order/order_builder.dart';
+import 'package:picnicgarden/provider/order/order_provider.dart';
+import 'package:picnicgarden/provider/order/order_status_provider.dart';
 import 'package:picnicgarden/provider/phase_provider.dart';
 import 'package:picnicgarden/provider/recipe_provider.dart';
 import 'package:picnicgarden/provider/table_provider.dart';
