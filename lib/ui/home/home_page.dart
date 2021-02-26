@@ -53,7 +53,7 @@ class _HomePageBody extends StatelessWidget {
     return Column(
       children: [
         HomePageAppBar(
-          provider.selectedTable.name,
+          provider.selectedTable,
           onTableTapped: () async {
             final selectedTable = await showDialog(
               context: context,

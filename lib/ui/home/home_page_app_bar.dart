@@ -1,27 +1,28 @@
 import 'package:badges/badges.dart';
-import 'package:flutter/material.dart';
-import 'package:picnicgarden/provider/notification_provider.dart';
+import 'package:flutter/material.dart' hide Table;
 import 'package:provider/provider.dart';
 
+import '../../model/table.dart';
+import '../../provider/notification_provider.dart';
 import '../../provider/providers.dart';
 import '../../provider/topic_provider.dart';
 import 'topic_subscriber_dialog.dart';
 
 class HomePageAppBar extends StatelessWidget {
   const HomePageAppBar(
-    this.selectedTableName, {
+    this.selectedTable, {
     this.onTableTapped,
     Key key,
   }) : super(key: key);
 
-  final String selectedTableName;
+  final Table selectedTable;
   final VoidCallback onTableTapped;
 
   @override
   Widget build(BuildContext context) {
     final notificationCount = context
         .watch<NotificationProvider>()
-        .notificationsExcludingTable(selectedTableName)
+        .notificationsExcludingTable(selectedTable)
         .length;
 
     final textColor = Theme.of(context).colorScheme.onPrimary;
@@ -43,7 +44,7 @@ class HomePageAppBar extends StatelessWidget {
           toAnimate: false,
           position: BadgePosition.topStart(),
           padding: const EdgeInsets.all(8.0),
-          child: Text(selectedTableName,
+          child: Text(selectedTable.name,
               style: Theme.of(context)
                   .textTheme
                   .headline2

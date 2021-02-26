@@ -17,7 +17,7 @@ void setupProviders() {
     () => FIRAuthProvider()..signIn(),
   );
   providers.registerLazySingleton<NotificationProvider>(
-    () => FIRNotificationProvider(),
+    () => FIRNotificationProvider(authProvider: providers()),
   );
 
   providers.registerFactory<TableProvider>(
@@ -35,7 +35,9 @@ void setupProviders() {
   providers.registerFactory<OrderStatusProvider>(
     () => FIROrderStatusProvider()..fetchOrderStatusList(),
   );
-  providers.registerFactory<OrderBuilder>(() => PGOrderBuilder());
+  providers.registerFactory<OrderBuilder>(
+    () => PGOrderBuilder(authProvider: providers()),
+  );
   providers.registerFactory<TopicProvider>(
     () => FIRTopicProvider(authProvider: providers())..fetchTopics(),
   );

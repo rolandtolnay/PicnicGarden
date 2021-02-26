@@ -78,7 +78,7 @@ class ItemBuilder {
       return map;
     });
     phaseMap.values.forEach((orderList) {
-      orderList.sort((a, b) => a.created.compareTo(b.created));
+      orderList.sort((a, b) => a.createdAt.compareTo(b.createdAt));
     });
 
     return sortedPhases.fold(<ListItem>[], (list, phase) {

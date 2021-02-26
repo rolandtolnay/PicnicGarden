@@ -1,6 +1,5 @@
 import 'dart:collection';
 
-import 'package:badges/badges.dart';
 import 'package:flutter/material.dart' hide Table;
 import 'package:provider/provider.dart';
 

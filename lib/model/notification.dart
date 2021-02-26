@@ -11,16 +11,18 @@ class Notification extends Equatable {
   final String id;
 
   final List<String> topicNames;
-  final DateTime createdAt;
   final bool isUnread;
+  final DateTime createdAt;
+  final String createdBy;
 
   final Order order;
 
   Notification({
     this.id,
     this.topicNames,
-    this.createdAt,
     this.isUnread,
+    this.createdAt,
+    this.createdBy,
     this.order,
   });
 
@@ -41,8 +43,9 @@ class Notification extends Equatable {
     return Notification(
       id: Uuid().v4(),
       topicNames: List.from(topicNames),
-      createdAt: DateTime.now(),
       isUnread: true,
+      createdAt: DateTime.now(),
+      createdBy: order.createdBy,
       order: order,
     );
   }

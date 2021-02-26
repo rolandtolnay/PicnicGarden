@@ -1,20 +1,18 @@
 import 'dart:collection';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:meta/meta.dart';
 
 import '../logic/api_response.dart';
 import '../logic/pg_error.dart';
 import '../model/notification.dart';
 import '../model/table.dart';
+import 'auth_provider.dart';
 import 'entity_provider.dart';
 
 abstract class NotificationProvider extends EntityProvider {
   UnmodifiableListView<Notification> get notifications;
 
-// TODO: This should take table parameter
-  UnmodifiableListView<Notification> notificationsExcludingTable(
-    String tableName,
-  );
+  UnmodifiableListView<Notification> notificationsExcludingTable(Table table);
   UnmodifiableListView<Notification> notificationsForTable(Table table);
 
   Future<PGError> postNotification(Notification notification);
@@ -23,10 +21,16 @@ abstract class NotificationProvider extends EntityProvider {
 
 class FIRNotificationProvider extends FIREntityProvider<Notification>
     implements NotificationProvider {
-  FIRNotificationProvider()
+  FIRNotificationProvider({@required AuthProvider authProvider})
       : super('notifications', (json) => Notification.fromJson(json)) {
     response = ApiResponse.loading();
-    listenOnSnapshots(collection.where('isUnread', isEqualTo: true));
+    if (authProvider.userId != null) {
+      listenOnSnapshots(collection
+          .where('createdBy', isNotEqualTo: authProvider.userId)
+          .where('isUnread', isEqualTo: true));
+    } else {
+      print('[ERROR] NotificationProvider init with no authenticated user');
+    }
   }
 
   @override
@@ -39,11 +43,9 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
   }
 
   @override
-  UnmodifiableListView<Notification> notificationsExcludingTable(
-    String tableName,
-  ) {
+  UnmodifiableListView<Notification> notificationsExcludingTable(Table table) {
     return UnmodifiableListView<Notification>(
-      notifications.where((n) => n.order.table.name != tableName).toList(),
+      notifications.where((n) => n.order.table != table).toList(),
     );
   }
 

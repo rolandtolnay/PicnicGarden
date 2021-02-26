@@ -14,13 +14,14 @@ Order _$OrderFromJson(Map<String, dynamic> json) {
     table: json['table'] == null
         ? null
         : Table.fromJson(json['table'] as Map<String, dynamic>),
+    createdBy: json['createdBy'] as String,
     phase: json['phase'] == null
         ? null
         : Phase.fromJson(json['phase'] as Map<String, dynamic>),
     id: json['id'] as String,
-    created: json['created'] == null
+    createdAt: json['createdAt'] == null
         ? null
-        : DateTime.parse(json['created'] as String),
+        : DateTime.parse(json['createdAt'] as String),
     flow: (json['flow'] as Map<String, dynamic>)?.map(
       (k, e) =>
           MapEntry(k, e == null ? null : Duration(microseconds: e as int)),
@@ -40,7 +41,8 @@ Map<String, dynamic> _$OrderToJson(Order instance) => <String, dynamic>{
       'table': instance.table?.toJson(),
       'phase': instance.phase?.toJson(),
       'currentStatus': instance.currentStatus?.toJson(),
-      'created': instance.created?.toIso8601String(),
+      'createdAt': instance.createdAt?.toIso8601String(),
+      'createdBy': instance.createdBy,
       'delivered': instance.delivered?.toIso8601String(),
       'flow': instance.flow?.map((k, e) => MapEntry(k, e?.inMicroseconds)),
     };

@@ -59,10 +59,10 @@ class FIROrderProvider extends FIREntityProvider<Order>
     final nextFlow = currentFlow + 1;
     if (nextFlow < orderStatusList.length) {
       // Update flow
-      var lastFlowEndDate = order.created;
+      var lastFlowEndDate = order.createdAt;
       final previousFlow = currentFlow - 1;
       if (previousFlow >= 0) {
-        lastFlowEndDate = order.created.add(order.flow.values.reduce(
+        lastFlowEndDate = order.createdAt.add(order.flow.values.reduce(
             (value, element) =>
                 Duration(seconds: value.inSeconds + element.inSeconds)));
       }

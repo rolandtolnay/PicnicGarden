@@ -18,7 +18,9 @@ class Order {
   final Phase phase;
   OrderStatus currentStatus;
 
-  final DateTime created;
+  final DateTime createdAt;
+  final String createdBy;
+
   DateTime delivered;
 
   Map<String, Duration> flow;
@@ -26,14 +28,15 @@ class Order {
   Order({
     @required this.recipe,
     @required this.table,
+    @required this.createdBy,
     this.phase,
     String id,
-    DateTime created,
+    DateTime createdAt,
     Map<String, Duration> flow,
     this.currentStatus,
     this.delivered,
   })  : id = id ?? Uuid().v4(),
-        created = created ?? DateTime.now(),
+        createdAt = createdAt ?? DateTime.now(),
         flow = flow ?? {};
 
   factory Order.fromJson(Map<String, dynamic> json) => _$OrderFromJson(json);
@@ -54,7 +57,7 @@ class Order {
         now.hour,
         now.minute,
         now.second,
-      ).difference(created).inSeconds,
+      ).difference(createdAt).inSeconds,
     );
   }
 
