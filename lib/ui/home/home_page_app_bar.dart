@@ -40,8 +40,8 @@ class HomePageAppBar extends StatelessWidget {
                 .bodyText1
                 .copyWith(color: Theme.of(context).colorScheme.onPrimary),
           ),
+          toAnimate: false,
           position: BadgePosition.topStart(),
-          animationType: BadgeAnimationType.fade,
           padding: const EdgeInsets.all(8.0),
           child: Text(selectedTableName,
               style: Theme.of(context)

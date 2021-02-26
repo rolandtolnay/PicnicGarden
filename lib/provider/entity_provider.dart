@@ -51,11 +51,33 @@ class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
     );
   }
 
-  Future<PGError> putEntity(String id, Map<String, dynamic> entity) async {
+  Future<PGError> postEntity(String id, Map<String, dynamic> entity) async {
     return (await checkConnectivity()).fold(
       () async {
         try {
           await collection.doc(id).set(entity);
+          return null;
+        } catch (e) {
+          print('[ERROR] Failed putting ${T.runtimeType}: $e');
+          return PGError.backend('$e');
+        }
+      },
+      (error) => error,
+    );
+  }
+
+  Future<PGError> batchPutEntities(
+    Iterable<String> ids,
+    Map<String, dynamic> change,
+  ) async {
+    return (await checkConnectivity()).fold(
+      () async {
+        try {
+          final batch = FirebaseFirestore.instance.batch();
+          ids.forEach((id) {
+            batch.update(collection.doc(id), change);
+          });
+          await batch.commit();
           return null;
         } catch (e) {
           print('[ERROR] Failed putting ${T.runtimeType}: $e');

@@ -33,6 +33,7 @@ class TablePickerDialog extends StatelessWidget {
               .map((table) => DialogItem(
                     table.name,
                     isSelected: table == selectedTable,
+                    badgeCount: provider.notificationsForTable(table).length,
                     onTapped: () => Navigator.of(context).pop(table),
                   ))
               .toList(),

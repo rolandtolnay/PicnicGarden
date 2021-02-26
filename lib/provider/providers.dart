@@ -21,7 +21,7 @@ void setupProviders() {
   );
 
   providers.registerFactory<TableProvider>(
-    () => FIRTableProvider()..fetchTables(),
+    () => FIRTableProvider(notificationProvider: providers())..fetchTables(),
   );
   providers.registerFactory<OrderProvider>(
     () => FIROrderProvider(notificationProvider: providers()),

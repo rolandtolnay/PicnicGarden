@@ -1,5 +1,7 @@
 import 'dart:collection';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../logic/api_response.dart';
 import '../logic/pg_error.dart';
 import '../model/notification.dart';
@@ -16,6 +18,7 @@ abstract class NotificationProvider extends EntityProvider {
   UnmodifiableListView<Notification> notificationsForTable(Table table);
 
   Future<PGError> postNotification(Notification notification);
+  Future<PGError> markAsReadNotifications(Table table);
 }
 
 class FIRNotificationProvider extends FIREntityProvider<Notification>
@@ -32,7 +35,7 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
 
   @override
   Future<PGError> postNotification(Notification notification) {
-    return putEntity(notification.id, notification.toJson());
+    return postEntity(notification.id, notification.toJson());
   }
 
   @override
@@ -48,6 +51,15 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
   UnmodifiableListView<Notification> notificationsForTable(Table table) {
     return UnmodifiableListView<Notification>(
       notifications.where((n) => n.order.table == table).toList(),
+    );
+  }
+
+  @override
+  Future<PGError> markAsReadNotifications(Table table) {
+    final notifications = notificationsForTable(table);
+    return batchPutEntities(
+      notifications.map((n) => n.id),
+      {'isUnread': false},
     );
   }
 }

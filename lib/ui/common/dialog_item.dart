@@ -7,12 +7,14 @@ class DialogItem extends StatelessWidget {
     this.title, {
     this.onTapped,
     this.isSelected = false,
+    this.badgeCount,
     Key key,
   }) : super(key: key);
 
   final String title;
   final VoidCallback onTapped;
   final bool isSelected;
+  final int badgeCount;
 
   @override
   Widget build(BuildContext context) {
@@ -28,11 +30,13 @@ class DialogItem extends StatelessWidget {
         ? RectangularButton.flat(
             title: title,
             textStyle: textStyle,
+            badgeCount: badgeCount,
             onPressed: () => onTapped?.call(),
           )
         : RectangularButton.outlined(
             title: title,
             textStyle: textStyle,
+            badgeCount: badgeCount,
             onPressed: () => onTapped?.call(),
           );
   }

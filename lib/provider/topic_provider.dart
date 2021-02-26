@@ -46,7 +46,7 @@ class FIRTopicProvider extends FIREntityProvider<Topic>
     final updatedTopic = isSubscribed
         ? Topic.subscribingTo(topic, byUserId: userId)
         : Topic.unsubscribingFrom(topic, byUserId: userId);
-    final error = await putEntity(topic.id, updatedTopic.toJson());
+    final error = await postEntity(topic.id, updatedTopic.toJson());
     if (error == null) {
       response = ApiResponse.completed();
       // TODO: Call FCM
