@@ -11,6 +11,7 @@ class Notification extends Equatable {
   final String id;
 
   final List<String> topicNames;
+  // TODO: This has to be dictionary with userId: bool
   final bool isUnread;
   final DateTime createdAt;
   final String createdBy;
