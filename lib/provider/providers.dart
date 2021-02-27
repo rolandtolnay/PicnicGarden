@@ -17,7 +17,8 @@ void setupProviders() {
     () => FIRAuthProvider()..signIn(),
   );
   providers.registerLazySingleton<NotificationProvider>(
-    () => FIRNotificationProvider(authProvider: providers()),
+    () => FIRNotificationProvider(authProvider: providers())
+      ..requestPermissions(),
   );
 
   providers.registerFactory<TableProvider>(

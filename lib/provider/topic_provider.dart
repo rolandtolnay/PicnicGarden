@@ -1,8 +1,10 @@
 import 'dart:collection';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:meta/meta.dart';
-import 'package:picnicgarden/logic/api_response.dart';
+import 'package:picnicgarden/logic/pg_error.dart';
 
+import '../logic/api_response.dart';
 import '../model/topic.dart';
 import 'auth_provider.dart';
 import 'entity_provider.dart';
@@ -19,6 +21,7 @@ abstract class TopicProvider extends EntityProvider {
 
 class FIRTopicProvider extends FIREntityProvider<Topic>
     implements TopicProvider {
+  final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   final AuthProvider _authProvider;
 
   FIRTopicProvider({AuthProvider authProvider})
@@ -42,16 +45,24 @@ class FIRTopicProvider extends FIREntityProvider<Topic>
     response = ApiResponse.loading();
     notifyListeners();
 
-    final userId = _authProvider.userId;
-    final updatedTopic = isSubscribed
-        ? Topic.subscribingTo(topic, byUserId: userId)
-        : Topic.unsubscribingFrom(topic, byUserId: userId);
-    final error = await postEntity(topic.id, updatedTopic.toJson());
-    if (error == null) {
-      response = ApiResponse.completed();
-      // TODO: Call FCM
-    } else {
-      response = ApiResponse.error(error);
+    try {
+      if (isSubscribed) {
+        await _messaging.subscribeToTopic(topic.name.toLowerCase());
+      } else {
+        await _messaging.unsubscribeFromTopic(topic.name.toLowerCase());
+      }
+      final userId = _authProvider.userId;
+      final updatedTopic = isSubscribed
+          ? Topic.subscribingTo(topic, byUserId: userId)
+          : Topic.unsubscribingFrom(topic, byUserId: userId);
+      final error = await postEntity(topic.id, updatedTopic.toJson());
+      if (error == null) {
+        response = ApiResponse.completed();
+      } else {
+        response = ApiResponse.error(error);
+      }
+    } catch (e) {
+      response = ApiResponse.error(PGError.unknown('$e', error: e));
     }
     notifyListeners();
   }
