@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'dart:collection';
 
-import 'package:flutter/material.dart' hide Table, Notification;
+import 'package:flutter/material.dart' hide Table;
 import 'package:meta/meta.dart';
-import 'package:picnicgarden/model/notification.dart';
-import 'package:picnicgarden/provider/notification_provider.dart';
 
 import '../../logic/api_response.dart';
 import '../../logic/pg_error.dart';
@@ -12,6 +10,7 @@ import '../../model/order.dart';
 import '../../model/order_status.dart';
 import '../../model/table.dart';
 import '../entity_provider.dart';
+import '../notification_provider.dart';
 
 abstract class OrderProvider extends EntityProvider {
   UnmodifiableListView<Order> ordersForTable(Table table);
@@ -44,8 +43,7 @@ class FIROrderProvider extends FIREntityProvider<Order>
   Future<PGError> commitOrder(Order order) async {
     final error = await postEntity(order.id, order.toJson());
     if (order.shouldNotifyStatus) {
-      final notification = Notification.forOrder(order);
-      return _notificationProvider.postNotification(notification);
+      return _notificationProvider.postNotificationForOrder(order);
     }
     return error;
   }

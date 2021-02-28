@@ -38,6 +38,7 @@ class _OrderListState extends State<OrderList> {
   @override
   Widget build(BuildContext context) {
     return ListView(
+      padding: EdgeInsets.only(bottom: 56),
       children: widget.items.map((listItem) {
         final color = listItem.backgroundColor ?? Theme.of(context).cardColor;
         return Material(

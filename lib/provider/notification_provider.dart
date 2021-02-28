@@ -1,7 +1,9 @@
 import 'dart:collection';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:meta/meta.dart';
+import 'package:picnicgarden/model/order.dart';
 
 import '../logic/api_response.dart';
 import '../logic/pg_error.dart';
@@ -16,34 +18,49 @@ abstract class NotificationProvider extends EntityProvider {
   UnmodifiableListView<Notification> notificationsExcludingTable(Table table);
   UnmodifiableListView<Notification> notificationsForTable(Table table);
 
-  Future<PGError> postNotification(Notification notification);
+  Future<PGError> postNotificationForOrder(Order order);
   Future<PGError> markAsReadNotifications(Table table);
 }
 
 class FIRNotificationProvider extends FIREntityProvider<Notification>
     implements NotificationProvider {
+  final AuthProvider _authProvider;
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
+  final FlutterLocalNotificationsPlugin _localNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
   FIRNotificationProvider({@required AuthProvider authProvider})
-      : super('notifications', (json) => Notification.fromJson(json)) {
+      : _authProvider = authProvider,
+        super('notifications', (json) => Notification.fromJson(json)) {
     //
     response = ApiResponse.loading();
     if (authProvider.userId != null) {
-      listenOnSnapshots(collection
-          .where('createdBy', isNotEqualTo: authProvider.userId)
-          .where('isUnread', isEqualTo: true));
+      listenOnSnapshots(
+        collection.where('createdBy', isNotEqualTo: authProvider.userId),
+      );
     } else {
       print('[ERROR] NotificationProvider init with no authenticated user');
     }
 
+    _initLocalNotifications();
     FirebaseMessaging.onMessage.listen((message) {
-      // called in Foreground
-      // TODO: Present local notification if needed
-      print('Got a message whilst in the foreground!');
       print('Message data: ${message.data}');
 
-      if (message.notification != null) {
-        print('Message also contained a notification: ${message.notification}');
+      if (message.notification != null &&
+          message.data['createdBy'] != _authProvider.userId) {
+        _localNotificationsPlugin.show(
+          0,
+          message.notification.title,
+          null,
+          // TODO: Only show alert if for other table
+          // TODO: Do not show if order status changed by me
+          NotificationDetails(
+              iOS: IOSNotificationDetails(
+            presentAlert: true,
+            presentBadge: true,
+            presentSound: true,
+          )),
+        );
       }
     });
   }
@@ -69,21 +86,31 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
   }
 
   @override
-  Future<PGError> postNotification(Notification notification) {
+  Future<PGError> postNotificationForOrder(Order order) {
+    final notification = Notification.forOrder(
+      order,
+      createdBy: _authProvider.userId,
+    );
     return postEntity(notification.id, notification.toJson());
   }
 
   @override
   UnmodifiableListView<Notification> notificationsExcludingTable(Table table) {
     return UnmodifiableListView<Notification>(
-      entities.where((n) => n.order.table != table).toList(),
+      entities
+          .where((n) =>
+              n.order.table != table && n.readBy[_authProvider.userId] == null)
+          .toList(),
     );
   }
 
   @override
   UnmodifiableListView<Notification> notificationsForTable(Table table) {
     return UnmodifiableListView<Notification>(
-      entities.where((n) => n.order.table == table).toList(),
+      entities
+          .where((n) =>
+              n.order.table == table && n.readBy[_authProvider.userId] == null)
+          .toList(),
     );
   }
 
@@ -92,7 +119,23 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
     final notifications = notificationsForTable(table);
     return batchPutEntities(
       notifications.map((n) => n.id),
-      {'isUnread': false},
+      {'readBy.${_authProvider.userId}': true},
     );
+  }
+
+  Future _initLocalNotifications() async {
+    final initializationSettingsIOS = IOSInitializationSettings(
+        requestAlertPermission: false,
+        requestBadgePermission: false,
+        requestSoundPermission: false,
+        onDidReceiveLocalNotification:
+            (int id, String title, String body, String payload) async {
+          print('Received local notification');
+        });
+    final initializationSettings = InitializationSettings(
+      iOS: initializationSettingsIOS,
+    );
+    await _localNotificationsPlugin.initialize(initializationSettings);
+    print('Successfully initialized local notifications.');
   }
 }
