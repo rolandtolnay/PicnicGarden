@@ -1,10 +1,7 @@
 import 'dart:collection';
 
-import 'package:picnicgarden/logic/api_response.dart';
-
 import '../model/table.dart';
 import 'entity_provider.dart';
-import 'notification_provider.dart';
 
 abstract class TableProvider extends EntityProvider {
   UnmodifiableListView<Table> get tables;

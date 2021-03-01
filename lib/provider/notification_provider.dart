@@ -3,16 +3,16 @@ import 'dart:collection';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:meta/meta.dart';
-import 'package:picnicgarden/model/order.dart';
-import 'package:picnicgarden/provider/table_provider.dart';
-import 'package:picnicgarden/provider/topic_provider.dart';
 
 import '../logic/api_response.dart';
 import '../logic/pg_error.dart';
 import '../model/notification.dart';
+import '../model/order.dart';
 import '../model/table.dart';
 import 'auth_provider.dart';
 import 'entity_provider.dart';
+import 'table_provider.dart';
+import 'topic_provider.dart';
 
 abstract class NotificationProvider extends EntityProvider {
   Future requestPermissions();
@@ -54,6 +54,7 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
     _initLocalNotifications();
     _listenOnPushNotifications();
     _listenOnTableSelected();
+    _listenOnSubscribedTopic();
   }
 
   @override
@@ -172,6 +173,14 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
         if (error != null) {
           print('[ERROR] Failed marking notifications as read: $error');
         }
+      }
+    });
+  }
+
+  void _listenOnSubscribedTopic() {
+    _topicProvider.addListener(() {
+      if (!_topicProvider.isLoading) {
+        notifyListeners();
       }
     });
   }
