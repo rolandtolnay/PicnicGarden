@@ -4,6 +4,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:meta/meta.dart';
 import 'package:picnicgarden/model/order.dart';
+import 'package:picnicgarden/provider/table_provider.dart';
+import 'package:picnicgarden/provider/topic_provider.dart';
 
 import '../logic/api_response.dart';
 import '../logic/pg_error.dart';
@@ -19,18 +21,25 @@ abstract class NotificationProvider extends EntityProvider {
   UnmodifiableListView<Notification> notificationsForTable(Table table);
 
   Future<PGError> postNotificationForOrder(Order order);
-  Future<PGError> markAsReadNotifications(Table table);
 }
 
 class FIRNotificationProvider extends FIREntityProvider<Notification>
     implements NotificationProvider {
-  final AuthProvider _authProvider;
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin _localNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  FIRNotificationProvider({@required AuthProvider authProvider})
-      : _authProvider = authProvider,
+  final AuthProvider _authProvider;
+  final TopicProvider _topicProvider;
+  final TableProvider _tableProvider;
+
+  FIRNotificationProvider({
+    @required AuthProvider authProvider,
+    @required TopicProvider topicProvider,
+    @required TableProvider tableProvider,
+  })  : _authProvider = authProvider,
+        _topicProvider = topicProvider,
+        _tableProvider = tableProvider,
         super('notifications', (json) => Notification.fromJson(json)) {
     //
     response = ApiResponse.loading();
@@ -43,26 +52,8 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
     }
 
     _initLocalNotifications();
-    FirebaseMessaging.onMessage.listen((message) {
-      print('Message data: ${message.data}');
-
-      if (message.notification != null &&
-          message.data['createdBy'] != _authProvider.userId) {
-        _localNotificationsPlugin.show(
-          0,
-          message.notification.title,
-          null,
-          // TODO: Only show alert if for other table
-          // TODO: Do not show if order status changed by me
-          NotificationDetails(
-              iOS: IOSNotificationDetails(
-            presentAlert: true,
-            presentBadge: true,
-            presentSound: true,
-          )),
-        );
-      }
-    });
+    _listenOnPushNotifications();
+    _listenOnTableSelected();
   }
 
   @override
@@ -74,15 +65,34 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
       } else {
         print('Push Notifications not authorized');
       }
-      await _messaging.setForegroundNotificationPresentationOptions(
-        alert: false,
-        badge: false,
-        sound: true,
-      );
     } catch (e) {
       print('[ERROR] Failed setting up notifications: $e');
     }
     return Future.value();
+  }
+
+  @override
+  UnmodifiableListView<Notification> notificationsExcludingTable(Table table) {
+    return UnmodifiableListView<Notification>(
+      entities
+          .where((n) =>
+              n.order.table != table &&
+              n.readBy[_authProvider.userId] == null &&
+              n.topicNames.any(_isSubscribedToTopic))
+          .toList(),
+    );
+  }
+
+  @override
+  UnmodifiableListView<Notification> notificationsForTable(Table table) {
+    return UnmodifiableListView<Notification>(
+      entities
+          .where((n) =>
+              n.order.table == table &&
+              n.readBy[_authProvider.userId] == null &&
+              n.topicNames.any(_isSubscribedToTopic))
+          .toList(),
+    );
   }
 
   @override
@@ -94,28 +104,15 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
     return postEntity(notification.id, notification.toJson());
   }
 
-  @override
-  UnmodifiableListView<Notification> notificationsExcludingTable(Table table) {
-    return UnmodifiableListView<Notification>(
-      entities
-          .where((n) =>
-              n.order.table != table && n.readBy[_authProvider.userId] == null)
-          .toList(),
-    );
+  bool _isSubscribedToTopic(String topicName) {
+    final topic = _topicProvider.topics.firstWhere(
+        (t) => t.name.toLowerCase() == topicName.toLowerCase(),
+        orElse: () => null);
+    if (topic == null) return false;
+    return _topicProvider.isSubscribedToTopic(topic);
   }
 
-  @override
-  UnmodifiableListView<Notification> notificationsForTable(Table table) {
-    return UnmodifiableListView<Notification>(
-      entities
-          .where((n) =>
-              n.order.table == table && n.readBy[_authProvider.userId] == null)
-          .toList(),
-    );
-  }
-
-  @override
-  Future<PGError> markAsReadNotifications(Table table) {
+  Future<PGError> _markAsReadNotifications(Table table) {
     final notifications = notificationsForTable(table);
     return batchPutEntities(
       notifications.map((n) => n.id),
@@ -137,5 +134,45 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
     );
     await _localNotificationsPlugin.initialize(initializationSettings);
     print('Successfully initialized local notifications.');
+  }
+
+  void _listenOnPushNotifications() {
+    FirebaseMessaging.onMessage.listen((message) {
+      print('Message data: ${message.data}');
+
+      if (message.notification != null &&
+          message.data['createdBy'] != _authProvider.userId) {
+        final tableId = message.data['tableId'];
+        var presentAlert = true;
+        if (tableId == _tableProvider.selectedTable.id) {
+          presentAlert = false;
+          _markAsReadNotifications(_tableProvider.selectedTable);
+        }
+
+        _localNotificationsPlugin.show(
+          0,
+          message.notification.title,
+          null,
+          NotificationDetails(
+              iOS: IOSNotificationDetails(
+            presentAlert: presentAlert,
+            presentBadge: true,
+            presentSound: true,
+          )),
+        );
+      }
+    });
+  }
+
+  void _listenOnTableSelected() {
+    _tableProvider.addListener(() async {
+      if (_tableProvider.selectedTable != null) {
+        final error =
+            await _markAsReadNotifications(_tableProvider.selectedTable);
+        if (error != null) {
+          print('[ERROR] Failed marking notifications as read: $error');
+        }
+      }
+    });
   }
 }

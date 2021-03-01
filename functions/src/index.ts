@@ -24,6 +24,7 @@ export const onNewNotification = functions
       },
       data: {
         createdBy: notification.createdBy,
+        tableId: order.table.id,
       },
       condition: makeCondition(notification),
     };
@@ -62,6 +63,7 @@ interface Recipe {
 }
 
 interface Table {
+  id: string;
   name: string;
 }
 

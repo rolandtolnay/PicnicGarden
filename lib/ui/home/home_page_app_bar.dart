@@ -1,10 +1,11 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart' hide Table;
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
+import '../../logic/pg_error.dart';
 import '../../model/table.dart';
 import '../../provider/notification_provider.dart';
-import '../../provider/providers.dart';
 import '../../provider/topic_provider.dart';
 import 'topic_subscriber_dialog.dart';
 
@@ -20,11 +21,14 @@ class HomePageAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final notificationCount = context
-        .watch<NotificationProvider>()
-        .notificationsExcludingTable(selectedTable)
-        .length;
+    final provider = context.watch<NotificationProvider>();
 
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      provider.response.error?.showInDialog(context);
+    });
+
+    final notificationCount =
+        provider.notificationsExcludingTable(selectedTable).length;
     final textColor = Theme.of(context).colorScheme.onPrimary;
 
     final currentTableLabel = Row(
@@ -57,9 +61,9 @@ class HomePageAppBar extends StatelessWidget {
     void onSettingsPressed() {
       showDialog(
         context: context,
-        builder: (context) {
-          return ChangeNotifierProvider(
-            create: (_) => providers<TopicProvider>(),
+        builder: (_) {
+          return ChangeNotifierProvider.value(
+            value: context.read<TopicProvider>(),
             child: TopicSubscriberDialog(),
           );
         },

@@ -16,12 +16,9 @@ abstract class TableProvider extends EntityProvider {
 
 class FIRTableProvider extends FIREntityProvider<Table>
     implements TableProvider {
-  final NotificationProvider _notificationProvider;
   Table _selectedTable;
 
-  FIRTableProvider({NotificationProvider notificationProvider})
-      : _notificationProvider = notificationProvider,
-        super('tables', (json) => Table.fromJson(json));
+  FIRTableProvider() : super('tables', (json) => Table.fromJson(json));
 
   @override
   UnmodifiableListView<Table> get tables => UnmodifiableListView(entities);
@@ -42,10 +39,5 @@ class FIRTableProvider extends FIREntityProvider<Table>
   void selectTable(Table table) async {
     _selectedTable = table;
     notifyListeners();
-    final error = await _notificationProvider.markAsReadNotifications(table);
-    if (error != null) {
-      response = ApiResponse.error(error);
-      notifyListeners();
-    }
   }
 }

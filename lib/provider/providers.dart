@@ -16,14 +16,20 @@ void setupProviders() {
   providers.registerLazySingleton<AuthProvider>(
     () => FIRAuthProvider()..signIn(),
   );
+  providers.registerLazySingleton<TopicProvider>(
+    () => FIRTopicProvider(authProvider: providers())..fetchTopics(),
+  );
   providers.registerLazySingleton<NotificationProvider>(
-    () => FIRNotificationProvider(authProvider: providers())
-      ..requestPermissions(),
+    () => FIRNotificationProvider(
+      authProvider: providers(),
+      topicProvider: providers(),
+      tableProvider: providers(),
+    )..requestPermissions(),
+  );
+  providers.registerLazySingleton<TableProvider>(
+    () => FIRTableProvider()..fetchTables(),
   );
 
-  providers.registerFactory<TableProvider>(
-    () => FIRTableProvider(notificationProvider: providers())..fetchTables(),
-  );
   providers.registerFactory<OrderProvider>(
     () => FIROrderProvider(notificationProvider: providers()),
   );
@@ -38,8 +44,5 @@ void setupProviders() {
   );
   providers.registerFactory<OrderBuilder>(
     () => PGOrderBuilder(authProvider: providers()),
-  );
-  providers.registerFactory<TopicProvider>(
-    () => FIRTopicProvider(authProvider: providers())..fetchTopics(),
   );
 }
