@@ -26,6 +26,13 @@ export const onNewNotification = functions
         createdBy: notification.createdBy,
         tableId: order.table.id,
       },
+      apns: {
+        payload: {
+          aps: {
+            sound: "default",
+          },
+        },
+      },
       condition: makeCondition(notification),
     };
     console.log(`Sending message: ${JSON.stringify(message)}`);
