@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:picnicgarden/provider/table_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../logic/pg_error.dart';
@@ -9,6 +8,7 @@ import '../../model/phase.dart';
 import '../../provider/order/order_provider.dart';
 import '../../provider/order/order_status_provider.dart';
 import '../../provider/phase_provider.dart';
+import '../../provider/table_provider.dart';
 import 'order_list.dart';
 
 class OrderListPage extends StatelessWidget {

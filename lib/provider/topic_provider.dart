@@ -2,9 +2,9 @@ import 'dart:collection';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:meta/meta.dart';
-import 'package:picnicgarden/logic/pg_error.dart';
 
 import '../logic/api_response.dart';
+import '../logic/pg_error.dart';
 import '../model/topic.dart';
 import 'auth_provider.dart';
 import 'entity_provider.dart';

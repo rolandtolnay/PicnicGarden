@@ -1,9 +1,9 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
-import 'package:picnicgarden/model/phase.dart';
 import 'package:uuid/uuid.dart';
 
 import 'order_status.dart';
+import 'phase.dart';
 import 'recipe.dart';
 import 'table.dart';
 
