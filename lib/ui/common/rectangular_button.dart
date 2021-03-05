@@ -12,6 +12,7 @@ class RectangularButton extends StatelessWidget {
   final Color borderColor;
   final TextStyle textStyle;
   final int badgeCount;
+  final bool isMarked;
 
   final _RectangularButtonType _type;
 
@@ -23,10 +24,11 @@ class RectangularButton extends StatelessWidget {
     this.borderColor,
     this.textColor,
     this.textStyle,
+    this.isMarked = false,
     badgeCount,
   })  : _type = _RectangularButtonType.outlined,
-        color = null,
         badgeCount = badgeCount ?? 0,
+        color = null,
         super(key: key);
 
   RectangularButton.flat({
@@ -37,10 +39,11 @@ class RectangularButton extends StatelessWidget {
     this.color,
     this.textColor,
     this.textStyle,
+    this.isMarked = false,
     badgeCount,
   })  : _type = _RectangularButtonType.flat,
-        borderColor = null,
         badgeCount = badgeCount ?? 0,
+        borderColor = null,
         super(key: key);
 
   @override
@@ -105,12 +108,18 @@ class RectangularButton extends StatelessWidget {
             .bodyText1
             .copyWith(color: Theme.of(context).colorScheme.onPrimary),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          if (icon != null) ...[Icon(icon), SizedBox(width: 8.0)],
-          Text(title.toUpperCase(), style: textStyle),
-        ],
+      child: Badge(
+        showBadge: isMarked,
+        position: BadgePosition.topEnd(top: -16, end: 0),
+        toAnimate: false,
+        badgeColor: Theme.of(context).colorScheme.secondary,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            if (icon != null) ...[Icon(icon), SizedBox(width: 8.0)],
+            Text(title.toUpperCase(), style: textStyle),
+          ],
+        ),
       ),
     );
   }

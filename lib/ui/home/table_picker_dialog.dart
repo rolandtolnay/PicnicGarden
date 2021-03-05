@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../model/table.dart';
 import '../../provider/notification_provider.dart';
+import '../../provider/order/order_provider.dart';
 import '../common/dialog_item.dart';
 import '../common/dialog_title.dart';
 
@@ -17,7 +18,8 @@ class TablePickerDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<NotificationProvider>();
+    final notificationProvider = context.watch<NotificationProvider>();
+    final orderProvider = context.watch<OrderProvider>();
 
     return AlertDialog(
       elevation: 2,
@@ -32,7 +34,10 @@ class TablePickerDialog extends StatelessWidget {
               .map((table) => DialogItem(
                     table.name,
                     isSelected: table == selectedTable,
-                    badgeCount: provider.notificationsForTable(table).length,
+                    isMarked: orderProvider.ordersForTable(table).isNotEmpty,
+                    badgeCount: notificationProvider
+                        .notificationsForTable(table)
+                        .length,
                     onTapped: () => Navigator.of(context).pop(table),
                   ))
               .toList(),

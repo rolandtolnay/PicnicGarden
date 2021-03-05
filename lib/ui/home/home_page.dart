@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../logic/pg_error.dart';
 import '../../provider/notification_provider.dart';
+import '../../provider/order/order_provider.dart';
 import '../../provider/table_provider.dart';
 import '../common/empty_refreshable.dart';
 import '../order/add_order.dart';
@@ -56,15 +57,19 @@ class _HomePageBody extends StatelessWidget {
           provider.selectedTable,
           onTableTapped: () async {
             final selectedTable = await showDialog(
-              context: context,
-              builder: (_) => ChangeNotifierProvider.value(
-                value: context.read<NotificationProvider>(),
-                child: TablePickerDialog(
-                  provider.tables,
-                  selectedTable: provider.selectedTable,
-                ),
-              ),
-            );
+                context: context,
+                builder: (_) => MultiProvider(
+                      providers: [
+                        ChangeNotifierProvider.value(
+                            value: context.read<NotificationProvider>()),
+                        ChangeNotifierProvider.value(
+                            value: context.read<OrderProvider>()),
+                      ],
+                      child: TablePickerDialog(
+                        provider.tables,
+                        selectedTable: provider.selectedTable,
+                      ),
+                    ));
             if (selectedTable != null) {
               provider.selectTable(selectedTable);
             }
