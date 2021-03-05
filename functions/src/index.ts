@@ -9,6 +9,18 @@ try {
 
 const messaging = admin.messaging();
 
+export const notifications = functions
+  .region("europe-west1")
+  .https.onRequest(async (req, res) => {
+    const message = req.body;
+    try {
+      await messaging.send(message);
+      res.status(200).send("Successfully sent notifcation");
+    } catch (error) {
+      res.status(500).send(`${error}`);
+    }
+  });
+
 export const onNewNotification = functions
   .region("europe-west1")
   .firestore.document("/notifications/{notificationId}")

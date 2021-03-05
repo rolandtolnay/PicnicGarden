@@ -159,6 +159,7 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
             presentAlert: presentAlert,
             presentBadge: true,
             presentSound: true,
+            sound: message.data['sound'],
           )),
         );
       }
