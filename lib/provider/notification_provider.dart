@@ -133,11 +133,16 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
     final initializationSettings = InitializationSettings(
       iOS: initializationSettingsIOS,
     );
-    await _localNotificationsPlugin.initialize(initializationSettings);
+    await _localNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: (tableId) async {
+      if (tableId != null) {
+        _selectTableId(tableId);
+      }
+    });
     print('Successfully initialized local notifications.');
   }
 
-  void _listenOnPushNotifications() {
+  Future<void> _listenOnPushNotifications() async {
     FirebaseMessaging.onMessage.listen((message) {
       print('Message data: ${message.data}');
 
@@ -161,9 +166,25 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
             presentSound: true,
             sound: message.data['sound'],
           )),
+          payload: tableId,
         );
       }
     });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      final tableId = message.data['tableId'];
+      if (tableId != null) {
+        _selectTableId(tableId);
+      }
+    });
+
+    final initialMessage = await _messaging.getInitialMessage();
+    if (initialMessage != null) {
+      final tableId = initialMessage?.data['tableId'];
+      if (tableId != null) {
+        _selectTableId(tableId);
+      }
+    }
   }
 
   void _listenOnTableSelected() {
@@ -184,5 +205,13 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
         notifyListeners();
       }
     });
+  }
+
+  void _selectTableId(String tableId) {
+    final table = _tableProvider.tables
+        .firstWhere((t) => t.id == tableId, orElse: () => null);
+    if (table != null) {
+      _tableProvider.selectTable(table);
+    }
   }
 }

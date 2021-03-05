@@ -14,6 +14,7 @@
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
+		AF736F2325F2E5240017DE6D /* elevator_bell.wav in Resources */ = {isa = PBXBuildFile; fileRef = AF736F2225F2E5240017DE6D /* elevator_bell.wav */; };
 		AF74B77125D8267A0054BC6A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AF74B77025D8267A0054BC6A /* GoogleService-Info.plist */; };
 		AFA492A425F2B63700A523D0 /* squeak_toy.wav in Resources */ = {isa = PBXBuildFile; fileRef = AFA492A325F2B63700A523D0 /* squeak_toy.wav */; };
 		AFA492A625F2B64500A523D0 /* truck_horn.wav in Resources */ = {isa = PBXBuildFile; fileRef = AFA492A525F2B64500A523D0 /* truck_horn.wav */; };
@@ -49,6 +50,7 @@
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AF71EDBD25E978FC00D823C6 /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
+		AF736F2225F2E5240017DE6D /* elevator_bell.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = elevator_bell.wav; path = ../../assets/sounds/elevator_bell.wav; sourceTree = "<group>"; };
 		AF74B77025D8267A0054BC6A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		AFA492A325F2B63700A523D0 /* squeak_toy.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = squeak_toy.wav; path = ../../assets/sounds/squeak_toy.wav; sourceTree = "<group>"; };
 		AFA492A525F2B64500A523D0 /* truck_horn.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = truck_horn.wav; path = ../../assets/sounds/truck_horn.wav; sourceTree = "<group>"; };
@@ -101,6 +103,7 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
+				AF736F2225F2E5240017DE6D /* elevator_bell.wav */,
 				AFA492A525F2B64500A523D0 /* truck_horn.wav */,
 				AFA492A325F2B63700A523D0 /* squeak_toy.wav */,
 				AF71EDBD25E978FC00D823C6 /* Runner.entitlements */,
@@ -204,6 +207,7 @@
 				AFA492A625F2B64500A523D0 /* truck_horn.wav in Resources */,
 				AF74B77125D8267A0054BC6A /* GoogleService-Info.plist in Resources */,
 				AFA492A425F2B63700A523D0 /* squeak_toy.wav in Resources */,
+				AF736F2325F2E5240017DE6D /* elevator_bell.wav in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
 			);
