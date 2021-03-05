@@ -37,11 +37,12 @@ export const onNewNotification = functions
       data: {
         createdBy: notification.createdBy,
         tableId: order.table.id,
+        sound: "squeak_toy.wav",
       },
       apns: {
         payload: {
           aps: {
-            sound: "default",
+            sound: "squeak_toy.wav",
           },
         },
       },
