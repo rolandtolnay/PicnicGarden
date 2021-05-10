@@ -23,7 +23,9 @@ export const notifications = functions
 
 export const onNewNotification = functions
   .region("europe-west1")
-  .firestore.document("/notifications/{notificationId}")
+  .firestore.document(
+    "restaurants/{restaurantId}/notifications/{notificationId}"
+  )
   .onCreate(async (snap, _) => {
     //
     const notification = snap.data() as Notification;
