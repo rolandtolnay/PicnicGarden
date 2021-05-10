@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 abstract class AuthProvider extends ChangeNotifier {
   bool get isAuthenticated;
 
-  String get userId;
+  String? get userId;
 
   Future<void> signIn();
 }
@@ -16,10 +16,10 @@ class FIRAuthProvider extends ChangeNotifier implements AuthProvider {
   bool get isAuthenticated => _isAuthenticated;
 
   @override
-  String get userId => _userId;
+  String? get userId => _userId;
 
   bool _isAuthenticated = false;
-  String _userId;
+  String? _userId;
 
   FIRAuthProvider() {
     _auth.authStateChanges().listen((user) {

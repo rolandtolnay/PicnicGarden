@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:meta/meta.dart';
 
 part 'table.g.dart';
 
@@ -10,7 +9,7 @@ class Table extends Equatable {
   final String name;
   final int number;
 
-  const Table({@required this.id, @required this.name, @required this.number});
+  const Table({required this.id, required this.name, required this.number});
 
   factory Table.fromJson(Map<String, dynamic> json) => _$TableFromJson(json);
 

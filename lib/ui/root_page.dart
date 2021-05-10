@@ -13,7 +13,7 @@ import '../provider/topic_provider.dart';
 import 'home/home_page.dart';
 
 class RootPage extends StatelessWidget {
-  const RootPage({Key key}) : super(key: key);
+  const RootPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

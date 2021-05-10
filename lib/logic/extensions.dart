@@ -11,8 +11,8 @@ extension StringUtility on String {
 }
 
 class _Name {
-  String first;
-  String last;
+  late String first;
+  String? last;
 
   _Name.from(String fullName) {
     first = '';

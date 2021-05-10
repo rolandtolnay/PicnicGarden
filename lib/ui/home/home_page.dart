@@ -13,7 +13,7 @@ import 'home_page_app_bar.dart';
 import 'table_picker_dialog.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({Key key}) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,13 +31,13 @@ class HomePage extends StatelessWidget {
 }
 
 class _HomePageBody extends StatelessWidget {
-  const _HomePageBody({Key key}) : super(key: key);
+  const _HomePageBody({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<TableProvider>();
 
-    SchedulerBinding.instance.addPostFrameCallback((_) {
+    SchedulerBinding.instance!.addPostFrameCallback((_) {
       provider.response.error?.showInDialog(context);
     });
     if (provider.isLoading) {
@@ -54,7 +54,7 @@ class _HomePageBody extends StatelessWidget {
     return Column(
       children: [
         HomePageAppBar(
-          provider.selectedTable,
+          provider.selectedTable!,
           onTableTapped: () async {
             final selectedTable = await showDialog(
                 context: context,

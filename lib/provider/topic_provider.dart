@@ -1,7 +1,6 @@
 import 'dart:collection';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:meta/meta.dart';
 
 import '../logic/api_response.dart';
 import '../logic/pg_error.dart';
@@ -16,7 +15,7 @@ abstract class TopicProvider extends EntityProvider {
   bool isSubscribedToTopic(Topic topic);
 
   // ignore: avoid_positional_boolean_parameters
-  Future setSubscribedToTopic(bool isSubscribed, {@required Topic topic});
+  Future setSubscribedToTopic(bool isSubscribed, {required Topic topic});
 }
 
 class FIRTopicProvider extends FIREntityProvider<Topic>
@@ -24,7 +23,7 @@ class FIRTopicProvider extends FIREntityProvider<Topic>
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   final AuthProvider _authProvider;
 
-  FIRTopicProvider({AuthProvider authProvider})
+  FIRTopicProvider({required AuthProvider authProvider})
       : _authProvider = authProvider,
         super('topics', (json) => Topic.fromJson(json));
 
@@ -41,7 +40,7 @@ class FIRTopicProvider extends FIREntityProvider<Topic>
       topic.subscribedUserIds.contains(_authProvider.userId);
 
   @override
-  Future setSubscribedToTopic(bool isSubscribed, {Topic topic}) async {
+  Future setSubscribedToTopic(bool isSubscribed, {required Topic topic}) async {
     response = ApiResponse.loading();
     notifyListeners();
 
@@ -53,8 +52,8 @@ class FIRTopicProvider extends FIREntityProvider<Topic>
       }
       final userId = _authProvider.userId;
       final updatedTopic = isSubscribed
-          ? Topic.subscribingTo(topic, byUserId: userId)
-          : Topic.unsubscribingFrom(topic, byUserId: userId);
+          ? Topic.subscribingTo(topic, byUserId: userId!)
+          : Topic.unsubscribingFrom(topic, byUserId: userId!);
       final error = await postEntity(topic.id, updatedTopic.toJson());
       if (error == null) {
         response = ApiResponse.completed();
@@ -62,7 +61,8 @@ class FIRTopicProvider extends FIREntityProvider<Topic>
         response = ApiResponse.error(error);
       }
     } catch (e) {
-      response = ApiResponse.error(PGError.unknown('$e', error: e));
+      response =
+          ApiResponse.error(PGError.unknown('$e', error: e as Exception));
     }
     notifyListeners();
   }

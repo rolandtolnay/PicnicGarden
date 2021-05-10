@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 
 import 'order_status.dart';
@@ -21,19 +20,19 @@ class Order {
   final DateTime createdAt;
   final String createdBy;
 
-  DateTime delivered;
+  DateTime? delivered;
 
   Map<String, Duration> flow;
 
   Order({
-    @required this.recipe,
-    @required this.table,
-    @required this.createdBy,
-    this.phase,
-    String id,
-    DateTime createdAt,
-    Map<String, Duration> flow,
-    this.currentStatus,
+    required this.recipe,
+    required this.table,
+    required this.createdBy,
+    required this.phase,
+    String? id,
+    DateTime? createdAt,
+    Map<String, Duration>? flow,
+    required this.currentStatus,
     this.delivered,
   })  : id = id ?? Uuid().v4(),
         createdAt = createdAt ?? DateTime.now(),

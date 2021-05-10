@@ -4,7 +4,7 @@ import '../../model/order.dart';
 
 extension SnackBarBuilder on SnackBar {
   static SnackBar orderSucces(Order order, BuildContext context) {
-    final textStyle = Theme.of(context).textTheme.subtitle1.copyWith(
+    final textStyle = Theme.of(context).textTheme.subtitle1!.copyWith(
           color: Theme.of(context).colorScheme.onBackground,
           fontWeight: FontWeight.w500,
         );

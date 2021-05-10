@@ -17,7 +17,7 @@ class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
   final T Function(Map<String, dynamic> json) fromJson;
 
   List<T> entities = [];
-  StreamSubscription<QuerySnapshot> snapshotListener;
+  StreamSubscription<QuerySnapshot>? snapshotListener;
 
   @override
   ApiResponse response = ApiResponse.initial();
@@ -36,7 +36,7 @@ class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
       () async {
         try {
           final snapshot = await collection.get();
-          entities = snapshot.docs.map((doc) => fromJson(doc.data())).toList();
+          entities = snapshot.docs.map((doc) => fromJson(doc.data() as Map<String, dynamic>)).toList();
           response = ApiResponse.completed();
         } catch (e) {
           print('[ERROR] Failed fetching ${T.runtimeType}: $e');
@@ -51,7 +51,7 @@ class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
     );
   }
 
-  Future<PGError> postEntity(String id, Map<String, dynamic> entity) async {
+  Future<PGError?> postEntity(String id, Map<String, dynamic> entity) async {
     return (await checkConnectivity()).fold(
       () async {
         try {
@@ -66,7 +66,7 @@ class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
     );
   }
 
-  Future<PGError> batchPutEntities(
+  Future<PGError?> batchPutEntities(
     Iterable<String> ids,
     Map<String, dynamic> change,
   ) async {
@@ -91,7 +91,7 @@ class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
   void listenOnSnapshots(Query query) {
     snapshotListener?.cancel();
     snapshotListener = query.snapshots().listen((snapshot) {
-      entities = snapshot.docs.map((doc) => fromJson(doc.data())).toList();
+      entities = snapshot.docs.map((doc) => fromJson(doc.data() as Map<String, dynamic>)).toList();
       response = ApiResponse.completed();
       notifyListeners();
     }, onError: (error) {

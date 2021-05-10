@@ -5,20 +5,20 @@ enum _RectangularButtonType { outlined, flat }
 
 class RectangularButton extends StatelessWidget {
   final String title;
-  final IconData icon;
-  final VoidCallback onPressed;
-  final Color color;
-  final Color textColor;
-  final Color borderColor;
-  final TextStyle textStyle;
+  final IconData? icon;
+  final VoidCallback? onPressed;
+  final Color? color;
+  final Color? textColor;
+  final Color? borderColor;
+  final TextStyle? textStyle;
   final int badgeCount;
   final bool isMarked;
 
   final _RectangularButtonType _type;
 
   RectangularButton.outlined({
-    Key key,
-    @required this.title,
+    Key? key,
+    required this.title,
     this.icon,
     this.onPressed,
     this.borderColor,
@@ -32,8 +32,8 @@ class RectangularButton extends StatelessWidget {
         super(key: key);
 
   RectangularButton.flat({
-    Key key,
-    @required this.title,
+    Key? key,
+    required this.title,
     this.icon,
     this.onPressed,
     this.color,
@@ -71,8 +71,8 @@ class RectangularButton extends StatelessWidget {
           style: BorderStyle.solid, //Style of the border
           width: 2, //width of the border
         ),
-        child: _buildButtonChild(context),
         onPressed: onPressed,
+        child: _buildButtonChild(context),
       ),
     );
   }
@@ -83,8 +83,8 @@ class RectangularButton extends StatelessWidget {
       child: FlatButton(
         color: color ?? Theme.of(context).colorScheme.primaryVariant,
         textColor: textColor ?? Theme.of(context).colorScheme.onPrimary,
-        child: _buildButtonChild(context),
         onPressed: onPressed,
+        child: _buildButtonChild(context),
       ),
     );
   }
@@ -102,10 +102,10 @@ class RectangularButton extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       toAnimate: false,
       badgeContent: Text(
-        '${badgeCount}',
+        '$badgeCount',
         style: Theme.of(context)
             .textTheme
-            .bodyText1
+            .bodyText1!
             .copyWith(color: Theme.of(context).colorScheme.onPrimary),
       ),
       child: Badge(

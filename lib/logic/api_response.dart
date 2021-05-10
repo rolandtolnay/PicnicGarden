@@ -5,7 +5,7 @@ import 'pg_error.dart';
 
 class ApiResponse {
   final ApiStatus status;
-  final PGError error;
+  final PGError? error;
 
   ApiResponse.initial()
       : status = ApiStatus.initial,

@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,9 +11,9 @@ import 'common/dialog_item.dart';
 import 'common/dialog_title.dart';
 
 class RecipeList extends StatelessWidget {
-  RecipeList(this.recipes, {this.onOrderCreated, Key key}) : super(key: key);
+  RecipeList(this.recipes, {this.onOrderCreated, Key? key}) : super(key: key);
 
-  final ValueChanged<Order> onOrderCreated;
+  final ValueChanged<Order>? onOrderCreated;
   final List<Recipe> recipes;
 
   @override
@@ -28,8 +29,8 @@ class RecipeList extends StatelessWidget {
               onTap: () async {
                 final phases = context.read<PhaseProvider>().phases;
 
-                Phase phase;
-                if (recipe.autoPhase == null || recipe.autoPhase.isEmpty) {
+                Phase? phase;
+                if (recipe.autoPhase == null || recipe.autoPhase!.isEmpty) {
                   phase = await showDialog(
                     context: context,
                     builder: (_) => PhasePickerDialog(
@@ -37,9 +38,8 @@ class RecipeList extends StatelessWidget {
                     ),
                   );
                 } else {
-                  phase = phases.firstWhere(
+                  phase = phases.firstWhereOrNull(
                     (p) => p.id == recipe.autoPhase,
-                    orElse: () => null,
                   );
                 }
 
@@ -61,7 +61,7 @@ class RecipeList extends StatelessWidget {
 }
 
 class PhasePickerDialog extends StatelessWidget {
-  const PhasePickerDialog(this.phases, {Key key}) : super(key: key);
+  const PhasePickerDialog(this.phases, {Key? key}) : super(key: key);
 
   final List<Phase> phases;
 

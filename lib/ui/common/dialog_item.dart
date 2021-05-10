@@ -9,13 +9,13 @@ class DialogItem extends StatelessWidget {
     this.badgeCount,
     this.isSelected = false,
     this.isMarked = false,
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   final String title;
-  final VoidCallback onTapped;
+  final VoidCallback? onTapped;
   final bool isSelected;
-  final int badgeCount;
+  final int? badgeCount;
   // TODO: Implement this properly by allowing custom children
   final bool isMarked;
 
@@ -24,7 +24,7 @@ class DialogItem extends StatelessWidget {
     final color = Theme.of(context).colorScheme.primaryVariant;
     final textColor =
         isSelected ? Theme.of(context).colorScheme.onPrimary : color;
-    final textStyle = Theme.of(context).textTheme.subtitle1.copyWith(
+    final textStyle = Theme.of(context).textTheme.subtitle1!.copyWith(
           color: textColor,
           fontWeight: FontWeight.w500,
         );

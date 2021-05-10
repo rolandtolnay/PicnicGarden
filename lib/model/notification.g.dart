@@ -9,13 +9,10 @@ part of 'notification.dart';
 Notification _$NotificationFromJson(Map<String, dynamic> json) {
   return Notification(
     id: json['id'] as String,
-    topicNames: (json['topicNames'] as List)?.map((e) => e as String)?.toList(),
-    readBy: (json['readBy'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, e as bool),
-    ),
-    createdAt: json['createdAt'] == null
-        ? null
-        : DateTime.parse(json['createdAt'] as String),
+    topicNames:
+        (json['topicNames'] as List<dynamic>).map((e) => e as String).toList(),
+    readBy: Map<String, bool>.from(json['readBy'] as Map),
+    createdAt: DateTime.parse(json['createdAt'] as String),
     createdBy: json['createdBy'] as String,
     order: json['order'] == null
         ? null
@@ -28,7 +25,7 @@ Map<String, dynamic> _$NotificationToJson(Notification instance) =>
       'id': instance.id,
       'order': instance.order?.toJson(),
       'topicNames': instance.topicNames,
-      'createdAt': instance.createdAt?.toIso8601String(),
+      'createdAt': instance.createdAt.toIso8601String(),
       'createdBy': instance.createdBy,
       'readBy': instance.readBy,
     };

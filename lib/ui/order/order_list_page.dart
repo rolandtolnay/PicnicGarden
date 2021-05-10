@@ -12,7 +12,7 @@ import '../../provider/table_provider.dart';
 import 'order_list.dart';
 
 class OrderListPage extends StatelessWidget {
-  const OrderListPage({Key key}) : super(key: key);
+  const OrderListPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class OrderListPage extends StatelessWidget {
     final orderStatusList =
         context.watch<OrderStatusProvider>().orderStatusList;
 
-    SchedulerBinding.instance.addPostFrameCallback((_) {
+    SchedulerBinding.instance!.addPostFrameCallback((_) {
       provider.response.error?.showInDialog(context);
     });
     if (provider.isLoading) {
@@ -30,7 +30,7 @@ class OrderListPage extends StatelessWidget {
 
     final selectedTable = context.watch<TableProvider>().selectedTable;
     final builder = ItemBuilder(
-      orders: provider.ordersForTable(selectedTable),
+      orders: provider.ordersForTable(selectedTable!),
       phases: phases,
     );
     return OrderList(
@@ -48,32 +48,29 @@ class OrderListPage extends StatelessWidget {
 }
 
 abstract class ListItem<T> {
-  Color get backgroundColor;
+  Color? get backgroundColor;
 
   Widget buildContent(BuildContext context);
 }
 
 class ItemBuilder {
-  final List<Phase> phases;
-  final List<Order> orders;
+  final List<Phase>? phases;
+  final List<Order>? orders;
 
   ItemBuilder({this.phases, this.orders});
 
   List<ListItem> buildListItems() {
-    final sortedPhases = List.from(phases);
+    final sortedPhases = List.from(phases!);
     sortedPhases.sort((a, b) => a.number.compareTo(b.number));
 
     // ignore: omit_local_variable_types
     final Map<String, List<Order>> phaseMap =
-        orders.fold(<String, List<Order>>{}, (map, order) {
-      var phaseKey = 'unknown';
-      if (order.phase != null) {
-        phaseKey = order.phase.id;
-      }
+        orders!.fold(<String, List<Order>>{}, (map, order) {
+      final phaseKey = order.phase.id;
       if (map[phaseKey] == null) {
         map[phaseKey] = [order];
       } else {
-        map[phaseKey].add(order);
+        map[phaseKey]!.add(order);
       }
       return map;
     });
@@ -85,7 +82,7 @@ class ItemBuilder {
       list.add(PhaseItem(phase));
       if (phaseMap[phase.id] != null) {
         list.addAll(
-          phaseMap[phase.id].map(
+          phaseMap[phase.id]!.map(
             (order) => OrderItem(order),
           ),
         );

@@ -15,7 +15,7 @@ import '../common/snackbar_builder.dart';
 import '../recipe_list.dart';
 
 class AddOrderButton extends StatelessWidget {
-  const AddOrderButton({Key key}) : super(key: key);
+  const AddOrderButton({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,14 +28,13 @@ class AddOrderButton extends StatelessWidget {
     }
 
     return FloatingActionButton(
-      child: Icon(Icons.add),
       onPressed: () async {
         final order = await showDialog(
           context: context,
           builder: (_) {
             return Provider(
               create: (_) => providers<OrderBuilder>()
-                ..setTable(tableProvider.selectedTable)
+                ..setTable(tableProvider.selectedTable!)
                 ..setOrderStatus(orderStatusProvider.orderStatusList.first),
               child: MultiProvider(
                 providers: [
@@ -58,12 +57,13 @@ class AddOrderButton extends StatelessWidget {
           print('Added $order');
         }
       },
+      child: Icon(Icons.add),
     );
   }
 }
 
 class AddOrderDialog extends StatelessWidget {
-  const AddOrderDialog({Key key}) : super(key: key);
+  const AddOrderDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -72,13 +72,13 @@ class AddOrderDialog extends StatelessWidget {
 }
 
 class _AddOrderDialogBody extends StatelessWidget {
-  const _AddOrderDialogBody({Key key}) : super(key: key);
+  const _AddOrderDialogBody({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<RecipeProvider>();
 
-    SchedulerBinding.instance.addPostFrameCallback((_) {
+    SchedulerBinding.instance!.addPostFrameCallback((_) {
       provider.response.error?.showInDialog(context);
     });
     if (provider.isLoading) {
