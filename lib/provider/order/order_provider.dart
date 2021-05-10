@@ -27,7 +27,7 @@ class FIROrderProvider extends FIREntityProvider<Order>
       : _notificationProvider = notificationProvider,
         super('orders', (json) => Order.fromJson(json)) {
     response = ApiResponse.loading();
-    listenOnSnapshots(collection.where('delivered', isNull: true));
+    listenOnSnapshots(query: collection.where('delivered', isNull: true));
   }
 
   @override

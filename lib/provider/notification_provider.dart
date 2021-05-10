@@ -45,7 +45,7 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
     response = ApiResponse.loading();
     if (authProvider.userId != null) {
       listenOnSnapshots(
-        collection.where('createdBy', isNotEqualTo: authProvider.userId),
+        query: collection.where('createdBy', isNotEqualTo: authProvider.userId),
       );
     } else {
       print('[ERROR] NotificationProvider init with no authenticated user');

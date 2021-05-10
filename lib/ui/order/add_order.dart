@@ -7,7 +7,7 @@ import '../../provider/order/order_builder.dart';
 import '../../provider/order/order_provider.dart';
 import '../../provider/order/order_status_provider.dart';
 import '../../provider/phase_provider.dart';
-import '../../provider/providers.dart';
+import '../../provider/di.dart';
 import '../../provider/recipe_provider.dart';
 import '../../provider/table_provider.dart';
 import '../common/empty_refreshable.dart';
@@ -33,7 +33,7 @@ class AddOrderButton extends StatelessWidget {
           context: context,
           builder: (_) {
             return Provider(
-              create: (_) => providers<OrderBuilder>()
+              create: (_) => di<OrderBuilder>()
                 ..setTable(tableProvider.selectedTable!)
                 ..setOrderStatus(orderStatusProvider.orderStatusList.first),
               child: MultiProvider(

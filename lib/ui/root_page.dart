@@ -6,7 +6,7 @@ import '../provider/notification_provider.dart';
 import '../provider/order/order_provider.dart';
 import '../provider/order/order_status_provider.dart';
 import '../provider/phase_provider.dart';
-import '../provider/providers.dart';
+import '../provider/di.dart';
 import '../provider/recipe_provider.dart';
 import '../provider/table_provider.dart';
 import '../provider/topic_provider.dart';
@@ -22,19 +22,16 @@ class RootPage extends StatelessWidget {
     return isAuthenticated
         ? MultiProvider(
             providers: [
-              ChangeNotifierProvider.value(value: providers<TableProvider>()),
-              ChangeNotifierProvider(create: (_) => providers<OrderProvider>()),
+              ChangeNotifierProvider.value(value: di<TableProvider>()),
+              ChangeNotifierProvider(create: (_) => di<OrderProvider>()),
               ChangeNotifierProvider(
-                create: (_) => providers<RecipeProvider>(),
+                create: (_) => di<RecipeProvider>(),
               ),
-              ChangeNotifierProvider(create: (_) => providers<PhaseProvider>()),
-              ChangeNotifierProvider(
-                  create: (_) => providers<RecipeProvider>()),
-              ChangeNotifierProvider(
-                  create: (_) => providers<OrderStatusProvider>()),
-              ChangeNotifierProvider.value(value: providers<TopicProvider>()),
-              ChangeNotifierProvider.value(
-                  value: providers<NotificationProvider>()),
+              ChangeNotifierProvider(create: (_) => di<PhaseProvider>()),
+              ChangeNotifierProvider(create: (_) => di<RecipeProvider>()),
+              ChangeNotifierProvider(create: (_) => di<OrderStatusProvider>()),
+              ChangeNotifierProvider.value(value: di<TopicProvider>()),
+              ChangeNotifierProvider.value(value: di<NotificationProvider>()),
             ],
             child: HomePage(),
           )
