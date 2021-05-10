@@ -7,6 +7,7 @@ import '../logic/pg_error.dart';
 import '../model/topic.dart';
 import 'auth_provider.dart';
 import 'entity_provider.dart';
+import 'restaurant_provider.dart';
 
 abstract class TopicProvider extends EntityProvider {
   UnmodifiableListView<Topic> get topics;
@@ -23,9 +24,15 @@ class FIRTopicProvider extends FIREntityProvider<Topic>
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   final AuthProvider _authProvider;
 
-  FIRTopicProvider({required AuthProvider authProvider})
-      : _authProvider = authProvider,
-        super('topics', (json) => Topic.fromJson(json));
+  FIRTopicProvider({
+    required AuthProvider authProvider,
+    required RestaurantProvider restaurantProvider,
+  })   : _authProvider = authProvider,
+        super(
+          'topics',
+          (json) => Topic.fromJson(json),
+          restaurant: restaurantProvider.selectedRestaurant,
+        );
 
   @override
   UnmodifiableListView<Topic> get topics => UnmodifiableListView(entities);

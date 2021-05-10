@@ -5,6 +5,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:either_option/either_option.dart';
 import 'package:flutter/material.dart';
 import 'package:picnicgarden/logic/pg_error.dart';
+import 'package:picnicgarden/model/restaurant.dart';
 
 import '../logic/api_response.dart';
 
@@ -26,9 +27,20 @@ class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
   @override
   ApiResponse response = ApiResponse.initial();
 
-  FIREntityProvider(String? collection, this.fromJson) {
+  FIREntityProvider(
+    String? collection,
+    this.fromJson, {
+    Restaurant? restaurant,
+  }) {
     if (collection != null) {
-      this.collection = FirebaseFirestore.instance.collection(collection);
+      if (restaurant != null) {
+        this.collection = FirebaseFirestore.instance
+            .collection('restaurants')
+            .doc(restaurant.id)
+            .collection(collection);
+      } else {
+        this.collection = FirebaseFirestore.instance.collection(collection);
+      }
     }
   }
 

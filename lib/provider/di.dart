@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:picnicgarden/provider/restaurant_provider.dart';
 
 import 'auth_provider.dart';
 import 'notification_provider.dart';
@@ -17,30 +18,42 @@ void setupProviders() {
     () => FIRAuthProvider()..signIn(),
   );
   di.registerLazySingleton<TopicProvider>(
-    () => FIRTopicProvider(authProvider: di())..fetchTopics(),
+    () => FIRTopicProvider(
+      authProvider: di(),
+      restaurantProvider: di(),
+    )..fetchTopics(),
   );
   di.registerLazySingleton<NotificationProvider>(
     () => FIRNotificationProvider(
       authProvider: di(),
       topicProvider: di(),
       tableProvider: di(),
+      restaurantProvider: di(),
     )..requestPermissions(),
   );
   di.registerLazySingleton<TableProvider>(
-    () => FIRTableProvider()..fetchTables(),
+    () => FIRTableProvider(restaurantProvider: di())..fetchTables(),
+  );
+  di.registerLazySingleton<RestaurantProvider>(
+    () => FIRRestaurantProvider()..fetchRestaurants(),
   );
 
   di.registerFactory<OrderProvider>(
-    () => FIROrderProvider(notificationProvider: di()),
+    () => FIROrderProvider(
+      notificationProvider: di(),
+      restaurantProvider: di(),
+    ),
   );
   di.registerFactory<RecipeProvider>(
-    () => FIRRecipeProvider()..fetchRecipes(),
+    () => FIRRecipeProvider(restaurantProvider: di())..fetchRecipes(),
   );
   di.registerFactory<PhaseProvider>(
-    () => FIRPhaseProvider()..fetchPhases(),
+    () => FIRPhaseProvider(restaurantProvider: di())..fetchPhases(),
   );
   di.registerFactory<OrderStatusProvider>(
-    () => FIROrderStatusProvider()..fetchOrderStatusList(),
+    () => FIROrderStatusProvider(
+      restaurantProvider: di(),
+    )..fetchOrderStatusList(),
   );
   di.registerFactory<OrderBuilder>(
     () => PGOrderBuilder(authProvider: di()),

@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import '../model/table.dart';
 import 'entity_provider.dart';
+import 'restaurant_provider.dart';
 
 abstract class TableProvider extends EntityProvider {
   UnmodifiableListView<Table> get tables;
@@ -15,7 +16,13 @@ class FIRTableProvider extends FIREntityProvider<Table>
     implements TableProvider {
   Table? _selectedTable;
 
-  FIRTableProvider() : super('tables', (json) => Table.fromJson(json));
+  FIRTableProvider({
+    required RestaurantProvider restaurantProvider,
+  }) : super(
+          'tables',
+          (json) => Table.fromJson(json),
+          restaurant: restaurantProvider.selectedRestaurant,
+        );
 
   @override
   UnmodifiableListView<Table> get tables => UnmodifiableListView(entities);

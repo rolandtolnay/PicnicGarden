@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart' hide Table;
 import 'package:flutter/scheduler.dart';
+import 'package:picnicgarden/provider/di.dart';
+import 'package:picnicgarden/provider/order/order_status_provider.dart';
+import 'package:picnicgarden/provider/phase_provider.dart';
+import 'package:picnicgarden/provider/recipe_provider.dart';
+import 'package:picnicgarden/provider/topic_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../logic/pg_error.dart';
@@ -17,13 +22,27 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Theme.of(context).colorScheme.primary,
-      child: SafeArea(
-        bottom: false,
-        child: Scaffold(
-          body: _HomePageBody(),
-          floatingActionButton: AddOrderButton(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: di<TableProvider>()),
+        ChangeNotifierProvider(create: (_) => di<OrderProvider>()),
+        ChangeNotifierProvider(
+          create: (_) => di<RecipeProvider>(),
+        ),
+        ChangeNotifierProvider(create: (_) => di<PhaseProvider>()),
+        ChangeNotifierProvider(create: (_) => di<RecipeProvider>()),
+        ChangeNotifierProvider(create: (_) => di<OrderStatusProvider>()),
+        ChangeNotifierProvider.value(value: di<TopicProvider>()),
+        ChangeNotifierProvider.value(value: di<NotificationProvider>()),
+      ],
+      child: Container(
+        color: Theme.of(context).colorScheme.primary,
+        child: SafeArea(
+          bottom: false,
+          child: Scaffold(
+            body: _HomePageBody(),
+            floatingActionButton: AddOrderButton(),
+          ),
         ),
       ),
     );

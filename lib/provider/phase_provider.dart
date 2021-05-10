@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import '../model/phase.dart';
 import 'entity_provider.dart';
+import 'restaurant_provider.dart';
 
 abstract class PhaseProvider extends EntityProvider {
   UnmodifiableListView<Phase> get phases;
@@ -11,7 +12,13 @@ abstract class PhaseProvider extends EntityProvider {
 
 class FIRPhaseProvider extends FIREntityProvider<Phase>
     implements PhaseProvider {
-  FIRPhaseProvider() : super('phases', (json) => Phase.fromJson(json));
+  FIRPhaseProvider({
+    required RestaurantProvider restaurantProvider,
+  }) : super(
+          'phases',
+          (json) => Phase.fromJson(json),
+          restaurant: restaurantProvider.selectedRestaurant,
+        );
 
   @override
   UnmodifiableListView<Phase> get phases => UnmodifiableListView(entities);

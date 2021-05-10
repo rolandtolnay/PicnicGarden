@@ -1,0 +1,97 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:picnicgarden/ui/home/home_page.dart';
+import 'package:provider/provider.dart';
+
+import '../../logic/pg_error.dart';
+import '../../provider/restaurant_provider.dart';
+import '../common/empty_refreshable.dart';
+
+class RestaurantPicker extends StatelessWidget {
+  const RestaurantPicker({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Theme.of(context).backgroundColor,
+      child: SafeArea(
+        child: Scaffold(
+          body: _RestaurantPickerBody(),
+        ),
+      ),
+    );
+  }
+}
+
+class _RestaurantPickerBody extends StatelessWidget {
+  const _RestaurantPickerBody({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final provider = context.watch<RestaurantProvider>();
+
+    SchedulerBinding.instance!.addPostFrameCallback((_) {
+      provider.response.error?.showInDialog(context);
+    });
+    if (provider.isLoading) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    if (provider.restaurants.isEmpty) {
+      return EmptyRefreshable(
+        'No tables found.',
+        onRefresh: provider.fetchRestaurants,
+      );
+    }
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        FittedBox(
+          child: Text(
+            'Choose a restaurant',
+            style: textTheme.headline4,
+            textAlign: TextAlign.center,
+          ),
+        ),
+        const SizedBox(height: 48),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: provider.restaurants.map((restaurant) {
+            return InkWell(
+              onTap: () {
+                provider.selectRestaurant(restaurant);
+                Navigator.of(context, rootNavigator: true).push(
+                  MaterialPageRoute(
+                    builder: (_) => HomePage(),
+                    fullscreenDialog: true,
+                  ),
+                );
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  FittedBox(
+                    child: Text(
+                      restaurant.name.toUpperCase(),
+                      style: textTheme.headline5,
+                    ),
+                  ),
+                  const SizedBox(height: 16.0),
+                  Image.asset(
+                    'assets/images/${restaurant.imageName}',
+                    height: 120,
+                    width: 120,
+                  ),
+                ],
+              ),
+            );
+          }).toList(),
+        ),
+      ],
+    );
+  }
+}

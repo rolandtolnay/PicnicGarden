@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:picnicgarden/provider/restaurant_provider.dart';
 
 import '../logic/api_response.dart';
 import '../logic/pg_error.dart';
@@ -37,10 +38,15 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
     required AuthProvider authProvider,
     required TopicProvider topicProvider,
     required TableProvider tableProvider,
+    required RestaurantProvider restaurantProvider,
   })   : _authProvider = authProvider,
         _topicProvider = topicProvider,
         _tableProvider = tableProvider,
-        super('notifications', (json) => Notification.fromJson(json)) {
+        super(
+          'notifications',
+          (json) => Notification.fromJson(json),
+          restaurant: restaurantProvider.selectedRestaurant,
+        ) {
     //
     response = ApiResponse.loading();
     if (authProvider.userId != null) {

@@ -8,6 +8,7 @@ import '../../model/order_status.dart';
 import '../../model/table.dart';
 import '../entity_provider.dart';
 import '../notification_provider.dart';
+import '../restaurant_provider.dart';
 
 abstract class OrderProvider extends EntityProvider {
   UnmodifiableListView<Order> ordersForTable(Table table);
@@ -23,9 +24,15 @@ class FIROrderProvider extends FIREntityProvider<Order>
     implements OrderProvider {
   final NotificationProvider _notificationProvider;
 
-  FIROrderProvider({required NotificationProvider notificationProvider})
-      : _notificationProvider = notificationProvider,
-        super('orders', (json) => Order.fromJson(json)) {
+  FIROrderProvider({
+    required NotificationProvider notificationProvider,
+    required RestaurantProvider restaurantProvider,
+  })   : _notificationProvider = notificationProvider,
+        super(
+          'orders',
+          (json) => Order.fromJson(json),
+          restaurant: restaurantProvider.selectedRestaurant,
+        ) {
     response = ApiResponse.loading();
     listenOnSnapshots(query: collection.where('delivered', isNull: true));
   }
