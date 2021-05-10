@@ -89,6 +89,7 @@ class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
   }
 
   void listenOnSnapshots(Query query) {
+    snapshotListener?.cancel();
     snapshotListener = query.snapshots().listen((snapshot) {
       entities = snapshot.docs.map((doc) => fromJson(doc.data())).toList();
       response = ApiResponse.completed();

@@ -133,7 +133,7 @@ class _AddOrderDialogBody extends StatelessWidget {
               final error =
                   await context.read<OrderProvider>().commitOrder(order);
               if (error == null) {
-                Scaffold.of(context).showSnackBar(
+                ScaffoldMessenger.of(context).showSnackBar(
                   SnackBarBuilder.orderSucces(order, context),
                 );
               } else {
