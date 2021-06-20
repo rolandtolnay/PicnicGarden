@@ -13,17 +13,17 @@ class HomePageAppBar extends StatelessWidget {
   const HomePageAppBar(
     this.selectedTable, {
     this.onTableTapped,
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   final Table selectedTable;
-  final VoidCallback onTableTapped;
+  final VoidCallback? onTableTapped;
 
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<NotificationProvider>();
 
-    SchedulerBinding.instance.addPostFrameCallback((_) {
+    SchedulerBinding.instance!.addPostFrameCallback((_) {
       provider.response.error?.showInDialog(context);
     });
 
@@ -39,10 +39,10 @@ class HomePageAppBar extends StatelessWidget {
         Badge(
           showBadge: notificationCount != 0,
           badgeContent: Text(
-            '${notificationCount}',
+            '$notificationCount',
             style: Theme.of(context)
                 .textTheme
-                .bodyText1
+                .bodyText1!
                 .copyWith(color: Theme.of(context).colorScheme.onPrimary),
           ),
           toAnimate: false,
@@ -51,7 +51,7 @@ class HomePageAppBar extends StatelessWidget {
           child: Text(selectedTable.name,
               style: Theme.of(context)
                   .textTheme
-                  .headline2
+                  .headline2!
                   .copyWith(color: textColor)),
         ),
         const SizedBox(width: 16.0),
@@ -76,8 +76,8 @@ class HomePageAppBar extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           InkWell(
-            child: currentTableLabel,
             onTap: () => onTableTapped?.call(),
+            child: currentTableLabel,
           ),
           Align(
             alignment: Alignment.centerRight,

@@ -2,41 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/auth_provider.dart';
-import '../provider/notification_provider.dart';
-import '../provider/order/order_provider.dart';
-import '../provider/order/order_status_provider.dart';
-import '../provider/phase_provider.dart';
-import '../provider/providers.dart';
-import '../provider/recipe_provider.dart';
-import '../provider/table_provider.dart';
-import '../provider/topic_provider.dart';
-import 'home/home_page.dart';
+import '../provider/di.dart';
+import '../provider/restaurant_provider.dart';
+import 'home/restaurant_picker.dart';
 
 class RootPage extends StatelessWidget {
-  const RootPage({Key key}) : super(key: key);
+  const RootPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final isAuthenticated = context.watch<AuthProvider>().isAuthenticated;
 
     return isAuthenticated
-        ? MultiProvider(
-            providers: [
-              ChangeNotifierProvider.value(value: providers<TableProvider>()),
-              ChangeNotifierProvider(create: (_) => providers<OrderProvider>()),
-              ChangeNotifierProvider(
-                create: (_) => providers<RecipeProvider>(),
-              ),
-              ChangeNotifierProvider(create: (_) => providers<PhaseProvider>()),
-              ChangeNotifierProvider(
-                  create: (_) => providers<RecipeProvider>()),
-              ChangeNotifierProvider(
-                  create: (_) => providers<OrderStatusProvider>()),
-              ChangeNotifierProvider.value(value: providers<TopicProvider>()),
-              ChangeNotifierProvider.value(
-                  value: providers<NotificationProvider>()),
-            ],
-            child: HomePage(),
+        ? ChangeNotifierProvider.value(
+            value: di<RestaurantProvider>(),
+            child: RestaurantPicker(),
           )
         : Scaffold(body: Center(child: CircularProgressIndicator()));
   }

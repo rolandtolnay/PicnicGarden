@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:meta/meta.dart';
 
 part 'attribute.g.dart';
 
@@ -9,7 +8,7 @@ class Attribute extends Equatable {
   final String id;
   final String name;
 
-  const Attribute({@required this.id, @required this.name});
+  const Attribute({required this.id, required this.name});
 
   @override
   List<Object> get props => [id];

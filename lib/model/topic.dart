@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:meta/meta.dart';
 
 part 'topic.g.dart';
 
@@ -12,9 +11,10 @@ class Topic extends Equatable {
   @JsonKey(defaultValue: <String>[])
   final List<String> subscribedUserIds;
 
-  Topic({this.id, this.name, this.subscribedUserIds});
+  Topic(
+      {required this.id, required this.name, required this.subscribedUserIds});
 
-  factory Topic.subscribingTo(Topic topic, {@required String byUserId}) {
+  factory Topic.subscribingTo(Topic topic, {required String byUserId}) {
     final subscribedUserIds = topic.subscribedUserIds;
     subscribedUserIds.add(byUserId);
     return Topic(
@@ -24,7 +24,7 @@ class Topic extends Equatable {
     );
   }
 
-  factory Topic.unsubscribingFrom(Topic topic, {@required String byUserId}) {
+  factory Topic.unsubscribingFrom(Topic topic, {required String byUserId}) {
     final subscribedUserIds = topic.subscribedUserIds;
     subscribedUserIds.remove(byUserId);
     return Topic(

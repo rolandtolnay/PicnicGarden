@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import '../../model/order_status.dart';
 import '../entity_provider.dart';
+import '../restaurant_provider.dart';
 
 abstract class OrderStatusProvider extends EntityProvider {
   UnmodifiableListView<OrderStatus> get orderStatusList;
@@ -11,8 +12,13 @@ abstract class OrderStatusProvider extends EntityProvider {
 
 class FIROrderStatusProvider extends FIREntityProvider<OrderStatus>
     implements OrderStatusProvider {
-  FIROrderStatusProvider()
-      : super('orderStatus', (json) => OrderStatus.fromJson(json));
+  FIROrderStatusProvider({
+    required RestaurantProvider restaurantProvider,
+  }) : super(
+          'orderStatus',
+          (json) => OrderStatus.fromJson(json),
+          restaurant: restaurantProvider.selectedRestaurant,
+        );
 
   @override
   UnmodifiableListView<OrderStatus> get orderStatusList =>

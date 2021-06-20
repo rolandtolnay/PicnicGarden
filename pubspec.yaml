@@ -3,39 +3,41 @@ description: A new Flutter project.
 
 publish_to: "none"
 
-version: 1.1.0+1
+version: 2.0.0+1
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  badges: ^1.1.6
-  cloud_firestore: ^0.16.0
-  connectivity: ^2.0.2
-  cupertino_icons: ^1.0.0
-  duration: ^2.0.15
-  either_option: ^1.0.6
-  equatable: ^1.2.6
-  firebase_auth: ^0.20.0+1
-  firebase_core: ^0.7.0
-  firebase_messaging: ^8.0.0-dev.15
-  flutter_local_notifications: ^4.0.1+1
-  get_it: ^5.0.6
-  json_annotation: ^3.1.1
-  provider: ^4.3.3
-  uuid: ^2.2.2
+  badges: ^2.0.0-nullsafety.1
+  cloud_firestore: ^2.1.0
+  connectivity: ^3.0.3
+  cupertino_icons: ^1.0.3
+  duration: ^3.0.6
+  either_option: ^2.0.1-dev.1
+  equatable: ^2.0.0
+  firebase_auth: ^1.1.4
+  firebase_core: ^1.1.1
+  firebase_messaging: ^9.1.4
+  flutter_local_notifications: ^5.0.0+4
+  get_it: ^7.1.3
+  json_annotation: ^4.0.1
+  provider: ^5.0.0
+  uuid: ^3.0.4
+  collection: ^1.15.0-nullsafety.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^1.11.1
-  json_serializable: ^3.5.1
-  pedantic: ^1.9.0
+  build_runner: ^2.0.2
+  json_serializable: ^4.1.1
+  pedantic: ^1.11.0
 
 flutter:
   uses-material-design: true
 
   assets:
     - assets/sounds/
+    - assets/images/

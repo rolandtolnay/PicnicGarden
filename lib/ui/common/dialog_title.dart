@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 
 class DialogTitle extends StatelessWidget {
   const DialogTitle({
-    @required this.text,
-    @required this.icon,
+    required this.text,
+    required this.icon,
     this.color,
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   final String text;
   final IconData icon;
-  final Color color;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class DialogTitle extends StatelessWidget {
         const SizedBox(width: 8.0),
         Text(
           text.toUpperCase(),
-          style: Theme.of(context).textTheme.subtitle2.copyWith(
+          style: Theme.of(context).textTheme.subtitle2!.copyWith(
                 color: color,
               ),
         ),

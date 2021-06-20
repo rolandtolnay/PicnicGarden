@@ -1,9 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
 
-import 'package:flutter/material.dart' hide Table;
-import 'package:meta/meta.dart';
-
 import '../../logic/api_response.dart';
 import '../../logic/pg_error.dart';
 import '../../model/order.dart';
@@ -11,14 +8,15 @@ import '../../model/order_status.dart';
 import '../../model/table.dart';
 import '../entity_provider.dart';
 import '../notification_provider.dart';
+import '../restaurant_provider.dart';
 
 abstract class OrderProvider extends EntityProvider {
   UnmodifiableListView<Order> ordersForTable(Table table);
 
-  Future<PGError> commitOrder(Order order);
-  Future<PGError> commitNextFlow({
-    @required Order order,
-    @required List<OrderStatus> orderStatusList,
+  Future<PGError?> commitOrder(Order order);
+  Future<PGError?> commitNextFlow({
+    required Order order,
+    required List<OrderStatus> orderStatusList,
   });
 }
 
@@ -26,11 +24,17 @@ class FIROrderProvider extends FIREntityProvider<Order>
     implements OrderProvider {
   final NotificationProvider _notificationProvider;
 
-  FIROrderProvider({NotificationProvider notificationProvider})
-      : _notificationProvider = notificationProvider,
-        super('orders', (json) => Order.fromJson(json)) {
+  FIROrderProvider({
+    required NotificationProvider notificationProvider,
+    required RestaurantProvider restaurantProvider,
+  })   : _notificationProvider = notificationProvider,
+        super(
+          'orders',
+          (json) => Order.fromJson(json),
+          restaurant: restaurantProvider.selectedRestaurant,
+        ) {
     response = ApiResponse.loading();
-    listenOnSnapshots(collection.where('delivered', isNull: true));
+    listenOnSnapshots(query: collection.where('delivered', isNull: true));
   }
 
   @override
@@ -40,7 +44,7 @@ class FIROrderProvider extends FIREntityProvider<Order>
       );
 
   @override
-  Future<PGError> commitOrder(Order order) async {
+  Future<PGError?> commitOrder(Order order) async {
     final error = await postEntity(order.id, order.toJson());
     if (order.shouldNotifyStatus) {
       return _notificationProvider.postNotificationForOrder(order);
@@ -49,9 +53,9 @@ class FIROrderProvider extends FIREntityProvider<Order>
   }
 
   @override
-  Future<PGError> commitNextFlow({
-    Order order,
-    List<OrderStatus> orderStatusList,
+  Future<PGError?> commitNextFlow({
+    required Order order,
+    required List<OrderStatus> orderStatusList,
   }) {
     final currentFlow = order.currentStatus.flow;
     final nextFlow = currentFlow + 1;

@@ -9,7 +9,7 @@ part 'notification.g.dart';
 @JsonSerializable(explicitToJson: true)
 class Notification extends Equatable {
   final String id;
-  final Order order;
+  final Order? order;
 
   final List<String> topicNames;
   final DateTime createdAt;
@@ -17,15 +17,15 @@ class Notification extends Equatable {
   final Map<String, bool> readBy;
 
   Notification({
-    this.id,
-    this.topicNames,
-    this.readBy,
-    this.createdAt,
-    this.createdBy,
+    required this.id,
+    required this.topicNames,
+    required this.readBy,
+    required this.createdAt,
+    required this.createdBy,
     this.order,
   });
 
-  factory Notification.forOrder(Order order, {String createdBy}) {
+  factory Notification.forOrder(Order order, {required String createdBy}) {
     // ignore: omit_local_variable_types
     final Set<String> topicNames = order.recipe.attributes.fold(
       <String>{},
@@ -44,7 +44,7 @@ class Notification extends Equatable {
       topicNames: List.from(topicNames),
       readBy: const {},
       createdAt: DateTime.now(),
-      createdBy: createdBy ?? order.createdBy,
+      createdBy: createdBy,
       order: order,
     );
   }
@@ -58,5 +58,5 @@ class Notification extends Equatable {
   List<Object> get props => [id];
 
   @override
-  String toString() => '-Notification ${topicNames} readBy $readBy-';
+  String toString() => '-Notification $topicNames readBy $readBy-';
 }

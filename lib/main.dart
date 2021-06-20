@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'provider/auth_provider.dart';
-import 'provider/providers.dart';
+import 'provider/di.dart';
 import 'ui/root_page.dart';
 
 Future<void> main() async {
@@ -31,7 +31,7 @@ class Application extends StatelessWidget {
             return Scaffold(body: Center(child: CircularProgressIndicator()));
           }
           return ChangeNotifierProvider.value(
-            value: providers<AuthProvider>(),
+            value: di<AuthProvider>(),
             child: RootPage(),
           );
         },

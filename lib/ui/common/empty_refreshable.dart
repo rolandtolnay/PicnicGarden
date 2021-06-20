@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 class EmptyRefreshable extends StatelessWidget {
   const EmptyRefreshable(
     this.text, {
-    @required this.onRefresh,
-    Key key,
+    required this.onRefresh,
+    Key? key,
   }) : super(key: key);
 
   final String text;
@@ -13,7 +13,7 @@ class EmptyRefreshable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: onRefresh,
+      onRefresh: onRefresh as Future<void> Function(),
       child: Stack(
         children: [
           ListView(),

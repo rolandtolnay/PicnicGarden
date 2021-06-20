@@ -10,11 +10,11 @@ import '../common/dialog_item.dart';
 import '../common/dialog_title.dart';
 
 class TablePickerDialog extends StatelessWidget {
-  const TablePickerDialog(this.tables, {this.selectedTable, Key key})
+  const TablePickerDialog(this.tables, {this.selectedTable, Key? key})
       : super(key: key);
 
   final UnmodifiableListView<Table> tables;
-  final Table selectedTable;
+  final Table? selectedTable;
 
   @override
   Widget build(BuildContext context) {

@@ -12,8 +12,9 @@ OrderStatus _$OrderStatusFromJson(Map<String, dynamic> json) {
     name: json['name'] as String,
     colorHex: json['colorHex'] as String,
     flow: json['flow'] as int,
-    notifyTopics: (json['notifyTopics'] as Map<String, dynamic>)?.map(
-          (k, e) => MapEntry(k, (e as List)?.map((e) => e as String)?.toList()),
+    notifyTopics: (json['notifyTopics'] as Map<String, dynamic>?)?.map(
+          (k, e) => MapEntry(
+              k, (e as List<dynamic>).map((e) => e as String).toList()),
         ) ??
         {},
   );

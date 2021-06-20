@@ -7,7 +7,7 @@ class PGError implements Exception {
   final String message;
 
   /// Underlying error
-  Exception error;
+  Exception? error;
 
   PGError.noInternet()
       : type = PGErrorType.noInternet,
@@ -55,10 +55,10 @@ extension ErrorHandling on PGError {
         content: Text(message),
         actions: [
           FlatButton(
-            child: const Text('OK'),
             onPressed: () {
               Navigator.pop(context);
             },
+            child: const Text('OK'),
           ),
         ],
       ),

@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import '../model/recipe.dart';
 import 'entity_provider.dart';
+import 'restaurant_provider.dart';
 
 abstract class RecipeProvider extends EntityProvider {
   UnmodifiableListView<Recipe> get recipes;
@@ -11,7 +12,13 @@ abstract class RecipeProvider extends EntityProvider {
 
 class FIRRecipeProvider extends FIREntityProvider<Recipe>
     implements RecipeProvider {
-  FIRRecipeProvider() : super('recipes', (json) => Recipe.fromJson(json));
+  FIRRecipeProvider({
+    required RestaurantProvider restaurantProvider,
+  }) : super(
+          'recipes',
+          (json) => Recipe.fromJson(json),
+          restaurant: restaurantProvider.selectedRestaurant,
+        );
 
   @override
   UnmodifiableListView<Recipe> get recipes => UnmodifiableListView(entities);

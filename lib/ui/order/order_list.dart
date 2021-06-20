@@ -9,17 +9,17 @@ import '../common/dialog_title.dart';
 import 'order_list_page.dart';
 
 class OrderList extends StatefulWidget {
-  const OrderList(this.items, {this.onOrderTapped, Key key}) : super(key: key);
+  const OrderList(this.items, {this.onOrderTapped, Key? key}) : super(key: key);
 
   final List<ListItem> items;
-  final ValueChanged<Order> onOrderTapped;
+  final ValueChanged<Order>? onOrderTapped;
 
   @override
   _OrderListState createState() => _OrderListState();
 }
 
 class _OrderListState extends State<OrderList> {
-  Timer _timer;
+  Timer? _timer;
 
   @override
   void initState() {
@@ -45,12 +45,12 @@ class _OrderListState extends State<OrderList> {
           elevation: listItem is PhaseItem ? 4 : 0,
           color: color,
           child: InkWell(
-            child: listItem.buildContent(context),
             onTap: () {
               if (listItem is OrderItem) {
                 widget.onOrderTapped?.call(listItem.order);
               }
             },
+            child: listItem.buildContent(context),
           ),
         );
       }).toList(),
@@ -76,7 +76,7 @@ class PhaseItem implements ListItem<Phase> {
   }
 
   @override
-  Color get backgroundColor => null;
+  Color? get backgroundColor => null;
 }
 
 class OrderItem implements ListItem<Order> {
@@ -101,7 +101,7 @@ class OrderItem implements ListItem<Order> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text('${order.currentStatus.name}',
-                    style: Theme.of(context).textTheme.bodyText2.copyWith(
+                    style: Theme.of(context).textTheme.bodyText2!.copyWith(
                         color: Theme.of(context).unselectedWidgetColor)),
                 const SizedBox(height: 4.0),
                 Text('${order.currentDuration.description}',

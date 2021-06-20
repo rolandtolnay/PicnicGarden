@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:meta/meta.dart';
 
 part 'order_status.g.dart';
 
@@ -15,11 +14,11 @@ class OrderStatus {
   final Map<String, List<String>> notifyTopics;
 
   const OrderStatus(
-      {@required this.id,
-      @required this.name,
-      @required this.colorHex,
-      @required this.flow,
-      this.notifyTopics});
+      {required this.id,
+      required this.name,
+      required this.colorHex,
+      required this.flow,
+      required this.notifyTopics});
 
   factory OrderStatus.fromJson(Map<String, dynamic> json) =>
       _$OrderStatusFromJson(json);

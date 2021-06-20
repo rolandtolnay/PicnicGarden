@@ -8,13 +8,13 @@ import '../common/empty_refreshable.dart';
 import 'order_list_page.dart';
 
 class PhaseLoader extends StatelessWidget {
-  const PhaseLoader({Key key}) : super(key: key);
+  const PhaseLoader({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<PhaseProvider>();
 
-    SchedulerBinding.instance.addPostFrameCallback((_) {
+    SchedulerBinding.instance!.addPostFrameCallback((_) {
       provider.response.error?.showInDialog(context);
     });
     if (provider.isLoading) {

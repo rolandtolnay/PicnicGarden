@@ -5,7 +5,7 @@ import '../../logic/extensions.dart';
 import '../../provider/topic_provider.dart';
 
 class TopicSubscriberDialog extends StatelessWidget {
-  const TopicSubscriberDialog({Key key}) : super(key: key);
+  const TopicSubscriberDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class TopicSubscriberDialog extends StatelessWidget {
                 controlAffinity: ListTileControlAffinity.leading,
                 value: provider.isSubscribedToTopic(topic),
                 onChanged: (value) {
-                  provider.setSubscribedToTopic(value, topic: topic);
+                  provider.setSubscribedToTopic(value!, topic: topic);
                 },
               ))
           .toList();

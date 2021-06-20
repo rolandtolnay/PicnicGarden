@@ -1,24 +1,22 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'topic.dart';
+part of 'restaurant.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Topic _$TopicFromJson(Map<String, dynamic> json) {
-  return Topic(
+Restaurant _$RestaurantFromJson(Map<String, dynamic> json) {
+  return Restaurant(
     id: json['id'] as String,
     name: json['name'] as String,
-    subscribedUserIds: (json['subscribedUserIds'] as List<dynamic>?)
-            ?.map((e) => e as String)
-            .toList() ??
-        [],
+    imageName: json['imageName'] as String,
   );
 }
 
-Map<String, dynamic> _$TopicToJson(Topic instance) => <String, dynamic>{
+Map<String, dynamic> _$RestaurantToJson(Restaurant instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
-      'subscribedUserIds': instance.subscribedUserIds,
+      'imageName': instance.imageName,
     };

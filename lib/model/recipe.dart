@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:meta/meta.dart';
 
 import 'attribute.dart';
 
@@ -12,17 +11,17 @@ class Recipe {
 
   final int tabIndex;
   final int number;
-  final String autoPhase;
+  final String? autoPhase;
 
   List<Attribute> attributes;
 
   Recipe({
-    @required this.id,
-    @required this.name,
-    @required this.tabIndex,
-    @required this.number,
+    required this.id,
+    required this.name,
+    required this.tabIndex,
+    required this.number,
     this.autoPhase,
-    List<Attribute> attributes,
+    List<Attribute>? attributes,
   }) : attributes = attributes ?? [];
 
   factory Recipe.fromJson(Map<String, dynamic> json) => _$RecipeFromJson(json);

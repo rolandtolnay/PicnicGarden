@@ -1,8 +1,9 @@
 import 'dart:collection';
 
+import 'package:collection/collection.dart' show IterableExtension;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:meta/meta.dart';
+import 'package:picnicgarden/provider/restaurant_provider.dart';
 
 import '../logic/api_response.dart';
 import '../logic/pg_error.dart';
@@ -20,7 +21,7 @@ abstract class NotificationProvider extends EntityProvider {
   UnmodifiableListView<Notification> notificationsExcludingTable(Table table);
   UnmodifiableListView<Notification> notificationsForTable(Table table);
 
-  Future<PGError> postNotificationForOrder(Order order);
+  Future<PGError?> postNotificationForOrder(Order order);
 }
 
 class FIRNotificationProvider extends FIREntityProvider<Notification>
@@ -34,18 +35,23 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
   final TableProvider _tableProvider;
 
   FIRNotificationProvider({
-    @required AuthProvider authProvider,
-    @required TopicProvider topicProvider,
-    @required TableProvider tableProvider,
-  })  : _authProvider = authProvider,
+    required AuthProvider authProvider,
+    required TopicProvider topicProvider,
+    required TableProvider tableProvider,
+    required RestaurantProvider restaurantProvider,
+  })   : _authProvider = authProvider,
         _topicProvider = topicProvider,
         _tableProvider = tableProvider,
-        super('notifications', (json) => Notification.fromJson(json)) {
+        super(
+          'notifications',
+          (json) => Notification.fromJson(json),
+          restaurant: restaurantProvider.selectedRestaurant,
+        ) {
     //
     response = ApiResponse.loading();
     if (authProvider.userId != null) {
       listenOnSnapshots(
-        collection.where('createdBy', isNotEqualTo: authProvider.userId),
+        query: collection.where('createdBy', isNotEqualTo: authProvider.userId),
       );
     } else {
       print('[ERROR] NotificationProvider init with no authenticated user');
@@ -77,8 +83,8 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
     return UnmodifiableListView<Notification>(
       entities
           .where((n) =>
-              n.order.table != table &&
-              n.readBy[_authProvider.userId] == null &&
+              n.order!.table != table &&
+              n.readBy[_authProvider.userId!] == null &&
               n.topicNames.any(_isSubscribedToTopic))
           .toList(),
     );
@@ -89,31 +95,30 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
     return UnmodifiableListView<Notification>(
       entities
           .where((n) =>
-              n.order.table == table &&
-              n.readBy[_authProvider.userId] == null &&
+              n.order!.table == table &&
+              n.readBy[_authProvider.userId!] == null &&
               n.topicNames.any(_isSubscribedToTopic))
           .toList(),
     );
   }
 
   @override
-  Future<PGError> postNotificationForOrder(Order order) {
+  Future<PGError?> postNotificationForOrder(Order order) {
     final notification = Notification.forOrder(
       order,
-      createdBy: _authProvider.userId,
+      createdBy: _authProvider.userId!,
     );
     return postEntity(notification.id, notification.toJson());
   }
 
   bool _isSubscribedToTopic(String topicName) {
-    final topic = _topicProvider.topics.firstWhere(
-        (t) => t.name.toLowerCase() == topicName.toLowerCase(),
-        orElse: () => null);
+    final topic = _topicProvider.topics.firstWhereOrNull(
+        (t) => t.name.toLowerCase() == topicName.toLowerCase());
     if (topic == null) return false;
     return _topicProvider.isSubscribedToTopic(topic);
   }
 
-  Future<PGError> _markAsReadNotifications(Table table) {
+  Future<PGError?> _markAsReadNotifications(Table table) {
     final notifications = notificationsForTable(table);
     return batchPutEntities(
       notifications.map((n) => n.id),
@@ -127,7 +132,7 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
         requestBadgePermission: false,
         requestSoundPermission: false,
         onDidReceiveLocalNotification:
-            (int id, String title, String body, String payload) async {
+            (int id, String? title, String? body, String? payload) async {
           print('Received local notification');
         });
     final initializationSettings = InitializationSettings(
@@ -148,16 +153,16 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
 
       if (message.notification != null &&
           message.data['createdBy'] != _authProvider.userId) {
-        final tableId = message.data['tableId'];
+        final tableId = message.data['tableId'] as String;
         var presentAlert = true;
-        if (tableId == _tableProvider.selectedTable.id) {
+        if (tableId == _tableProvider.selectedTable?.id) {
           presentAlert = false;
-          _markAsReadNotifications(_tableProvider.selectedTable);
+          _markAsReadNotifications(_tableProvider.selectedTable!);
         }
 
         _localNotificationsPlugin.show(
           0,
-          message.notification.title,
+          message.notification!.title,
           null,
           NotificationDetails(
               iOS: IOSNotificationDetails(
@@ -180,7 +185,7 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
 
     final initialMessage = await _messaging.getInitialMessage();
     if (initialMessage != null) {
-      final tableId = initialMessage?.data['tableId'];
+      final tableId = initialMessage.data['tableId'];
       if (tableId != null) {
         _selectTableId(tableId);
       }
@@ -191,7 +196,7 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
     _tableProvider.addListener(() async {
       if (_tableProvider.selectedTable != null) {
         final error =
-            await _markAsReadNotifications(_tableProvider.selectedTable);
+            await _markAsReadNotifications(_tableProvider.selectedTable!);
         if (error != null) {
           print('[ERROR] Failed marking notifications as read: $error');
         }
@@ -208,8 +213,8 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
   }
 
   void _selectTableId(String tableId) {
-    final table = _tableProvider.tables
-        .firstWhere((t) => t.id == tableId, orElse: () => null);
+    final table =
+        _tableProvider.tables.firstWhereOrNull((t) => t.id == tableId);
     if (table != null) {
       _tableProvider.selectTable(table);
     }
