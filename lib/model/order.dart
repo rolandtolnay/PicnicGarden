@@ -1,9 +1,9 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
-import 'package:picnicgarden/model/phase.dart';
 import 'package:uuid/uuid.dart';
 
 import 'order_status.dart';
+import 'phase.dart';
 import 'recipe.dart';
 import 'table.dart';
 
@@ -18,7 +18,9 @@ class Order {
   final Phase phase;
   OrderStatus currentStatus;
 
-  final DateTime created;
+  final DateTime createdAt;
+  final String createdBy;
+
   DateTime delivered;
 
   Map<String, Duration> flow;
@@ -26,14 +28,15 @@ class Order {
   Order({
     @required this.recipe,
     @required this.table,
+    @required this.createdBy,
     this.phase,
     String id,
-    DateTime created,
+    DateTime createdAt,
     Map<String, Duration> flow,
     this.currentStatus,
     this.delivered,
   })  : id = id ?? Uuid().v4(),
-        created = created ?? DateTime.now(),
+        createdAt = createdAt ?? DateTime.now(),
         flow = flow ?? {};
 
   factory Order.fromJson(Map<String, dynamic> json) => _$OrderFromJson(json);
@@ -54,12 +57,19 @@ class Order {
         now.hour,
         now.minute,
         now.second,
-      ).difference(created).inSeconds,
+      ).difference(createdAt).inSeconds,
     );
   }
 
   String get userFriendlyDescription =>
       '${recipe.name} @ ${table.name} ${phase.name}';
+
+  bool get shouldNotifyStatus {
+    final attributeIds = recipe.attributes.map((a) => a.id);
+    final notifyAttributeIds =
+        currentStatus.notifyTopics.values.expand((e) => e);
+    return attributeIds.any(notifyAttributeIds.contains);
+  }
 
   static int sort(Order a, Order b) {
     var result =

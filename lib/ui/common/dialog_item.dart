@@ -6,13 +6,18 @@ class DialogItem extends StatelessWidget {
   const DialogItem(
     this.title, {
     this.onTapped,
+    this.badgeCount,
     this.isSelected = false,
+    this.isMarked = false,
     Key key,
   }) : super(key: key);
 
   final String title;
   final VoidCallback onTapped;
   final bool isSelected;
+  final int badgeCount;
+  // TODO: Implement this properly by allowing custom children
+  final bool isMarked;
 
   @override
   Widget build(BuildContext context) {
@@ -28,11 +33,15 @@ class DialogItem extends StatelessWidget {
         ? RectangularButton.flat(
             title: title,
             textStyle: textStyle,
+            badgeCount: badgeCount,
+            isMarked: isMarked,
             onPressed: () => onTapped?.call(),
           )
         : RectangularButton.outlined(
             title: title,
             textStyle: textStyle,
+            badgeCount: badgeCount,
+            isMarked: isMarked,
             onPressed: () => onTapped?.call(),
           );
   }

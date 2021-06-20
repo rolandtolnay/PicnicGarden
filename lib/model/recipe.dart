@@ -11,6 +11,7 @@ class Recipe {
   final String name;
 
   final int tabIndex;
+  final int number;
   final String autoPhase;
 
   List<Attribute> attributes;
@@ -19,6 +20,7 @@ class Recipe {
     @required this.id,
     @required this.name,
     @required this.tabIndex,
+    @required this.number,
     this.autoPhase,
     List<Attribute> attributes,
   }) : attributes = attributes ?? [];

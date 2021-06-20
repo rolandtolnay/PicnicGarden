@@ -1,9 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:picnicgarden/provider/auth_provider.dart';
-import 'package:picnicgarden/provider/providers.dart';
-import 'package:picnicgarden/ui/root_page.dart';
 import 'package:provider/provider.dart';
+
+import 'provider/auth_provider.dart';
+import 'provider/providers.dart';
+import 'ui/root_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,8 +30,8 @@ class Application extends StatelessWidget {
           if (snapshot.connectionState != ConnectionState.done) {
             return Scaffold(body: Center(child: CircularProgressIndicator()));
           }
-          return ChangeNotifierProvider(
-            create: (_) => providers<AuthProvider>(),
+          return ChangeNotifierProvider.value(
+            value: providers<AuthProvider>(),
             child: RootPage(),
           );
         },

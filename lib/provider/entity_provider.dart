@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -11,23 +13,23 @@ abstract class EntityProvider extends ChangeNotifier {
 }
 
 class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
-  final CollectionReference collection;
+  CollectionReference collection;
   final T Function(Map<String, dynamic> json) fromJson;
 
   List<T> entities = [];
+  StreamSubscription<QuerySnapshot> snapshotListener;
 
-  ApiResponse _response = ApiResponse.initial();
+  @override
+  ApiResponse response = ApiResponse.initial();
 
   FIREntityProvider(String collection, this.fromJson)
       : collection = FirebaseFirestore.instance.collection(collection);
 
   @override
-  ApiResponse get response => _response;
-  @override
   bool get isLoading => response.status == ApiStatus.loading;
 
   Future fetchEntities() async {
-    _response = ApiResponse.loading();
+    response = ApiResponse.loading();
     notifyListeners();
 
     return (await checkConnectivity()).fold(
@@ -35,21 +37,21 @@ class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
         try {
           final snapshot = await collection.get();
           entities = snapshot.docs.map((doc) => fromJson(doc.data())).toList();
-          _response = ApiResponse.completed();
+          response = ApiResponse.completed();
         } catch (e) {
           print('[ERROR] Failed fetching ${T.runtimeType}: $e');
-          _response = ApiResponse.error(PGError.backend('$e'));
+          response = ApiResponse.error(PGError.backend('$e'));
         }
         notifyListeners();
       },
       (error) {
-        _response = ApiResponse.error(error);
+        response = ApiResponse.error(error);
         notifyListeners();
       },
     );
   }
 
-  Future<PGError> putEntity(String id, Map<String, dynamic> entity) async {
+  Future<PGError> postEntity(String id, Map<String, dynamic> entity) async {
     return (await checkConnectivity()).fold(
       () async {
         try {
@@ -62,5 +64,44 @@ class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
       },
       (error) => error,
     );
+  }
+
+  Future<PGError> batchPutEntities(
+    Iterable<String> ids,
+    Map<String, dynamic> change,
+  ) async {
+    return (await checkConnectivity()).fold(
+      () async {
+        try {
+          final batch = FirebaseFirestore.instance.batch();
+          ids.forEach((id) {
+            batch.update(collection.doc(id), change);
+          });
+          await batch.commit();
+          return null;
+        } catch (e) {
+          print('[ERROR] Failed putting ${T.runtimeType}: $e');
+          return PGError.backend('$e');
+        }
+      },
+      (error) => error,
+    );
+  }
+
+  void listenOnSnapshots(Query query) {
+    snapshotListener = query.snapshots().listen((snapshot) {
+      entities = snapshot.docs.map((doc) => fromJson(doc.data())).toList();
+      response = ApiResponse.completed();
+      notifyListeners();
+    }, onError: (error) {
+      response = ApiResponse.error(PGError.backend('$error'));
+      notifyListeners();
+    });
+  }
+
+  @override
+  void dispose() {
+    snapshotListener?.cancel();
+    super.dispose();
   }
 }

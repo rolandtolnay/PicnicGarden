@@ -18,7 +18,7 @@ class PhaseLoader extends StatelessWidget {
       provider.response.error?.showInDialog(context);
     });
     if (provider.isLoading) {
-      return Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator());
     }
 
     if (provider.phases.isEmpty) {

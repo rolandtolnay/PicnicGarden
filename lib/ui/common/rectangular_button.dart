@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 
 enum _RectangularButtonType { outlined, flat }
@@ -10,6 +11,8 @@ class RectangularButton extends StatelessWidget {
   final Color textColor;
   final Color borderColor;
   final TextStyle textStyle;
+  final int badgeCount;
+  final bool isMarked;
 
   final _RectangularButtonType _type;
 
@@ -21,7 +24,10 @@ class RectangularButton extends StatelessWidget {
     this.borderColor,
     this.textColor,
     this.textStyle,
+    this.isMarked = false,
+    badgeCount,
   })  : _type = _RectangularButtonType.outlined,
+        badgeCount = badgeCount ?? 0,
         color = null,
         super(key: key);
 
@@ -33,7 +39,10 @@ class RectangularButton extends StatelessWidget {
     this.color,
     this.textColor,
     this.textStyle,
+    this.isMarked = false,
+    badgeCount,
   })  : _type = _RectangularButtonType.flat,
+        badgeCount = badgeCount ?? 0,
         borderColor = null,
         super(key: key);
 
@@ -62,7 +71,7 @@ class RectangularButton extends StatelessWidget {
           style: BorderStyle.solid, //Style of the border
           width: 2, //width of the border
         ),
-        child: _buildButtonChild(),
+        child: _buildButtonChild(context),
         onPressed: onPressed,
       ),
     );
@@ -74,25 +83,44 @@ class RectangularButton extends StatelessWidget {
       child: FlatButton(
         color: color ?? Theme.of(context).colorScheme.primaryVariant,
         textColor: textColor ?? Theme.of(context).colorScheme.onPrimary,
-        child: _buildButtonChild(),
+        child: _buildButtonChild(context),
         onPressed: onPressed,
       ),
     );
   }
 
-  Widget _buildButtonChild() {
+  Widget _buildButtonChild(BuildContext context) {
     final textStyle = this.textStyle ??
         const TextStyle(
           letterSpacing: 1.25,
           fontWeight: FontWeight.w500,
         );
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        if (icon != null) ...[Icon(icon), SizedBox(width: 8.0)],
-        Text(title.toUpperCase(), style: textStyle),
-      ],
+    return Badge(
+      showBadge: badgeCount != 0,
+      position: BadgePosition.topStart(top: -32, start: -8),
+      padding: const EdgeInsets.all(8.0),
+      toAnimate: false,
+      badgeContent: Text(
+        '${badgeCount}',
+        style: Theme.of(context)
+            .textTheme
+            .bodyText1
+            .copyWith(color: Theme.of(context).colorScheme.onPrimary),
+      ),
+      child: Badge(
+        showBadge: isMarked,
+        position: BadgePosition.topEnd(top: -16, end: 0),
+        toAnimate: false,
+        badgeColor: Theme.of(context).colorScheme.secondary,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            if (icon != null) ...[Icon(icon), SizedBox(width: 8.0)],
+            Text(title.toUpperCase(), style: textStyle),
+          ],
+        ),
+      ),
     );
   }
 }

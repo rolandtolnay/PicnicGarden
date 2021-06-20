@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../model/order.dart';
 import '../model/phase.dart';
 import '../model/recipe.dart';
-import '../provider/order_builder.dart';
+import '../provider/order/order_builder.dart';
 import '../provider/phase_provider.dart';
 import 'common/dialog_item.dart';
 import 'common/dialog_title.dart';

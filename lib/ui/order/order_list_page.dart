@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:picnicgarden/provider/table_provider.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 import '../../logic/pg_error.dart';
 import '../../model/order.dart';
 import '../../model/phase.dart';
-import '../../provider/order_provider.dart';
-import '../../provider/order_status_provider.dart';
+import '../../provider/order/order_provider.dart';
+import '../../provider/order/order_status_provider.dart';
 import '../../provider/phase_provider.dart';
+import '../../provider/table_provider.dart';
 import 'order_list.dart';
 
 class OrderListPage extends StatelessWidget {
@@ -20,28 +21,29 @@ class OrderListPage extends StatelessWidget {
     final orderStatusList =
         context.watch<OrderStatusProvider>().orderStatusList;
 
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      provider.response.error?.showInDialog(context);
+    });
+    if (provider.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     final selectedTable = context.watch<TableProvider>().selectedTable;
-
-    return StreamBuilder<List<Order>>(
-        stream: provider.orderStreamForTable(selectedTable),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
-          }
-
-          final builder = ItemBuilder(orders: snapshot.data, phases: phases);
-          return OrderList(
-            builder.buildListItems(),
-            onOrderTapped: (order) async {
-              final provider = context.read<OrderProvider>();
-              final error = await provider.commitNextFlow(
-                order: order,
-                orderStatusList: orderStatusList,
-              );
-              error?.showInDialog(context);
-            },
-          );
-        });
+    final builder = ItemBuilder(
+      orders: provider.ordersForTable(selectedTable),
+      phases: phases,
+    );
+    return OrderList(
+      builder.buildListItems(),
+      onOrderTapped: (order) async {
+        final provider = context.read<OrderProvider>();
+        final error = await provider.commitNextFlow(
+          order: order,
+          orderStatusList: orderStatusList,
+        );
+        error?.showInDialog(context);
+      },
+    );
   }
 }
 
@@ -76,7 +78,7 @@ class ItemBuilder {
       return map;
     });
     phaseMap.values.forEach((orderList) {
-      orderList.sort((a, b) => a.created.compareTo(b.created));
+      orderList.sort((a, b) => a.createdAt.compareTo(b.createdAt));
     });
 
     return sortedPhases.fold(<ListItem>[], (list, phase) {

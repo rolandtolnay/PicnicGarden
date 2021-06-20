@@ -33,7 +33,7 @@ class FIRTableProvider extends FIREntityProvider<Table>
   }
 
   @override
-  void selectTable(Table table) {
+  void selectTable(Table table) async {
     _selectedTable = table;
     notifyListeners();
   }
