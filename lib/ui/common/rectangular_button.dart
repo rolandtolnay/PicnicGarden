@@ -62,12 +62,12 @@ class RectangularButton extends StatelessWidget {
     return Container(
       height: 50.0,
       child: OutlineButton(
-        textColor: textColor ?? Theme.of(context).colorScheme.primaryVariant,
+        textColor: textColor ?? Theme.of(context).colorScheme.primaryContainer,
         borderSide: BorderSide(
           color: borderColor ??
               Theme.of(context)
                   .colorScheme
-                  .primaryVariant, //Color of the border
+                  .primaryContainer, //Color of the border
           style: BorderStyle.solid, //Style of the border
           width: 2, //width of the border
         ),
@@ -81,7 +81,7 @@ class RectangularButton extends StatelessWidget {
     return Container(
       height: 50.0,
       child: FlatButton(
-        color: color ?? Theme.of(context).colorScheme.primaryVariant,
+        color: color ?? Theme.of(context).colorScheme.primaryContainer,
         textColor: textColor ?? Theme.of(context).colorScheme.onPrimary,
         onPressed: onPressed,
         child: _buildButtonChild(context),

@@ -21,7 +21,7 @@ class DialogItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = Theme.of(context).colorScheme.primaryVariant;
+    final color = Theme.of(context).colorScheme.primaryContainer;
     final textColor =
         isSelected ? Theme.of(context).colorScheme.onPrimary : color;
     final textStyle = Theme.of(context).textTheme.subtitle1!.copyWith(
