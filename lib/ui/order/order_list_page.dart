@@ -74,16 +74,16 @@ class ItemBuilder {
       }
       return map;
     });
-    phaseMap.values.forEach((orderList) {
+    for (var orderList in phaseMap.values) {
       orderList.sort((a, b) => a.createdAt.compareTo(b.createdAt));
-    });
+    }
 
     return sortedPhases.fold(<ListItem>[], (list, phase) {
       list.add(PhaseItem(phase));
       if (phaseMap[phase.id] != null) {
         list.addAll(
           phaseMap[phase.id]!.map(
-            (order) => OrderItem(order),
+            OrderItem.new,
           ),
         );
       }

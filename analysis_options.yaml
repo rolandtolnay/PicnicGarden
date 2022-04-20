@@ -1,4 +1,4 @@
-include: package:pedantic/analysis_options.yaml
+include: package:flutter_lints/flutter.yaml
 
 linter:
   rules:
@@ -16,15 +16,16 @@ linter:
     - prefer_void_to_null
     - prefer_typing_uninitialized_variables
     - prefer_generic_function_type_aliases
-    - avoid_positional_boolean_parameters
     - avoid_returning_null
     - avoid_returning_this
     - omit_local_variable_types
     - file_names
-    
+    - prefer_single_quotes
+
 analyzer:
   errors:
-    unawaited_futures: ignore
-    
-#   exclude:
-#     - path/to/excluded/files/**
+    prefer_const_constructors: ignore
+    unnecessary_lambdas: ignore
+    avoid_print: ignore
+  exclude:
+    - "lib/**.g.dart"

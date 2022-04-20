@@ -18,7 +18,7 @@ extension SnackBarBuilder on SnackBar {
           const Text('ADDED'),
           const SizedBox(height: 8.0),
           Text(
-            '${order.userFriendlyDescription}',
+            order.userFriendlyDescription,
             textAlign: TextAlign.center,
             style: textStyle,
           ),

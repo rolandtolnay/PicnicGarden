@@ -17,7 +17,7 @@ class FIRRestaurantProvider extends FIREntityProvider<Restaurant>
   Restaurant? _selectedRestaurant;
 
   FIRRestaurantProvider()
-      : super('restaurants', (json) => Restaurant.fromJson(json));
+      : super('restaurants', Restaurant.fromJson);
 
   @override
   UnmodifiableListView<Restaurant> get restaurants =>

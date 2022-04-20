@@ -11,7 +11,7 @@ import 'common/dialog_item.dart';
 import 'common/dialog_title.dart';
 
 class RecipeList extends StatelessWidget {
-  RecipeList(this.recipes, {this.onOrderCreated, Key? key}) : super(key: key);
+  const RecipeList(this.recipes, {this.onOrderCreated, Key? key}) : super(key: key);
 
   final ValueChanged<Order>? onOrderCreated;
   final List<Recipe> recipes;

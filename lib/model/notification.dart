@@ -16,7 +16,7 @@ class Notification extends Equatable {
   final String createdBy;
   final Map<String, bool> readBy;
 
-  Notification({
+  const Notification({
     required this.id,
     required this.topicNames,
     required this.readBy,

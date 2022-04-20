@@ -16,7 +16,7 @@ class FIRPhaseProvider extends FIREntityProvider<Phase>
     required RestaurantProvider restaurantProvider,
   }) : super(
           'phases',
-          (json) => Phase.fromJson(json),
+          Phase.fromJson,
           restaurant: restaurantProvider.selectedRestaurant,
         );
 

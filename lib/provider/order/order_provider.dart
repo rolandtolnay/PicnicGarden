@@ -30,7 +30,7 @@ class FIROrderProvider extends FIREntityProvider<Order>
   })   : _notificationProvider = notificationProvider,
         super(
           'orders',
-          (json) => Order.fromJson(json),
+          Order.fromJson,
           restaurant: restaurantProvider.selectedRestaurant,
         ) {
     response = ApiResponse.loading();

@@ -16,7 +16,7 @@ class RectangularButton extends StatelessWidget {
 
   final _RectangularButtonType _type;
 
-  RectangularButton.outlined({
+  const RectangularButton.outlined({
     Key? key,
     required this.title,
     this.icon,
@@ -31,7 +31,7 @@ class RectangularButton extends StatelessWidget {
         color = null,
         super(key: key);
 
-  RectangularButton.flat({
+  const RectangularButton.flat({
     Key? key,
     required this.title,
     this.icon,
@@ -58,8 +58,8 @@ class RectangularButton extends StatelessWidget {
     }
   }
 
-  Container _buildOutlineButton(BuildContext context) {
-    return Container(
+  Widget _buildOutlineButton(BuildContext context) {
+    return SizedBox(
       height: 50.0,
       child: OutlineButton(
         textColor: textColor ?? Theme.of(context).colorScheme.primaryContainer,
@@ -77,8 +77,8 @@ class RectangularButton extends StatelessWidget {
     );
   }
 
-  Container _buildFlatButton(BuildContext context) {
-    return Container(
+  Widget _buildFlatButton(BuildContext context) {
+    return SizedBox(
       height: 50.0,
       child: FlatButton(
         color: color ?? Theme.of(context).colorScheme.primaryContainer,

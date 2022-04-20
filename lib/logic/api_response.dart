@@ -18,6 +18,7 @@ class ApiResponse {
         error = null;
   ApiResponse.error(PGError error)
       : status = ApiStatus.error,
+        // ignore: prefer_initializing_formals
         error = error;
 }
 

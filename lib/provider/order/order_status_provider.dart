@@ -16,7 +16,7 @@ class FIROrderStatusProvider extends FIREntityProvider<OrderStatus>
     required RestaurantProvider restaurantProvider,
   }) : super(
           'orderStatus',
-          (json) => OrderStatus.fromJson(json),
+          OrderStatus.fromJson,
           restaurant: restaurantProvider.selectedRestaurant,
         );
 

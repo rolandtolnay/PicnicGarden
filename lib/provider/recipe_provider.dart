@@ -16,7 +16,7 @@ class FIRRecipeProvider extends FIREntityProvider<Recipe>
     required RestaurantProvider restaurantProvider,
   }) : super(
           'recipes',
-          (json) => Recipe.fromJson(json),
+          Recipe.fromJson,
           restaurant: restaurantProvider.selectedRestaurant,
         );
 

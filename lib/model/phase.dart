@@ -11,7 +11,7 @@ class Phase extends Equatable {
 
   final bool selectable;
 
-  Phase({required this.id, required this.name, required this.number, required this.selectable});
+  const Phase({required this.id, required this.name, required this.number, required this.selectable});
 
   factory Phase.fromJson(Map<String, dynamic> json) => _$PhaseFromJson(json);
 

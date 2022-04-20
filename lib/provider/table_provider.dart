@@ -20,7 +20,7 @@ class FIRTableProvider extends FIREntityProvider<Table>
     required RestaurantProvider restaurantProvider,
   }) : super(
           'tables',
-          (json) => Table.fromJson(json),
+          Table.fromJson,
           restaurant: restaurantProvider.selectedRestaurant,
         );
 

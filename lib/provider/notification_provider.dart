@@ -44,7 +44,7 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
         _tableProvider = tableProvider,
         super(
           'notifications',
-          (json) => Notification.fromJson(json),
+          Notification.fromJson,
           restaurant: restaurantProvider.selectedRestaurant,
         ) {
     //

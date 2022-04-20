@@ -15,6 +15,8 @@ Future<void> main() async {
 class Application extends StatelessWidget {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
+  Application({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

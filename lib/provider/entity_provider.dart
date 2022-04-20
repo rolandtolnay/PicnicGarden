@@ -107,9 +107,9 @@ class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
       () async {
         try {
           final batch = FirebaseFirestore.instance.batch();
-          ids.forEach((id) {
+          for (var id in ids) {
             batch.update(collection.doc(id), change);
-          });
+          }
           await batch.commit();
           return null;
         } catch (e, stacktrace) {
@@ -165,13 +165,13 @@ class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
 
   List<T> _entitiesFromSnapshot(QuerySnapshot<Map<String, dynamic>> snapshot) {
     final entities = <T>[];
-    snapshot.docs.forEach((doc) {
+    for (var doc in snapshot.docs) {
       if (doc.exists) {
         entities.add(fromJson(doc.data()));
       } else {
         print('[WARNING] Document $doc contains no data parsing $T.');
       }
-    });
+    }
     return entities;
   }
 }

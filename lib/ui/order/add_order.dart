@@ -95,7 +95,7 @@ class _AddOrderDialogBody extends StatelessWidget {
     final foodTab = Tab(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
+        children: const [
           Icon(Icons.lunch_dining),
           SizedBox(width: 8.0),
           Text('Food'),
@@ -106,7 +106,7 @@ class _AddOrderDialogBody extends StatelessWidget {
     final drinkTab = Tab(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
+        children: const [
           Icon(Icons.local_bar),
           SizedBox(width: 8.0),
           Text('Drinks'),

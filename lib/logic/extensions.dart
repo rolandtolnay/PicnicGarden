@@ -51,10 +51,10 @@ extension Utility on DateTime {
       '${DateFormat.MMMd().format(this)} ${DateFormat.Hm().format(this)}';
 
   /// 09:41
-  String get timeDescription => '${DateFormat.Hm().format(this)}';
+  String get timeDescription => DateFormat.Hm().format(this);
 
   /// 9 jan.
-  String get dateDescription => '${DateFormat.MMMMd().format(this)}';
+  String get dateDescription => DateFormat.MMMMd().format(this);
 
   TimeOfDay get timeOfDay => TimeOfDay.fromDateTime(this);
 }

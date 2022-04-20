@@ -11,7 +11,7 @@ class Topic extends Equatable {
   @JsonKey(defaultValue: <String>[])
   final List<String> subscribedUserIds;
 
-  Topic(
+  const Topic(
       {required this.id, required this.name, required this.subscribedUserIds});
 
   factory Topic.subscribingTo(Topic topic, {required String byUserId}) {

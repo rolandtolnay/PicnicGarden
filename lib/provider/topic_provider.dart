@@ -30,7 +30,7 @@ class FIRTopicProvider extends FIREntityProvider<Topic>
   })   : _authProvider = authProvider,
         super(
           'topics',
-          (json) => Topic.fromJson(json),
+          Topic.fromJson,
           restaurant: restaurantProvider.selectedRestaurant,
         );
 

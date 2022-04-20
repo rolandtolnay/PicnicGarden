@@ -95,16 +95,16 @@ class OrderItem implements ListItem<Order> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('${order.recipe.name.capitalized}',
+            Text(order.recipe.name.capitalized,
                 style: Theme.of(context).textTheme.headline6),
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text('${order.currentStatus.name}',
+                Text(order.currentStatus.name,
                     style: Theme.of(context).textTheme.bodyText2!.copyWith(
                         color: Theme.of(context).unselectedWidgetColor)),
                 const SizedBox(height: 4.0),
-                Text('${order.currentDuration.description}',
+                Text(order.currentDuration.description,
                     style: Theme.of(context).textTheme.headline5)
               ],
             )

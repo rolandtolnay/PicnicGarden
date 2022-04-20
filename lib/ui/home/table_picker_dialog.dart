@@ -24,7 +24,7 @@ class TablePickerDialog extends StatelessWidget {
     return AlertDialog(
       elevation: 2,
       title: const DialogTitle(text: 'Choose table', icon: Icons.tab),
-      content: Container(
+      content: SizedBox(
         width: double.maxFinite,
         child: GridView.count(
           crossAxisCount: 3,
