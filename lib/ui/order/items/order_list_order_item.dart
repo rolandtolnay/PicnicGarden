@@ -27,7 +27,13 @@ class OrderListOrderItem implements OrderListItem<Order> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(order.recipe.name.capitalized, style: textTheme.headline6),
+            Expanded(
+              child: Text(
+                order.recipe.name.capitalized,
+                style: textTheme.headline6,
+              ),
+            ),
+            const SizedBox(width: 8.0),
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [

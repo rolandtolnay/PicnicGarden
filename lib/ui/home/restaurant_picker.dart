@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
@@ -8,7 +7,6 @@ import '../../model/restaurant.dart';
 import '../../provider/restaurant_provider.dart';
 import '../common/empty_refreshable.dart';
 import 'home_page.dart';
-import 'home_page_web.dart';
 
 class RestaurantPicker extends StatelessWidget {
   const RestaurantPicker({Key? key}) : super(key: key);
@@ -51,12 +49,12 @@ class _RestaurantPickerBody extends StatelessWidget {
     }
 
     // TODO: Remove after development finished
-    // WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-    //   Future.delayed(
-    //     Duration(milliseconds: 500),
-    //     () => _selectRestaurant(provider.restaurants[1], context),
-    //   );
-    // });
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      Future.delayed(
+        Duration(milliseconds: 500),
+        () => _selectRestaurant(provider.restaurants[1], context),
+      );
+    });
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -104,9 +102,7 @@ class _RestaurantPickerBody extends StatelessWidget {
     provider.selectRestaurant(restaurant);
     Navigator.of(context, rootNavigator: true).pushReplacement(
       MaterialPageRoute(
-        // TODO: Remove after development finished
-        // builder: (_) => HomePage(),
-        builder: (_) => kIsWeb ? HomePageWeb() : HomePage(),
+        builder: (_) => HomePage(),
         fullscreenDialog: true,
       ),
     );

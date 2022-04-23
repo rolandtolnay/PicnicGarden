@@ -20,29 +20,26 @@ class HomePageAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Theme.of(context).colorScheme.primary,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          TableNameWidget(
-            table: selectedTable,
-            showNotifications: true,
-            onTapped: onTableTapped,
-          ),
-          Visibility(
-            visible: !kIsWeb,
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: IconButton(
-                color: Theme.of(context).colorScheme.onPrimary,
-                icon: Icon(Icons.settings),
-                onPressed: () => onSettingsPressed(context),
-              ),
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        TableNameWidget(
+          table: selectedTable,
+          showNotifications: true,
+          onTapped: onTableTapped,
+        ),
+        Visibility(
+          visible: !kIsWeb,
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: IconButton(
+              color: Theme.of(context).colorScheme.onPrimary,
+              icon: Icon(Icons.settings),
+              onPressed: () => onSettingsPressed(context),
             ),
-          )
-        ],
-      ),
+          ),
+        )
+      ],
     );
   }
 

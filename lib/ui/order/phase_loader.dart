@@ -30,6 +30,10 @@ class PhaseLoader extends StatelessWidget {
       );
     }
 
-    return OrderListPage(table: selectedTable, showTimer: true);
+    return OrderListPage(
+      table: selectedTable,
+      showTimer: true,
+      scrollable: true,
+    );
   }
 }

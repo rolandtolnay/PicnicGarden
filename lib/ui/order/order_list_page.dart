@@ -1,23 +1,28 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 import '../../logic/pg_error.dart';
-
 import '../../model/table_entity.dart';
 import '../../provider/order/order_provider.dart';
 import '../../provider/order/order_status_provider.dart';
 import '../../provider/phase_provider.dart';
-
 import 'items/order_list_item_builder.dart';
-import 'order_list.dart';
+import 'items/order_list_phase_item.dart';
 
 class OrderListPage extends StatelessWidget {
   final TableEntity table;
   final bool showTimer;
+  final bool scrollable;
 
-  const OrderListPage({Key? key, required this.table, required this.showTimer})
-      : super(key: key);
+  const OrderListPage({
+    Key? key,
+    required this.table,
+    required this.showTimer,
+    required this.scrollable,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +51,67 @@ class OrderListPage extends StatelessWidget {
         error?.showInDialog(context);
       },
     );
-    return OrderList(items: builder.buildListItems(), showTimer: showTimer);
+    return _OrderList(
+      items: builder.buildListItems(),
+      showTimer: showTimer,
+      scrollable: scrollable,
+    );
+  }
+}
+
+class _OrderList extends StatefulWidget {
+  final List<OrderListItem> items;
+  final bool showTimer;
+  final bool scrollable;
+
+  const _OrderList({
+    required this.items,
+    required this.showTimer,
+    required this.scrollable,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  _OrderListState createState() => _OrderListState();
+}
+
+class _OrderListState extends State<_OrderList> {
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.showTimer) {
+      _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+        setState(() {});
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ScrollConfiguration(
+      behavior: ScrollConfiguration.of(context).copyWith(
+        scrollbars: widget.scrollable,
+      ),
+      child: ListView(
+        physics: !widget.scrollable ? NeverScrollableScrollPhysics() : null,
+        padding: EdgeInsets.only(bottom: 56),
+        children: widget.items.map((listItem) {
+          final color = listItem.backgroundColor ?? Theme.of(context).cardColor;
+          return Material(
+            elevation: listItem is OrderListPhaseItem ? 4 : 0,
+            color: color,
+            child: listItem.buildContent(context),
+          );
+        }).toList(),
+      ),
+    );
   }
 }
