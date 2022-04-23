@@ -4,20 +4,18 @@ import 'package:provider/provider.dart';
 
 import '../../../logic/pg_error.dart';
 import '../../../model/order.dart';
+import '../../../provider/order/order_provider.dart';
 import '../../../provider/recipe_provider.dart';
 import '../../common/empty_refreshable.dart';
-import 'recipe_tabs.dart';
+import '../../common/snackbar_builder.dart';
+import '../../recipe/recipe_tabs.dart';
 
 class OrderAddDialog extends StatelessWidget {
-  final ValueChanged<Order>? onOrderCreated;
-
-  const OrderAddDialog({Key? key, required this.onOrderCreated})
-      : super(key: key);
+  const OrderAddDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
     final provider = context.watch<RecipeProvider>();
 
@@ -50,7 +48,7 @@ class OrderAddDialog extends StatelessWidget {
               (tab) => tab.buildView(
                 context,
                 allRecipes: provider.recipes,
-                onOrderCreated: onOrderCreated,
+                onOrderCreated: (o) => _onOrderCreated(o, context),
               ),
             )
             .toList(),
@@ -75,6 +73,15 @@ class OrderAddDialog extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  void _onOrderCreated(Order order, BuildContext context) async {
+    final error = await context.read<OrderProvider>().commitOrder(order);
+    if (error != null) return error.showInDialog(context);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBarBuilder.orderSucces(order, context),
     );
   }
 }

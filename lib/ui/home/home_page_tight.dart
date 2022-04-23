@@ -8,7 +8,7 @@ import '../../provider/notification_provider.dart';
 import '../../provider/order/order_provider.dart';
 import '../../provider/table_provider.dart';
 import '../common/empty_refreshable.dart';
-import '../order/order_add/order_add_button.dart';
+import '../order/order_add/order_add_floating_button.dart';
 import '../phase/phase_loader.dart';
 import 'widgets/home_page_app_bar.dart';
 import 'widgets/table_picker_dialog.dart';
@@ -22,7 +22,7 @@ class HomePageTight extends StatelessWidget {
       bottom: false,
       child: Scaffold(
         body: _HomePageTightBody(),
-        floatingActionButton: OrderAddButton(),
+        floatingActionButton: OrderAddFloatingButton(),
       ),
     );
   }

@@ -2,12 +2,12 @@ import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../model/order.dart';
-import '../model/phase.dart';
-import '../model/recipe.dart';
-import '../provider/order/order_builder.dart';
-import '../provider/phase_provider.dart';
-import 'phase/phase_picker_dialog.dart';
+import '../../model/order.dart';
+import '../../model/phase.dart';
+import '../../model/recipe.dart';
+import '../../provider/order/order_builder.dart';
+import '../../provider/phase_provider.dart';
+import '../phase/phase_picker_dialog.dart';
 
 class RecipeList extends StatelessWidget {
   final List<Recipe> recipeList;

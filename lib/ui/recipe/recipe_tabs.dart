@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../model/order.dart';
-import '../../../model/recipe.dart';
-import '../../recipe_list.dart';
+import '../../model/order.dart';
+import '../../model/recipe.dart';
+import 'recipe_list.dart';
 
 enum RecipeTabs { food, drink }
 
