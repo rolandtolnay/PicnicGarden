@@ -5,13 +5,13 @@ import '../../logic/api_response.dart';
 import '../../logic/pg_error.dart';
 import '../../model/order.dart';
 import '../../model/order_status.dart';
-import '../../model/table.dart';
+import '../../model/table_entity.dart';
 import '../entity_provider.dart';
 import '../notification_provider.dart';
 import '../restaurant_provider.dart';
 
 abstract class OrderProvider extends EntityProvider {
-  UnmodifiableListView<Order> ordersForTable(Table table);
+  UnmodifiableListView<Order> ordersForTable(TableEntity table);
 
   Future<PGError?> commitOrder(Order order);
   Future<PGError?> commitNextFlow({
@@ -27,7 +27,7 @@ class FIROrderProvider extends FIREntityProvider<Order>
   FIROrderProvider({
     required NotificationProvider notificationProvider,
     required RestaurantProvider restaurantProvider,
-  })   : _notificationProvider = notificationProvider,
+  })  : _notificationProvider = notificationProvider,
         super(
           'orders',
           Order.fromJson,
@@ -38,7 +38,7 @@ class FIROrderProvider extends FIREntityProvider<Order>
   }
 
   @override
-  UnmodifiableListView<Order> ordersForTable(Table table) =>
+  UnmodifiableListView<Order> ordersForTable(TableEntity table) =>
       UnmodifiableListView(
         entities.where((order) => order.table == table),
       );

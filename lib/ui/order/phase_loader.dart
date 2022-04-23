@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:picnicgarden/provider/table_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../logic/pg_error.dart';
@@ -13,11 +14,12 @@ class PhaseLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<PhaseProvider>();
+    final selectedTable = context.watch<TableProvider>().selectedTable;
 
     SchedulerBinding.instance!.addPostFrameCallback((_) {
       provider.response.error?.showInDialog(context);
     });
-    if (provider.isLoading) {
+    if (provider.isLoading || selectedTable == null) {
       return const Center(child: CircularProgressIndicator());
     }
 
@@ -28,6 +30,6 @@ class PhaseLoader extends StatelessWidget {
       );
     }
 
-    return OrderListPage();
+    return OrderListPage(table: selectedTable);
   }
 }

@@ -5,7 +5,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 import '../../logic/pg_error.dart';
-import '../../model/table.dart';
+import '../../model/table_entity.dart';
 import '../../provider/notification_provider.dart';
 import '../../provider/topic_provider.dart';
 import 'topic_subscriber_dialog.dart';
@@ -17,7 +17,7 @@ class HomePageAppBar extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  final Table selectedTable;
+  final TableEntity selectedTable;
   final VoidCallback? onTableTapped;
 
   @override

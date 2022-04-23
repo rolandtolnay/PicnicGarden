@@ -1,34 +1,35 @@
 import 'dart:collection';
 
-import '../model/table.dart';
+import '../model/table_entity.dart';
 import 'entity_provider.dart';
 import 'restaurant_provider.dart';
 
 abstract class TableProvider extends EntityProvider {
-  UnmodifiableListView<Table> get tables;
+  UnmodifiableListView<TableEntity> get tables;
   Future fetchTables();
 
-  Table? get selectedTable;
-  void selectTable(Table table);
+  TableEntity? get selectedTable;
+  void selectTable(TableEntity table);
 }
 
-class FIRTableProvider extends FIREntityProvider<Table>
+class FIRTableProvider extends FIREntityProvider<TableEntity>
     implements TableProvider {
-  Table? _selectedTable;
+  TableEntity? _selectedTable;
 
   FIRTableProvider({
     required RestaurantProvider restaurantProvider,
   }) : super(
           'tables',
-          Table.fromJson,
+          TableEntity.fromJson,
           restaurant: restaurantProvider.selectedRestaurant,
         );
 
   @override
-  UnmodifiableListView<Table> get tables => UnmodifiableListView(entities);
+  UnmodifiableListView<TableEntity> get tables =>
+      UnmodifiableListView(entities);
 
   @override
-  Table? get selectedTable => _selectedTable;
+  TableEntity? get selectedTable => _selectedTable;
 
   @override
   Future fetchTables() async {
@@ -40,7 +41,7 @@ class FIRTableProvider extends FIREntityProvider<Table>
   }
 
   @override
-  void selectTable(Table table) async {
+  void selectTable(TableEntity table) async {
     _selectedTable = table;
     notifyListeners();
   }

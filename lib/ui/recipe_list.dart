@@ -7,7 +7,7 @@ import '../model/phase.dart';
 import '../model/recipe.dart';
 import '../provider/order/order_builder.dart';
 import '../provider/phase_provider.dart';
-import 'common/list_item.dart';
+import 'common/list_item_widget.dart';
 import 'common/dialog_title.dart';
 
 class RecipeList extends StatelessWidget {
@@ -80,7 +80,7 @@ class PhasePickerDialog extends StatelessWidget {
   Padding _buildPhaseItem(Phase phase, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(4.0),
-      child: ListItem(
+      child: ListItemWidget(
         phase.name,
         onTapped: () => Navigator.of(context).pop(phase),
       ),

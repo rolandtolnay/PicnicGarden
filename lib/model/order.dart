@@ -4,7 +4,7 @@ import 'package:uuid/uuid.dart';
 import 'order_status.dart';
 import 'phase.dart';
 import 'recipe.dart';
-import 'table.dart';
+import 'table_entity.dart';
 
 part 'order.g.dart';
 
@@ -13,7 +13,7 @@ class Order {
   final String id;
 
   final Recipe recipe;
-  final Table table;
+  final TableEntity table;
   final Phase phase;
   OrderStatus currentStatus;
 

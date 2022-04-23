@@ -5,14 +5,17 @@ import 'package:provider/provider.dart';
 import '../../logic/pg_error.dart';
 import '../../model/order.dart';
 import '../../model/phase.dart';
+import '../../model/table_entity.dart';
 import '../../provider/order/order_provider.dart';
 import '../../provider/order/order_status_provider.dart';
 import '../../provider/phase_provider.dart';
-import '../../provider/table_provider.dart';
+
 import 'order_list.dart';
 
 class OrderListPage extends StatelessWidget {
-  const OrderListPage({Key? key}) : super(key: key);
+  final TableEntity table;
+
+  const OrderListPage({Key? key, required this.table}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +31,8 @@ class OrderListPage extends StatelessWidget {
       return const Center(child: CircularProgressIndicator());
     }
 
-    final selectedTable = context.watch<TableProvider>().selectedTable;
     final builder = ItemBuilder(
-      orders: provider.ordersForTable(selectedTable!),
+      orders: provider.ordersForTable(table),
       phases: phases,
     );
     return OrderList(

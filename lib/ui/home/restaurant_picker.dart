@@ -1,11 +1,14 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:picnicgarden/ui/home/home_page.dart';
 import 'package:provider/provider.dart';
 
 import '../../logic/pg_error.dart';
+import '../../model/restaurant.dart';
 import '../../provider/restaurant_provider.dart';
 import '../common/empty_refreshable.dart';
+import 'home_page.dart';
+import 'home_page_web.dart';
 
 class RestaurantPicker extends StatelessWidget {
   const RestaurantPicker({Key? key}) : super(key: key);
@@ -47,6 +50,14 @@ class _RestaurantPickerBody extends StatelessWidget {
       );
     }
 
+    // TODO: Remove after development finished
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      Future.delayed(
+        Duration(milliseconds: 500),
+        () => _selectRestaurant(provider.restaurants.first, context),
+      );
+    });
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -62,15 +73,7 @@ class _RestaurantPickerBody extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: provider.restaurants.map((restaurant) {
             return InkWell(
-              onTap: () {
-                provider.selectRestaurant(restaurant);
-                Navigator.of(context, rootNavigator: true).push(
-                  MaterialPageRoute(
-                    builder: (_) => HomePage(),
-                    fullscreenDialog: true,
-                  ),
-                );
-              },
+              onTap: () => _selectRestaurant(restaurant, context),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -92,6 +95,20 @@ class _RestaurantPickerBody extends StatelessWidget {
           }).toList(),
         ),
       ],
+    );
+  }
+
+  void _selectRestaurant(Restaurant restaurant, BuildContext context) {
+    final provider = context.read<RestaurantProvider>();
+
+    provider.selectRestaurant(restaurant);
+    Navigator.of(context, rootNavigator: true).pushReplacement(
+      MaterialPageRoute(
+        // TODO: Remove after development finished
+        // builder: (_) => HomePage(),
+        builder: (_) => kIsWeb ? HomePageWeb() : HomePage(),
+        fullscreenDialog: true,
+      ),
     );
   }
 }

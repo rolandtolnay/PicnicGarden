@@ -10,7 +10,7 @@ import '../logic/api_response.dart';
 import '../logic/pg_error.dart';
 import '../model/notification.dart';
 import '../model/order.dart';
-import '../model/table.dart';
+import '../model/table_entity.dart';
 import 'auth_provider.dart';
 import 'entity_provider.dart';
 import 'table_provider.dart';
@@ -19,8 +19,9 @@ import 'topic_provider.dart';
 abstract class NotificationProvider extends EntityProvider {
   Future requestPermissions();
 
-  UnmodifiableListView<Notification> notificationsExcludingTable(Table table);
-  UnmodifiableListView<Notification> notificationsForTable(Table table);
+  UnmodifiableListView<Notification> notificationsExcludingTable(
+      TableEntity table);
+  UnmodifiableListView<Notification> notificationsForTable(TableEntity table);
 
   Future<PGError?> postNotificationForOrder(Order order);
 }
@@ -84,7 +85,8 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
   }
 
   @override
-  UnmodifiableListView<Notification> notificationsExcludingTable(Table table) {
+  UnmodifiableListView<Notification> notificationsExcludingTable(
+      TableEntity table) {
     return UnmodifiableListView<Notification>(
       entities
           .where((n) =>
@@ -96,7 +98,7 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
   }
 
   @override
-  UnmodifiableListView<Notification> notificationsForTable(Table table) {
+  UnmodifiableListView<Notification> notificationsForTable(TableEntity table) {
     return UnmodifiableListView<Notification>(
       entities
           .where((n) =>
@@ -123,7 +125,7 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
     return _topicProvider.isSubscribedToTopic(topic);
   }
 
-  Future<PGError?> _markAsReadNotifications(Table table) {
+  Future<PGError?> _markAsReadNotifications(TableEntity table) {
     final notifications = notificationsForTable(table);
     return batchPutEntities(
       notifications.map((n) => n.id),

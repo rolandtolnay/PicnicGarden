@@ -2,11 +2,11 @@ import '../../model/order.dart';
 import '../../model/order_status.dart';
 import '../../model/phase.dart';
 import '../../model/recipe.dart';
-import '../../model/table.dart';
+import '../../model/table_entity.dart';
 import '../auth_provider.dart';
 
 abstract class OrderBuilder {
-  void setTable(Table table);
+  void setTable(TableEntity table);
   void setRecipe(Recipe recipe);
   void setPhase(Phase phase);
   void setOrderStatus(OrderStatus orderStatus);
@@ -16,7 +16,7 @@ abstract class OrderBuilder {
 
 class PGOrderBuilder implements OrderBuilder {
   final AuthProvider _authProvider;
-  Table? _table;
+  TableEntity? _table;
   Recipe? _recipe;
   Phase? _phase;
   OrderStatus? _orderStatus;
@@ -56,7 +56,7 @@ class PGOrderBuilder implements OrderBuilder {
   }
 
   @override
-  void setTable(Table table) {
+  void setTable(TableEntity table) {
     _table = table;
   }
 }

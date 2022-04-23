@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'rectangular_button.dart';
 
-class ListItem extends StatelessWidget {
-  const ListItem(
+class ListItemWidget extends StatelessWidget {
+  const ListItemWidget(
     this.title, {
     this.onTapped,
     this.badgeCount,
