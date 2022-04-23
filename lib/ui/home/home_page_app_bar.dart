@@ -1,4 +1,5 @@
 import 'package:badges/badges.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide Table;
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
@@ -79,12 +80,15 @@ class HomePageAppBar extends StatelessWidget {
             onTap: () => onTableTapped?.call(),
             child: currentTableLabel,
           ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: IconButton(
-              color: Theme.of(context).colorScheme.onPrimary,
-              icon: Icon(Icons.settings),
-              onPressed: onSettingsPressed,
+          Visibility(
+            visible: !kIsWeb,
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: IconButton(
+                color: Theme.of(context).colorScheme.onPrimary,
+                icon: Icon(Icons.settings),
+                onPressed: onSettingsPressed,
+              ),
             ),
           )
         ],

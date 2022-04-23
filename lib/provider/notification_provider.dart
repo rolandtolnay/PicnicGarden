@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:picnicgarden/provider/restaurant_provider.dart';
 
@@ -39,7 +40,7 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
     required TopicProvider topicProvider,
     required TableProvider tableProvider,
     required RestaurantProvider restaurantProvider,
-  })   : _authProvider = authProvider,
+  })  : _authProvider = authProvider,
         _topicProvider = topicProvider,
         _tableProvider = tableProvider,
         super(
@@ -57,14 +58,18 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
       print('[ERROR] NotificationProvider init with no authenticated user');
     }
 
-    _initLocalNotifications();
-    _listenOnPushNotifications();
+    if (!kIsWeb) {
+      _initLocalNotifications();
+      _listenOnPushNotifications();
+    }
     _listenOnTableSelected();
     _listenOnSubscribedTopic();
   }
 
   @override
   Future requestPermissions() async {
+    if (kIsWeb) return;
+
     try {
       final settings = await _messaging.requestPermission();
       if (settings.authorizationStatus == AuthorizationStatus.authorized) {
