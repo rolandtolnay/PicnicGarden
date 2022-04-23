@@ -20,7 +20,8 @@ abstract class NotificationProvider extends EntityProvider {
   Future requestPermissions();
 
   UnmodifiableListView<Notification> notificationsExcludingTable(
-      TableEntity table);
+    TableEntity table,
+  );
   UnmodifiableListView<Notification> notificationsForTable(TableEntity table);
 
   Future<PGError?> postNotificationForOrder(Order order);
@@ -86,7 +87,8 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
 
   @override
   UnmodifiableListView<Notification> notificationsExcludingTable(
-      TableEntity table) {
+    TableEntity table,
+  ) {
     return UnmodifiableListView<Notification>(
       entities
           .where((n) =>

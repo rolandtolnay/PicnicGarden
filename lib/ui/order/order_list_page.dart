@@ -46,9 +46,6 @@ class OrderListPage extends StatelessWidget {
         error?.showInDialog(context);
       },
     );
-    return OrderList(
-      items: builder.buildListItems(),
-      showTimer: showTimer,
-    );
+    return OrderList(items: builder.buildListItems(), showTimer: showTimer);
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:picnicgarden/ui/home/widgets/table_name_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../../provider/di.dart';
@@ -49,9 +50,23 @@ class _HomePageWebBody extends StatelessWidget {
     }
 
     return GridView.count(
-      crossAxisCount: 3,
+      crossAxisCount: 4,
+      childAspectRatio: 0.7,
       children: tableProvider.tables
-          .map((table) => OrderListPage(table: table, showTimer: false))
+          .map(
+            (table) => Column(
+              children: [
+                Container(
+                  color: Theme.of(context).colorScheme.primary,
+                  child: TableNameWidget(
+                    table: table,
+                    showNotifications: false,
+                  ),
+                ),
+                Expanded(child: OrderListPage(table: table, showTimer: false)),
+              ],
+            ),
+          )
           .toList(),
     );
   }
