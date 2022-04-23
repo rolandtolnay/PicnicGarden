@@ -44,19 +44,16 @@ class TableNameWidget extends StatelessWidget {
       );
     }
 
-    return Container(
-      color: colorScheme.primary,
-      child: InkWell(
-        onTap: onTapped,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.tab, size: 24, color: textColor),
-            const SizedBox(width: 8.0),
-            label,
-            const SizedBox(width: 16.0),
-          ],
-        ),
+    return InkWell(
+      onTap: onTapped,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.tab, size: 24, color: textColor),
+          const SizedBox(width: 8.0),
+          label,
+          const SizedBox(width: 16.0),
+        ],
       ),
     );
   }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:picnicgarden/ui/common/build_context_ext_screen_size.dart';
+import 'package:picnicgarden/ui/common/max_width_container.dart';
 import 'package:provider/provider.dart';
 
 import '../../../logic/pg_error.dart';
@@ -59,17 +61,26 @@ class OrderAddDialog extends StatelessWidget {
       child: Text('CANCEL'),
     );
 
-    return Dialog(
-      elevation: 2,
-      child: DefaultTabController(
-        length: RecipeTabs.values.length,
-        child: Scaffold(
-          persistentFooterButtons: [cancelButton],
-          body: Column(
-            children: [
-              tabBar,
-              Expanded(child: tabBarView),
-            ],
+    return MaxWidthContainer(
+      child: Dialog(
+        elevation: 2,
+        child: DefaultTabController(
+          length: RecipeTabs.values.length,
+          child: Scaffold(
+            body: Column(
+              children: [
+                tabBar,
+                Expanded(child: tabBarView),
+                Divider(height: 8, thickness: 2),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: EdgeInsets.all(context.isTabletScreen ? 16.0 : 8),
+                    child: cancelButton,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

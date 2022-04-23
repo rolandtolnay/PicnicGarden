@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:picnicgarden/model/table_entity.dart';
 import 'package:provider/provider.dart';
 
 import '../../provider/di.dart';
 import '../../provider/restaurant_provider.dart';
 import '../../provider/table_provider.dart';
+import '../common/dialog_builder.dart';
 import '../order/order_list/order_list_page.dart';
 import 'widgets/table_name_widget.dart';
 
@@ -36,7 +38,6 @@ class _HomePageWideBody extends StatelessWidget {
     }
 
     final screenWidth = MediaQuery.of(context).size.width;
-
     return GridView.count(
       crossAxisCount: (screenWidth / _maxTableWidth).round(),
       childAspectRatio: 0.7,
@@ -44,7 +45,7 @@ class _HomePageWideBody extends StatelessWidget {
         (table) {
           return Column(
             children: [
-              TableNameWidget(table: table, showNotifications: false),
+              _buildTableHeader(context, table),
               Expanded(
                 child: OrderListPage(
                   table: table,
@@ -56,6 +57,41 @@ class _HomePageWideBody extends StatelessWidget {
           );
         },
       ).toList(),
+    );
+  }
+
+  Material _buildTableHeader(BuildContext context, TableEntity table) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    final orderAddButton = IconButton(
+      color: colorScheme.onPrimary,
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (_) => DialogBuilder.of(context).buildOrderAdd(
+            table: table,
+          ),
+        );
+      },
+      icon: const Icon(Icons.add, size: 32),
+    );
+
+    return Material(
+      color: colorScheme.primary,
+      elevation: 4,
+      child: Row(
+        children: [
+          const SizedBox(width: 16.0),
+          TableNameWidget(
+            table: table,
+            showNotifications: false,
+          ),
+          Spacer(),
+          orderAddButton,
+          const SizedBox(width: 16.0),
+        ],
+      ),
     );
   }
 }
