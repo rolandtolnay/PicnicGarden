@@ -1,0 +1,49 @@
+import 'package:flutter/material.dart';
+
+import '../../../model/order.dart';
+import '../../../model/phase.dart';
+import 'order_list_order_item.dart';
+import 'order_list_phase_item.dart';
+
+abstract class OrderListItem<T> {
+  Color? get backgroundColor;
+
+  Widget buildContent(BuildContext context);
+}
+
+class OrderListItemBuilder {
+  final List<Phase>? phases;
+  final List<Order>? orders;
+
+  OrderListItemBuilder({this.phases, this.orders});
+
+  List<OrderListItem> buildListItems() {
+    final sortedPhases = List.from(phases!);
+    sortedPhases.sort((a, b) => a.number.compareTo(b.number));
+
+    // ignore: omit_local_variable_types
+    final Map<String, List<Order>> phaseMap =
+        orders!.fold(<String, List<Order>>{}, (map, order) {
+      final phaseKey = order.phase.id;
+      if (map[phaseKey] == null) {
+        map[phaseKey] = [order];
+      } else {
+        map[phaseKey]!.add(order);
+      }
+      return map;
+    });
+    for (var orderList in phaseMap.values) {
+      orderList.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+    }
+
+    return sortedPhases.fold(<OrderListItem>[], (list, phase) {
+      list.add(OrderListPhaseItem(phase));
+      if (phaseMap[phase.id] != null) {
+        list.addAll(
+          phaseMap[phase.id]!.map(OrderListOrderItem.new),
+        );
+      }
+      return list;
+    });
+  }
+}
