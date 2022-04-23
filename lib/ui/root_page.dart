@@ -18,6 +18,6 @@ class RootPage extends StatelessWidget {
             value: di<RestaurantProvider>(),
             child: RestaurantPicker(),
           )
-        : Scaffold(body: Center(child: CircularProgressIndicator()));
+        : const Scaffold(body: Center(child: CircularProgressIndicator()));
   }
 }

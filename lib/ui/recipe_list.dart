@@ -7,83 +7,54 @@ import '../model/phase.dart';
 import '../model/recipe.dart';
 import '../provider/order/order_builder.dart';
 import '../provider/phase_provider.dart';
-import 'common/list_item_widget.dart';
-import 'common/dialog_title.dart';
+import 'phase/phase_picker_dialog.dart';
 
 class RecipeList extends StatelessWidget {
-  const RecipeList(this.recipes, {this.onOrderCreated, Key? key})
+  final List<Recipe> recipeList;
+  final ValueChanged<Order>? onOrderCreated;
+
+  const RecipeList({required this.recipeList, this.onOrderCreated, Key? key})
       : super(key: key);
 
-  final ValueChanged<Order>? onOrderCreated;
-  final List<Recipe> recipes;
-
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return ListView.separated(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: ListView.separated(
-          itemBuilder: (context, index) {
-            final recipe = recipes[index];
-
-            return ListTile(
-              title: Text(recipe.name),
-              onTap: () async {
-                final phases = context.read<PhaseProvider>().phases;
-
-                Phase? phase;
-                if (recipe.autoPhase == null || recipe.autoPhase!.isEmpty) {
-                  phase = await showDialog(
-                    context: context,
-                    builder: (_) => PhasePickerDialog(
-                      phases.where((p) => p.selectable).toList(),
-                    ),
-                  );
-                } else {
-                  phase = phases.firstWhereOrNull(
-                    (p) => p.id == recipe.autoPhase,
-                  );
-                }
-
-                if (phase != null) {
-                  context.read<OrderBuilder>().setRecipe(recipe);
-                  context.read<OrderBuilder>().setPhase(phase);
-                  final order = context.read<OrderBuilder>().makeOrder();
-                  if (order != null) {
-                    onOrderCreated?.call(order);
-                  }
-                }
-              },
-            );
-          },
-          separatorBuilder: (_, __) => Divider(),
-          itemCount: recipes.length),
-    );
-  }
-}
-
-class PhasePickerDialog extends StatelessWidget {
-  const PhasePickerDialog(this.phases, {Key? key}) : super(key: key);
-
-  final List<Phase> phases;
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const DialogTitle(text: 'Choose phase', icon: Icons.timelapse),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: phases.map((p) => _buildPhaseItem(p, context)).toList(),
-      ),
+      itemCount: recipeList.length,
+      itemBuilder: (context, index) {
+        final recipe = recipeList[index];
+        return ListTile(
+          title: Text(recipe.name),
+          onTap: () => _onRecipeTapped(recipe, context),
+        );
+      },
+      separatorBuilder: (_, __) => Divider(),
     );
   }
 
-  Padding _buildPhaseItem(Phase phase, BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(4.0),
-      child: ListItemWidget(
-        phase.name,
-        onTapped: () => Navigator.of(context).pop(phase),
-      ),
-    );
+  void _onRecipeTapped(Recipe recipe, BuildContext context) async {
+    final phases = context.read<PhaseProvider>().phases;
+
+    Phase? selectedPhase;
+    if (recipe.autoPhase == null || recipe.autoPhase!.isEmpty) {
+      selectedPhase = await showDialog(
+        context: context,
+        builder: (_) => PhasePickerDialog(
+          phaseList: phases.where((p) => p.selectable).toList(),
+        ),
+      );
+    } else {
+      selectedPhase = phases.firstWhereOrNull(
+        (p) => p.id == recipe.autoPhase,
+      );
+    }
+    if (selectedPhase == null) return;
+
+    context.read<OrderBuilder>().setRecipe(recipe);
+    context.read<OrderBuilder>().setPhase(selectedPhase);
+    final order = context.read<OrderBuilder>().makeOrder();
+    if (order != null) {
+      onOrderCreated?.call(order);
+    }
   }
 }

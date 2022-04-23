@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
-import '../../logic/pg_error.dart';
-import '../../model/table_entity.dart';
-import '../../provider/order/order_provider.dart';
-import '../../provider/order/order_status_provider.dart';
-import '../../provider/phase_provider.dart';
-import 'items/order_list_item_builder.dart';
-import 'items/order_list_phase_item.dart';
+import '../../../logic/pg_error.dart';
+import '../../../model/table_entity.dart';
+import '../../../provider/order/order_provider.dart';
+import '../../../provider/order/order_status_provider.dart';
+import '../../../provider/phase_provider.dart';
+import 'order_list_item_builder.dart';
+import 'order_list_phase_item.dart';
 
 class OrderListPage extends StatelessWidget {
   final TableEntity table;

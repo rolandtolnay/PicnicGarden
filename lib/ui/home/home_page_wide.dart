@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../../provider/di.dart';
 import '../../provider/restaurant_provider.dart';
 import '../../provider/table_provider.dart';
-import '../order/order_list_page.dart';
+import '../order/order_list/order_list_page.dart';
 import 'widgets/table_name_widget.dart';
 
 const _maxTableWidth = 360;

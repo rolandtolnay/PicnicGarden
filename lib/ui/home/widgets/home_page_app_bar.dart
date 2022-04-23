@@ -3,10 +3,10 @@ import 'package:flutter/material.dart' hide Table;
 
 import 'package:provider/provider.dart';
 
-import '../../model/table_entity.dart';
-import '../../provider/topic_provider.dart';
+import '../../../model/table_entity.dart';
+import '../../../provider/topic_provider.dart';
 import 'topic_subscriber_dialog.dart';
-import 'widgets/table_name_widget.dart';
+import 'table_name_widget.dart';
 
 class HomePageAppBar extends StatelessWidget {
   const HomePageAppBar(

@@ -3,11 +3,11 @@ import 'dart:collection';
 import 'package:flutter/material.dart' hide Table;
 import 'package:provider/provider.dart';
 
-import '../../model/table_entity.dart';
-import '../../provider/notification_provider.dart';
-import '../../provider/order/order_provider.dart';
-import '../common/list_item_widget.dart';
-import '../common/dialog_title.dart';
+import '../../../model/table_entity.dart';
+import '../../../provider/notification_provider.dart';
+import '../../../provider/order/order_provider.dart';
+import '../../common/list_item_widget.dart';
+import '../../common/dialog_title.dart';
 
 class TablePickerDialog extends StatelessWidget {
   const TablePickerDialog(this.tables, {this.selectedTable, Key? key})
