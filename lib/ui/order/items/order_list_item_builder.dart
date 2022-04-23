@@ -29,6 +29,7 @@ class OrderListItemBuilder {
     final sortedPhases = List.from(phases);
     sortedPhases.sort((a, b) => a.number.compareTo(b.number));
 
+    // Creates a map of phase id, and matching list of orders
     // ignore: omit_local_variable_types
     final Map<String, List<Order>> phaseMap =
         orders.fold(<String, List<Order>>{}, (map, order) {

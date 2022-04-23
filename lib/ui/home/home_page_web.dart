@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:picnicgarden/provider/restaurant_provider.dart';
 import 'package:picnicgarden/ui/home/widgets/table_name_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -17,6 +18,8 @@ class HomePageWeb extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final restaurant = di<RestaurantProvider>().selectedRestaurant!;
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: di<TableProvider>()),
@@ -32,7 +35,13 @@ class HomePageWeb extends StatelessWidget {
         color: Theme.of(context).colorScheme.primary,
         child: SafeArea(
           bottom: false,
-          child: Scaffold(body: _HomePageWebBody()),
+          child: Scaffold(
+            appBar: AppBar(
+              backgroundColor: Colors.black87,
+              title: Text(restaurant.name),
+            ),
+            body: _HomePageWebBody(),
+          ),
         ),
       ),
     );
@@ -50,7 +59,7 @@ class _HomePageWebBody extends StatelessWidget {
     }
 
     return GridView.count(
-      crossAxisCount: 4,
+      crossAxisCount: 5,
       childAspectRatio: 0.7,
       children: tableProvider.tables
           .map(
