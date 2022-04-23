@@ -14,8 +14,10 @@ import 'order_list.dart';
 
 class OrderListPage extends StatelessWidget {
   final TableEntity table;
+  final bool showTimer;
 
-  const OrderListPage({Key? key, required this.table}) : super(key: key);
+  const OrderListPage({Key? key, required this.table, required this.showTimer})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +36,7 @@ class OrderListPage extends StatelessWidget {
     final builder = OrderListItemBuilder(
       orders: provider.ordersForTable(table),
       phases: phases,
-    );
-    return OrderList(
-      builder.buildListItems(),
+      showTimer: showTimer,
       onOrderTapped: (order) async {
         final provider = context.read<OrderProvider>();
         final error = await provider.commitNextFlow(
@@ -45,6 +45,10 @@ class OrderListPage extends StatelessWidget {
         );
         error?.showInDialog(context);
       },
+    );
+    return OrderList(
+      items: builder.buildListItems(),
+      showTimer: showTimer,
     );
   }
 }

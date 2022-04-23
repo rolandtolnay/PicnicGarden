@@ -51,7 +51,7 @@ class _HomePageWebBody extends StatelessWidget {
     return GridView.count(
       crossAxisCount: 3,
       children: tableProvider.tables
-          .map((table) => OrderListPage(table: table))
+          .map((table) => OrderListPage(table: table, showTimer: false))
           .toList(),
     );
   }

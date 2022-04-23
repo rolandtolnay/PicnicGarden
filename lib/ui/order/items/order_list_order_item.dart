@@ -6,8 +6,11 @@ import 'order_list_item_builder.dart';
 
 class OrderListOrderItem implements OrderListItem<Order> {
   final Order order;
+  final bool showTimer;
 
-  OrderListOrderItem(this.order);
+  final ValueChanged<Order>? onTapped;
+
+  OrderListOrderItem(this.order, {required this.showTimer, this.onTapped});
 
   @override
   Color get backgroundColor => HexColor.fromHex(order.currentStatus.colorHex);
@@ -18,6 +21,7 @@ class OrderListOrderItem implements OrderListItem<Order> {
     final textTheme = theme.textTheme;
 
     return ListTile(
+      onTap: () => onTapped?.call(order),
       title: Padding(
         padding: const EdgeInsets.symmetric(vertical: 4.0),
         child: Row(
@@ -32,11 +36,13 @@ class OrderListOrderItem implements OrderListItem<Order> {
                   style: textTheme.bodyText2!
                       .copyWith(color: theme.unselectedWidgetColor),
                 ),
-                const SizedBox(height: 4.0),
-                Text(
-                  order.currentDuration.description,
-                  style: textTheme.headline5,
-                )
+                if (showTimer) ...[
+                  const SizedBox(height: 4.0),
+                  Text(
+                    order.currentDuration.description,
+                    style: textTheme.headline5,
+                  )
+                ]
               ],
             )
           ],

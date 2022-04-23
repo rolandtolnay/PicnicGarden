@@ -12,18 +12,26 @@ abstract class OrderListItem<T> {
 }
 
 class OrderListItemBuilder {
-  final List<Phase>? phases;
-  final List<Order>? orders;
+  final List<Phase> phases;
+  final List<Order> orders;
 
-  OrderListItemBuilder({this.phases, this.orders});
+  final bool showTimer;
+  final ValueChanged<Order>? onOrderTapped;
+
+  OrderListItemBuilder({
+    required this.phases,
+    required this.orders,
+    required this.showTimer,
+    this.onOrderTapped,
+  });
 
   List<OrderListItem> buildListItems() {
-    final sortedPhases = List.from(phases!);
+    final sortedPhases = List.from(phases);
     sortedPhases.sort((a, b) => a.number.compareTo(b.number));
 
     // ignore: omit_local_variable_types
     final Map<String, List<Order>> phaseMap =
-        orders!.fold(<String, List<Order>>{}, (map, order) {
+        orders.fold(<String, List<Order>>{}, (map, order) {
       final phaseKey = order.phase.id;
       if (map[phaseKey] == null) {
         map[phaseKey] = [order];
@@ -40,7 +48,13 @@ class OrderListItemBuilder {
       list.add(OrderListPhaseItem(phase));
       if (phaseMap[phase.id] != null) {
         list.addAll(
-          phaseMap[phase.id]!.map(OrderListOrderItem.new),
+          phaseMap[phase.id]!.map(
+            (order) => OrderListOrderItem(
+              order,
+              showTimer: showTimer,
+              onTapped: onOrderTapped,
+            ),
+          ),
         );
       }
       return list;

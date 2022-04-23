@@ -12,6 +12,7 @@ class OrderListPhaseItem implements OrderListItem<Phase> {
   @override
   Widget buildContent(BuildContext context) {
     return ListTile(
+      enabled: false,
       tileColor: Theme.of(context).colorScheme.surface,
       title: DialogTitle(
         text: phase.name,
