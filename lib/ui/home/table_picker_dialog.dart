@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import '../../model/table.dart';
 import '../../provider/notification_provider.dart';
 import '../../provider/order/order_provider.dart';
-import '../common/dialog_item.dart';
+import '../common/list_item.dart';
 import '../common/dialog_title.dart';
 
 class TablePickerDialog extends StatelessWidget {
@@ -31,7 +31,7 @@ class TablePickerDialog extends StatelessWidget {
           mainAxisSpacing: 8.0,
           crossAxisSpacing: 8.0,
           children: tables
-              .map((table) => DialogItem(
+              .map((table) => ListItem(
                     table.name,
                     isSelected: table == selectedTable,
                     isMarked: orderProvider.ordersForTable(table).isNotEmpty,

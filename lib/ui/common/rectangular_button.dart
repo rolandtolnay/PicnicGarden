@@ -61,15 +61,15 @@ class RectangularButton extends StatelessWidget {
   Widget _buildOutlineButton(BuildContext context) {
     return SizedBox(
       height: 50.0,
-      child: OutlineButton(
-        textColor: textColor ?? Theme.of(context).colorScheme.primaryContainer,
-        borderSide: BorderSide(
-          color: borderColor ??
-              Theme.of(context)
-                  .colorScheme
-                  .primaryContainer, //Color of the border
-          style: BorderStyle.solid, //Style of the border
-          width: 2, //width of the border
+      child: OutlinedButton(
+        style: OutlinedButton.styleFrom(
+          side: BorderSide(
+            color:
+                borderColor ?? Theme.of(context).colorScheme.primaryContainer,
+            style: BorderStyle.solid,
+            width: 2,
+          ),
+          primary: textColor ?? Theme.of(context).colorScheme.primaryContainer,
         ),
         onPressed: onPressed,
         child: _buildButtonChild(context),
@@ -80,9 +80,12 @@ class RectangularButton extends StatelessWidget {
   Widget _buildFlatButton(BuildContext context) {
     return SizedBox(
       height: 50.0,
-      child: FlatButton(
-        color: color ?? Theme.of(context).colorScheme.primaryContainer,
-        textColor: textColor ?? Theme.of(context).colorScheme.onPrimary,
+      child: TextButton(
+        style: TextButton.styleFrom(
+          backgroundColor:
+              color ?? Theme.of(context).colorScheme.primaryContainer,
+          primary: textColor ?? Theme.of(context).colorScheme.onPrimary,
+        ),
         onPressed: onPressed,
         child: _buildButtonChild(context),
       ),

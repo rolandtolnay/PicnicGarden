@@ -54,10 +54,8 @@ extension ErrorHandling on PGError {
         title: Text('Oops!'),
         content: Text(message),
         actions: [
-          FlatButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
+          TextButton(
+            onPressed: () => Navigator.pop(context),
             child: const Text('OK'),
           ),
         ],

@@ -7,11 +7,12 @@ import '../model/phase.dart';
 import '../model/recipe.dart';
 import '../provider/order/order_builder.dart';
 import '../provider/phase_provider.dart';
-import 'common/dialog_item.dart';
+import 'common/list_item.dart';
 import 'common/dialog_title.dart';
 
 class RecipeList extends StatelessWidget {
-  const RecipeList(this.recipes, {this.onOrderCreated, Key? key}) : super(key: key);
+  const RecipeList(this.recipes, {this.onOrderCreated, Key? key})
+      : super(key: key);
 
   final ValueChanged<Order>? onOrderCreated;
   final List<Recipe> recipes;
@@ -71,15 +72,17 @@ class PhasePickerDialog extends StatelessWidget {
       title: const DialogTitle(text: 'Choose phase', icon: Icons.timelapse),
       content: Column(
         mainAxisSize: MainAxisSize.min,
-        children: [
-          ...phases.map((phase) => Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: DialogItem(
-                  phase.name,
-                  onTapped: () => Navigator.of(context).pop(phase),
-                ),
-              )),
-        ],
+        children: phases.map((p) => _buildPhaseItem(p, context)).toList(),
+      ),
+    );
+  }
+
+  Padding _buildPhaseItem(Phase phase, BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: ListItem(
+        phase.name,
+        onTapped: () => Navigator.of(context).pop(phase),
       ),
     );
   }

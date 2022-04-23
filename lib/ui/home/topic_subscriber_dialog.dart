@@ -33,7 +33,7 @@ class TopicSubscriberDialog extends StatelessWidget {
         children: [...content],
       ),
       actions: [
-        FlatButton(
+        TextButton(
           onPressed: () => Navigator.of(context).pop(),
           child: const Text('CLOSE'),
         )
