@@ -93,4 +93,6 @@
 google-services.json
 GoogleService-Info.plist
 .firebaserc
+lib/firebase_options.dart
+.firebase/*
 

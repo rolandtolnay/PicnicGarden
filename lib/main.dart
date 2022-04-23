@@ -6,6 +6,8 @@ import 'provider/auth_provider.dart';
 import 'provider/di.dart';
 import 'ui/root_page.dart';
 
+import 'firebase_options.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setupProviders();
@@ -13,7 +15,9 @@ Future<void> main() async {
 }
 
 class Application extends StatelessWidget {
-  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+  final Future<FirebaseApp> _initialization = Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   Application({Key? key}) : super(key: key);
 
