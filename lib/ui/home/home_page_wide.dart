@@ -1,18 +1,18 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
-import 'package:picnicgarden/ui/home/table/table_filter_dialog.dart';
-import 'package:picnicgarden/ui/home/table/table_filter_provider.dart';
-import 'package:picnicgarden/ui/order/order_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../domain/model/table_entity.dart';
 import '../../injection.dart';
-import '../restaurant/restaurant_provider.dart';
-import 'table/table_provider.dart';
 import '../order/order_add/order_add_dialog.dart';
 import '../order/order_list/order_list_dialog.dart';
 import '../order/order_list/order_list_page.dart';
+import '../order/order_provider.dart';
+import '../restaurant/restaurant_provider.dart';
+import 'table/table_filter_dialog.dart';
+import 'table/table_filter_provider.dart';
 import 'table/table_name_widget.dart';
+import 'table/table_provider.dart';
 
 const _maxTableWidth = 360;
 
@@ -28,32 +28,56 @@ class HomePageWide extends StatelessWidget {
   }
 
   AppBar _buildAppBar(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
     final restaurant = di<RestaurantProvider>().selectedRestaurant;
 
     final provider = context.watch<TableFilterProvider>();
     final filterButton = Badge(
-      showBadge: provider.hasFiltersEnabled,
+      showBadge: provider.filterCount > 0,
       toAnimate: false,
-      badgeColor: Theme.of(context).colorScheme.secondary,
-      position: BadgePosition.topStart(top: 12, start: 12),
+      badgeColor: colorScheme.secondary,
+      position: BadgePosition.topStart(top: 0, start: 8),
       padding: const EdgeInsets.all(6.0),
       child: TextButton.icon(
-        style: TextButton.styleFrom(
-          primary: Colors.white,
-          textStyle: textTheme.subtitle1,
-        ),
+        style: TextButton.styleFrom(primary: Colors.white),
         onPressed: () => TableFilterDialog.show(context),
         icon: Icon(Icons.filter_alt),
-        label: Text('FILTER TABLES'),
+        label: RichText(
+          text: TextSpan(
+            children: [
+              TextSpan(
+                text: 'FILTER TABLES',
+                style: textTheme.subtitle1?.copyWith(color: Colors.white),
+              ),
+              if (provider.filterCount > 0)
+                TextSpan(
+                  text: ' (${provider.filterCount})',
+                  style: textTheme.subtitle1?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: colorScheme.secondary,
+                  ),
+                )
+            ],
+          ),
+          textAlign: TextAlign.start,
+        ),
       ),
     );
 
     return AppBar(
       backgroundColor: Colors.black87,
       title: Text(restaurant?.name ?? ''),
-      leadingWidth: 168,
-      leading: filterButton,
+      leadingWidth: 200,
+      automaticallyImplyLeading: false,
+      leading: Align(
+        alignment: Alignment.centerLeft,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 4.0),
+          child: filterButton,
+        ),
+      ),
     );
   }
 }

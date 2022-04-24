@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:picnicgarden/domain/model/table_entity.dart';
+import 'package:picnicgarden/ui/home/table/table_filter_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../order_provider.dart';
@@ -65,7 +66,8 @@ extension on BuildContext {
         ChangeNotifierProvider.value(value: read<PhaseProvider>()),
         ChangeNotifierProvider.value(value: read<OrderStatusProvider>()),
         ChangeNotifierProvider.value(value: read<TableProvider>()),
-        ChangeNotifierProvider.value(value: read<RecipeProvider>())
+        ChangeNotifierProvider.value(value: read<RecipeProvider>()),
+        ChangeNotifierProvider.value(value: read<TableFilterProvider>())
       ],
       child: OrderListDialog(table: table),
     );

@@ -10,7 +10,7 @@ abstract class TableFilterProvider extends EntityProvider {
   Map<Attribute, bool> get showingAttributes;
   void setAttributeShowing(bool showing, {required Attribute attribute});
 
-  bool get hasFiltersEnabled;
+  int get filterCount;
 }
 
 extension Convenience on TableFilterProvider {
@@ -60,7 +60,10 @@ class TableFilterProviderImpl extends FIREntityProvider<Attribute>
   }
 
   @override
-  bool get hasFiltersEnabled =>
-      !_showingEmptyTables ||
-      _showingAttributes.values.any((showing) => !showing);
+  int get filterCount {
+    var count = 0;
+    if (!showingEmptyTables) count++;
+    count += _showingAttributes.values.where((showing) => !showing).length;
+    return count;
+  }
 }
