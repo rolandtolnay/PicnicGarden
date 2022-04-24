@@ -17,6 +17,8 @@ class TopicSubscriberDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
     final provider = context.watch<TopicProvider>();
 
     var content = <Widget>[Center(child: CircularProgressIndicator())];
@@ -26,19 +28,42 @@ class TopicSubscriberDialog extends StatelessWidget {
           .toList();
     }
 
-    return AlertDialog(
+    // TODO: Extract common Dialog widget
+    return Dialog(
       elevation: 2,
-      title: Text('Subscribed topics'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [...content],
+      insetPadding: EdgeInsets.symmetric(
+        horizontal: 16.0,
+        vertical: 24,
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text('CLOSE'),
-        )
-      ],
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 24),
+            Row(
+              children: [
+                const SizedBox(width: 16.0),
+                const Icon(Icons.notifications),
+                const SizedBox(width: 8.0),
+                Text('Subscribed topics', style: textTheme.headline6),
+              ],
+            ),
+            const SizedBox(height: 16),
+            ...content,
+            Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('CLOSE'),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
     );
   }
 

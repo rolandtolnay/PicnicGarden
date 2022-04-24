@@ -1,5 +1,6 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
+import 'package:picnicgarden/ui/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../domain/model/table_entity.dart';
@@ -31,17 +32,21 @@ class HomePageWide extends StatelessWidget {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
-    final restaurant = di<RestaurantProvider>().selectedRestaurant;
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-    final provider = context.watch<TableFilterProvider>();
+    final filterProvider = context.watch<TableFilterProvider>();
+    final themeProvider = context.watch<ThemeModeProvider>();
+
+    final badgeColor =
+        isDarkMode ? colorScheme.secondary : colorScheme.secondaryContainer;
     final filterButton = Badge(
-      showBadge: provider.filterCount > 0,
+      showBadge: filterProvider.filterCount > 0,
       toAnimate: false,
-      badgeColor: colorScheme.secondary,
-      position: BadgePosition.topStart(top: 0, start: 8),
+      badgeColor: badgeColor,
+      position: BadgePosition.topStart(top: 4, start: 12),
       padding: const EdgeInsets.all(6.0),
       child: TextButton.icon(
-        style: TextButton.styleFrom(primary: Colors.white),
+        style: TextButton.styleFrom(primary: colorScheme.onPrimary),
         onPressed: () => TableFilterDialog.show(context),
         icon: Icon(Icons.filter_alt),
         label: RichText(
@@ -49,14 +54,16 @@ class HomePageWide extends StatelessWidget {
             children: [
               TextSpan(
                 text: 'FILTER TABLES',
-                style: textTheme.subtitle1?.copyWith(color: Colors.white),
+                style: textTheme.subtitle1?.copyWith(
+                  color: colorScheme.onPrimary,
+                ),
               ),
-              if (provider.filterCount > 0)
+              if (filterProvider.filterCount > 0)
                 TextSpan(
-                  text: ' (${provider.filterCount})',
+                  text: ' (${filterProvider.filterCount})',
                   style: textTheme.subtitle1?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: colorScheme.secondary,
+                    fontWeight: FontWeight.w500,
+                    color: badgeColor,
                   ),
                 )
             ],
@@ -66,18 +73,27 @@ class HomePageWide extends StatelessWidget {
       ),
     );
 
+    final restaurant = di<RestaurantProvider>().selectedRestaurant;
     return AppBar(
-      backgroundColor: Colors.black87,
       title: Text(restaurant?.name ?? ''),
-      leadingWidth: 200,
+      leadingWidth: 240,
       automaticallyImplyLeading: false,
       leading: Align(
         alignment: Alignment.centerLeft,
-        child: Padding(
-          padding: const EdgeInsets.only(left: 4.0),
-          child: filterButton,
-        ),
+        child: filterButton,
       ),
+      actions: [
+        TextButton.icon(
+          onPressed: () {
+            themeProvider.setThemeMode(
+              isDarkMode ? ThemeMode.light : ThemeMode.dark,
+            );
+          },
+          icon: Icon(isDarkMode ? Icons.bedtime : Icons.brightness_5),
+          label: Text(isDarkMode ? 'DARK THEME' : 'LIGHT THEME'),
+          style: TextButton.styleFrom(primary: colorScheme.onPrimary),
+        )
+      ],
     );
   }
 }

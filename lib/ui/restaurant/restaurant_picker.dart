@@ -13,14 +13,7 @@ class RestaurantPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Theme.of(context).backgroundColor,
-      child: SafeArea(
-        child: Scaffold(
-          body: _RestaurantPickerBody(),
-        ),
-      ),
-    );
+    return Scaffold(body: _RestaurantPickerBody());
   }
 }
 
@@ -62,11 +55,11 @@ class _RestaurantPickerBody extends StatelessWidget {
         FittedBox(
           child: Text(
             'Choose a restaurant',
-            style: textTheme.headline4,
+            style: textTheme.headline3,
             textAlign: TextAlign.center,
           ),
         ),
-        const SizedBox(height: 48),
+        const SizedBox(height: 64),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: provider.restaurants.map((restaurant) {

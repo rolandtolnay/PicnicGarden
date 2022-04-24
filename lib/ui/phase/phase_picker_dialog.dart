@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../domain/model/phase.dart';
 import '../common/dialog_title.dart';
-import '../common/list_item_widget.dart';
+import '../common/rectangular_button.dart';
 
 class PhasePickerDialog extends StatelessWidget {
   final List<Phase> phaseList;
@@ -32,11 +32,14 @@ class PhasePickerDialog extends StatelessWidget {
   }
 
   Padding _buildPhaseItem(Phase phase, BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Padding(
-      padding: const EdgeInsets.all(4.0),
-      child: ListItemWidget(
-        phase.name,
-        onTapped: () => Navigator.of(context).pop(phase),
+      padding: const EdgeInsets.all(8.0),
+      child: RectangularButton.outlined(
+        title: phase.name,
+        textColor: colorScheme.primary,
+        borderColor: colorScheme.primaryContainer,
+        onPressed: () => Navigator.of(context).pop(phase),
       ),
     );
   }

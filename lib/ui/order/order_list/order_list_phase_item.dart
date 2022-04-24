@@ -14,6 +14,7 @@ class OrderListPhaseItem implements OrderListItem<Phase> {
     return ListTile(
       enabled: false,
       tileColor: Theme.of(context).colorScheme.surface,
+      dense: true,
       title: DialogTitle(
         text: phase.name,
         icon: Icons.timelapse,

@@ -1,4 +1,6 @@
 import 'package:get_it/get_it.dart';
+import 'package:picnicgarden/ui/theme_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'ui/auth_provider.dart';
 import 'ui/home/table/table_filter_provider.dart';
@@ -14,7 +16,7 @@ import 'ui/restaurant/restaurant_provider.dart';
 
 final di = GetIt.instance;
 
-void configureDependencies() {
+Future<void> configureDependencies() async {
   di.registerLazySingleton<AuthProvider>(
     () => FIRAuthProvider()..signIn(),
   );
@@ -40,6 +42,10 @@ void configureDependencies() {
   );
   di.registerLazySingleton<TableFilterProvider>(
     () => TableFilterProviderImpl(restaurantProvider: di())..fetchAttributes(),
+  );
+  final preferences = await SharedPreferences.getInstance();
+  di.registerLazySingleton<ThemeModeProvider>(
+    () => ThemeModeProviderImpl(preferences: preferences),
   );
 
   di.registerFactory<OrderProvider>(

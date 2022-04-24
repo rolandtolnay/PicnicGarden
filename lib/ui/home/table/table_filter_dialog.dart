@@ -63,6 +63,7 @@ class TableFilterDialog extends StatelessWidget {
     return MaxWidthContainer(
       maxWidth: kPhoneWidth,
       child: Dialog(
+        elevation: 2,
         insetPadding: EdgeInsets.symmetric(
           horizontal: 16.0,
           vertical: 24,

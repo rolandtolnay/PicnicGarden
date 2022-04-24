@@ -52,7 +52,6 @@ class OrderAddDialog extends StatelessWidget {
       child: TabBar(
         labelPadding: const EdgeInsets.only(top: 8.0),
         tabs: RecipeTabs.values.map((tab) => tab.buildTab(context)).toList(),
-        indicatorColor: Colors.white,
       ),
     );
     final tabBarView = Builder(
@@ -76,6 +75,10 @@ class OrderAddDialog extends StatelessWidget {
     return MaxWidthContainer(
       child: Dialog(
         elevation: 2,
+        insetPadding: EdgeInsets.symmetric(
+          horizontal: 16.0,
+          vertical: 24,
+        ),
         child: DefaultTabController(
           length: RecipeTabs.values.length,
           child: Scaffold(

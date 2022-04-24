@@ -4,10 +4,15 @@ import '../../domain/model/order.dart';
 
 extension SnackBarBuilder on SnackBar {
   static SnackBar orderSucces(Order order, BuildContext context) {
-    final textStyle = Theme.of(context).textTheme.subtitle1!.copyWith(
-          color: Theme.of(context).colorScheme.onBackground,
-          fontWeight: FontWeight.w500,
-        );
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
+
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final textStyle = textTheme.subtitle1?.copyWith(
+      fontWeight: FontWeight.bold,
+      color: isDarkMode ? colorScheme.onInverseSurface : colorScheme.onPrimary,
+    );
 
     return SnackBar(
       duration: Duration(milliseconds: 2000),
