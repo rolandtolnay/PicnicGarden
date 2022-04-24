@@ -30,19 +30,16 @@ class HomePageWide extends StatelessWidget {
 
   AppBar _buildAppBar(BuildContext context) {
     final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
+
     final colorScheme = theme.colorScheme;
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     final filterProvider = context.watch<TableFilterProvider>();
     final themeProvider = context.watch<ThemeModeProvider>();
 
-    final badgeColor =
-        isDarkMode ? colorScheme.secondary : colorScheme.secondaryContainer;
     final filterButton = Badge(
       showBadge: filterProvider.filterCount > 0,
       toAnimate: false,
-      badgeColor: badgeColor,
       position: BadgePosition.topStart(top: 4, start: 12),
       padding: const EdgeInsets.all(6.0),
       child: TextButton.icon(
@@ -54,16 +51,16 @@ class HomePageWide extends StatelessWidget {
             children: [
               TextSpan(
                 text: 'FILTER TABLES',
-                style: textTheme.subtitle1?.copyWith(
+                style: TextStyle(
                   color: colorScheme.onPrimary,
                 ),
               ),
               if (filterProvider.filterCount > 0)
                 TextSpan(
                   text: ' (${filterProvider.filterCount})',
-                  style: textTheme.subtitle1?.copyWith(
+                  style: TextStyle(
                     fontWeight: FontWeight.w500,
-                    color: badgeColor,
+                    color: colorScheme.onPrimary,
                   ),
                 )
             ],

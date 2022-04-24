@@ -34,6 +34,7 @@ class OrderListDialog extends StatelessWidget {
         child: Scaffold(
           floatingActionButton: OrderAddFloatingButton(),
           body: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Material(
                 elevation: 4,
