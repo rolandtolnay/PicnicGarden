@@ -1,16 +1,16 @@
 import 'package:get_it/get_it.dart';
-import 'package:picnicgarden/ui/home/table/table_filter_provider.dart';
-import 'ui/restaurant/restaurant_provider.dart';
 
 import 'ui/auth_provider.dart';
+import 'ui/home/table/table_filter_provider.dart';
+import 'ui/home/table/table_provider.dart';
 import 'ui/home/topic/notification_provider.dart';
+import 'ui/home/topic/topic_provider.dart';
 import 'ui/order/order_add/order_builder.dart';
-import 'ui/order/order_provider.dart';
 import 'ui/order/order_list/order_status_provider.dart';
+import 'ui/order/order_provider.dart';
 import 'ui/phase/phase_provider.dart';
 import 'ui/recipe/recipe_provider.dart';
-import 'ui/home/table/table_provider.dart';
-import 'ui/home/topic/topic_provider.dart';
+import 'ui/restaurant/restaurant_provider.dart';
 
 final di = GetIt.instance;
 
@@ -38,6 +38,9 @@ void configureDependencies() {
   di.registerLazySingleton<RestaurantProvider>(
     () => FIRRestaurantProvider()..fetchRestaurants(),
   );
+  di.registerLazySingleton<TableFilterProvider>(
+    () => TableFilterProviderImpl(restaurantProvider: di())..fetchAttributes(),
+  );
 
   di.registerFactory<OrderProvider>(
     () => FIROrderProvider(
@@ -59,5 +62,4 @@ void configureDependencies() {
   di.registerFactory<OrderBuilder>(
     () => OrderBuilderImpl(authProvider: di()),
   );
-  di.registerFactory<TableFilterProvider>(() => TableFilterProviderImpl());
 }

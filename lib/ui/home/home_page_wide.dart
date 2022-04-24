@@ -21,8 +21,8 @@ class HomePageWide extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => di<TableFilterProvider>(),
+    return ChangeNotifierProvider.value(
+      value: di<TableFilterProvider>(),
       builder: (context, _) {
         return Scaffold(
           appBar: _buildAppBar(context),
