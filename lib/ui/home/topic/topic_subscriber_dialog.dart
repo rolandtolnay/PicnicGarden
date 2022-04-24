@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:picnicgarden/model/topic.dart';
+import 'package:picnicgarden/domain/model/topic.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/extensions.dart';

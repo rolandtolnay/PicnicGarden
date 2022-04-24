@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:picnicgarden/model/table_entity.dart';
+import 'package:picnicgarden/domain/model/table_entity.dart';
 import 'package:provider/provider.dart';
 
 import '../order_provider.dart';
