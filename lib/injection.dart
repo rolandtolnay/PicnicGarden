@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:picnicgarden/ui/home/table/table_filter_provider.dart';
 import 'ui/restaurant/restaurant_provider.dart';
 
 import 'ui/auth_provider.dart';
@@ -56,6 +57,7 @@ void configureDependencies() {
     )..fetchOrderStatusList(),
   );
   di.registerFactory<OrderBuilder>(
-    () => PGOrderBuilder(authProvider: di()),
+    () => OrderBuilderImpl(authProvider: di()),
   );
+  di.registerFactory<TableFilterProvider>(() => TableFilterProviderImpl());
 }

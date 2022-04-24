@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:picnicgarden/ui/home/table/table_filter_dialog.dart';
+import 'package:picnicgarden/ui/home/table/table_filter_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../domain/model/table_entity.dart';
@@ -17,38 +19,35 @@ class HomePageWide extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _buildAppBar(context),
-      body: _HomePageWideBody(),
+    return ChangeNotifierProvider(
+      create: (_) => di<TableFilterProvider>(),
+      builder: (context, _) {
+        return Scaffold(
+          appBar: _buildAppBar(context),
+          body: _HomePageWideBody(),
+        );
+      },
     );
   }
 
   AppBar _buildAppBar(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final restaurant = di<RestaurantProvider>().selectedRestaurant;
+    final filterButton = TextButton.icon(
+      style: TextButton.styleFrom(
+        primary: Colors.white,
+        textStyle: textTheme.subtitle1,
+      ),
+      onPressed: () => TableFilterDialog.show(context),
+      icon: Icon(Icons.filter_alt),
+      label: Text('FILTER TABLES'),
+    );
+
     return AppBar(
       backgroundColor: Colors.black87,
       title: Text(restaurant?.name ?? ''),
       leadingWidth: 168,
-      leading: TextButton.icon(
-        style: TextButton.styleFrom(
-          primary: Colors.white,
-          textStyle: textTheme.subtitle1,
-        ),
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (_) {
-              return AlertDialog(
-                title: Text('Filter tables'),
-                content: Column(mainAxisSize: MainAxisSize.min, children: []),
-              );
-            },
-          );
-        },
-        icon: Icon(Icons.filter_alt),
-        label: Text('FILTER TABLES'),
-      ),
+      leading: filterButton,
     );
   }
 }

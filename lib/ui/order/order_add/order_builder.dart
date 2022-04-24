@@ -14,14 +14,14 @@ abstract class OrderBuilder {
   Order? makeOrder();
 }
 
-class PGOrderBuilder implements OrderBuilder {
+class OrderBuilderImpl implements OrderBuilder {
   final AuthProvider _authProvider;
   TableEntity? _table;
   Recipe? _recipe;
   Phase? _phase;
   OrderStatus? _orderStatus;
 
-  PGOrderBuilder({required AuthProvider authProvider})
+  OrderBuilderImpl({required AuthProvider authProvider})
       : _authProvider = authProvider;
 
   @override
