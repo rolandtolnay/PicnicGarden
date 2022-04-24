@@ -24,10 +24,10 @@ class TableFilterDialog extends StatelessWidget {
         CheckboxListTile(
           title: Text('Hide empty tables'),
           controlAffinity: ListTileControlAffinity.leading,
-          value: !provider.showingEmptyTables,
+          value: provider.hidingEmptyTables,
           onChanged: (value) {
             if (value == null) return;
-            provider.setShowingEmptyTables(!value);
+            provider.setShowingEmptyTables(value);
           },
         )
       ]),
