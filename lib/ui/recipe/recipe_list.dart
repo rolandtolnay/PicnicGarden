@@ -35,23 +35,18 @@ class RecipeList extends StatelessWidget {
   void _onRecipeTapped(Recipe recipe, BuildContext context) async {
     final phases = context.read<PhaseProvider>().phases;
 
-    Phase? selectedPhase;
+    Phase? phase;
     if (recipe.autoPhase == null || recipe.autoPhase!.isEmpty) {
-      selectedPhase = await showDialog(
-        context: context,
-        builder: (_) => PhasePickerDialog(
-          phaseList: phases.where((p) => p.selectable).toList(),
-        ),
+      phase = await context.showPhasePicker(
+        phaseList: phases.where((p) => p.selectable).toList(),
       );
     } else {
-      selectedPhase = phases.firstWhereOrNull(
-        (p) => p.id == recipe.autoPhase,
-      );
+      phase = phases.firstWhereOrNull((p) => p.id == recipe.autoPhase);
     }
-    if (selectedPhase == null) return;
+    if (phase == null) return;
 
     context.read<OrderBuilder>().setRecipe(recipe);
-    context.read<OrderBuilder>().setPhase(selectedPhase);
+    context.read<OrderBuilder>().setPhase(phase);
     final order = context.read<OrderBuilder>().makeOrder();
     if (order != null) {
       onOrderCreated?.call(order);

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:picnicgarden/model/table_entity.dart';
 import 'package:provider/provider.dart';
 
+import '../../model/table_entity.dart';
 import '../../provider/di.dart';
 import '../../provider/restaurant_provider.dart';
 import '../../provider/table_provider.dart';
-import '../common/dialog_builder.dart';
+import '../order/order_add/order_add_dialog.dart';
 import '../order/order_list/order_list_page.dart';
 import 'widgets/table_name_widget.dart';
 
@@ -66,14 +66,7 @@ class _HomePageWideBody extends StatelessWidget {
 
     final orderAddButton = IconButton(
       color: colorScheme.onPrimary,
-      onPressed: () {
-        showDialog(
-          context: context,
-          builder: (_) => DialogBuilder.of(context).buildOrderAdd(
-            table: table,
-          ),
-        );
-      },
+      onPressed: () => context.showOrderAddDialog(table: table),
       icon: const Icon(Icons.add, size: 32),
     );
 

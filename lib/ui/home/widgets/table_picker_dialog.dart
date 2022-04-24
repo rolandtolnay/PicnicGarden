@@ -1,19 +1,17 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart' hide Table;
 import 'package:provider/provider.dart';
 
 import '../../../model/table_entity.dart';
 import '../../../provider/notification_provider.dart';
 import '../../../provider/order/order_provider.dart';
-import '../../common/list_item_widget.dart';
 import '../../common/dialog_title.dart';
+import '../../common/list_item_widget.dart';
 
 class TablePickerDialog extends StatelessWidget {
   const TablePickerDialog(this.tables, {this.selectedTable, Key? key})
       : super(key: key);
 
-  final UnmodifiableListView<TableEntity> tables;
+  final List<TableEntity> tables;
   final TableEntity? selectedTable;
 
   @override
@@ -43,6 +41,34 @@ class TablePickerDialog extends StatelessWidget {
               .toList(),
         ),
       ),
+    );
+  }
+}
+
+extension BuildContextTablePicker on BuildContext {
+  Future<TableEntity?> showTablePicker({
+    required List<TableEntity> tableList,
+    TableEntity? selectedTable,
+  }) {
+    return showDialog<TableEntity?>(
+      context: this,
+      builder: (_) => _buildTablePicker(
+        tableList: tableList,
+        selectedTable: selectedTable,
+      ),
+    );
+  }
+
+  Widget _buildTablePicker({
+    required List<TableEntity> tableList,
+    TableEntity? selectedTable,
+  }) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: read<NotificationProvider>()),
+        ChangeNotifierProvider.value(value: read<OrderProvider>()),
+      ],
+      child: TablePickerDialog(tableList, selectedTable: selectedTable),
     );
   }
 }

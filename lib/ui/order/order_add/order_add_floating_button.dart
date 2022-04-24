@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../provider/order/order_status_provider.dart';
 import '../../../provider/table_provider.dart';
-import '../../common/dialog_builder.dart';
+import 'order_add_dialog.dart';
 
 class OrderAddFloatingButton extends StatelessWidget {
   const OrderAddFloatingButton({Key? key}) : super(key: key);
@@ -19,15 +19,9 @@ class OrderAddFloatingButton extends StatelessWidget {
       return Container();
     }
 
+    final table = tablePvd.selectedTable!;
     return FloatingActionButton(
-      onPressed: () {
-        showDialog(
-          context: context,
-          builder: (_) => DialogBuilder.of(context).buildOrderAdd(
-            table: tablePvd.selectedTable!,
-          ),
-        );
-      },
+      onPressed: () => context.showOrderAddDialog(table: table),
       child: const Icon(Icons.add),
     );
   }

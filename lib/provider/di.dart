@@ -1,5 +1,5 @@
 import 'package:get_it/get_it.dart';
-import 'package:picnicgarden/provider/restaurant_provider.dart';
+import 'restaurant_provider.dart';
 
 import 'auth_provider.dart';
 import 'notification_provider.dart';

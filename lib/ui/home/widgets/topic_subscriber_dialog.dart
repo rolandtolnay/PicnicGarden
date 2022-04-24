@@ -41,3 +41,19 @@ class TopicSubscriberDialog extends StatelessWidget {
     );
   }
 }
+
+extension BuildContextTopicSubscriber on BuildContext {
+  void showTopicSubcriberDialog() {
+    showDialog(
+      context: this,
+      builder: (_) => _buildTopicSubscriber(),
+    );
+  }
+
+  Widget _buildTopicSubscriber() {
+    return ChangeNotifierProvider.value(
+      value: read<TopicProvider>(),
+      child: TopicSubscriberDialog(),
+    );
+  }
+}

@@ -31,3 +31,12 @@ class PhasePickerDialog extends StatelessWidget {
     );
   }
 }
+
+extension BuildContextPhasePicker on BuildContext {
+  Future<Phase?> showPhasePicker({required List<Phase> phaseList}) {
+    return showDialog(
+      context: this,
+      builder: (_) => PhasePickerDialog(phaseList: phaseList),
+    );
+  }
+}

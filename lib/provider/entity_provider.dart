@@ -4,8 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:either_option/either_option.dart';
 import 'package:flutter/material.dart';
-import 'package:picnicgarden/logic/pg_error.dart';
-import 'package:picnicgarden/model/restaurant.dart';
+import '../logic/pg_error.dart';
+import '../model/restaurant.dart';
 
 import '../logic/api_response.dart';
 

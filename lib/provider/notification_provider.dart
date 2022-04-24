@@ -4,7 +4,7 @@ import 'package:collection/collection.dart' show IterableExtension;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:picnicgarden/provider/restaurant_provider.dart';
+import 'restaurant_provider.dart';
 
 import '../logic/api_response.dart';
 import '../logic/pg_error.dart';

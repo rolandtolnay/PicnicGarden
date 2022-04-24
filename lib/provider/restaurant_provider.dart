@@ -1,7 +1,7 @@
 import 'dart:collection';
 
-import 'package:picnicgarden/model/restaurant.dart';
-import 'package:picnicgarden/provider/entity_provider.dart';
+import '../model/restaurant.dart';
+import 'entity_provider.dart';
 
 abstract class RestaurantProvider extends EntityProvider {
   UnmodifiableListView<Restaurant> get restaurants;
@@ -16,8 +16,7 @@ class FIRRestaurantProvider extends FIREntityProvider<Restaurant>
     implements RestaurantProvider {
   Restaurant? _selectedRestaurant;
 
-  FIRRestaurantProvider()
-      : super('restaurants', Restaurant.fromJson);
+  FIRRestaurantProvider() : super('restaurants', Restaurant.fromJson);
 
   @override
   UnmodifiableListView<Restaurant> get restaurants =>

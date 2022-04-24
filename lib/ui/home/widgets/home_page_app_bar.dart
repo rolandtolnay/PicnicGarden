@@ -1,12 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide Table;
 
-import 'package:provider/provider.dart';
-
 import '../../../model/table_entity.dart';
-import '../../../provider/topic_provider.dart';
-import 'topic_subscriber_dialog.dart';
 import 'table_name_widget.dart';
+import 'topic_subscriber_dialog.dart';
 
 class HomePageAppBar extends StatelessWidget {
   const HomePageAppBar(
@@ -20,8 +17,9 @@ class HomePageAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
-      color: Theme.of(context).colorScheme.primary,
+      color: colorScheme.primary,
       child: Stack(
         alignment: Alignment.center,
         children: [
@@ -35,26 +33,14 @@ class HomePageAppBar extends StatelessWidget {
             child: Align(
               alignment: Alignment.centerRight,
               child: IconButton(
-                color: Theme.of(context).colorScheme.onPrimary,
+                color: colorScheme.onPrimary,
                 icon: Icon(Icons.settings),
-                onPressed: () => onSettingsPressed(context),
+                onPressed: () => context.showTopicSubcriberDialog(),
               ),
             ),
           )
         ],
       ),
-    );
-  }
-
-  void onSettingsPressed(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (_) {
-        return ChangeNotifierProvider.value(
-          value: context.read<TopicProvider>(),
-          child: TopicSubscriberDialog(),
-        );
-      },
     );
   }
 }

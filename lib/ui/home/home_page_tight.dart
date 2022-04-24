@@ -3,10 +3,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 import '../../logic/pg_error.dart';
-import '../../model/table_entity.dart';
-import '../../provider/notification_provider.dart';
-import '../../provider/order/order_provider.dart';
 import '../../provider/table_provider.dart';
+
 import '../common/empty_refreshable.dart';
 import '../order/order_add/order_add_floating_button.dart';
 import '../phase/phase_loader.dart';
@@ -54,37 +52,15 @@ class _HomePageTightBody extends StatelessWidget {
         HomePageAppBar(
           provider.selectedTable!,
           onTableTapped: () async {
-            final selectedTable = await _tableFromDialog(context);
-            if (selectedTable != null) {
-              provider.selectTable(selectedTable);
-            }
+            final table = await context.showTablePicker(
+              tableList: provider.tables,
+              selectedTable: provider.selectedTable,
+            );
+            if (table != null) provider.selectTable(table);
           },
         ),
         Expanded(child: PhaseLoader()),
       ],
-    );
-  }
-
-  Future<TableEntity?> _tableFromDialog(BuildContext context) async {
-    final provider = context.read<TableProvider>();
-    return showDialog<TableEntity?>(
-      context: context,
-      builder: (_) {
-        return MultiProvider(
-          providers: [
-            ChangeNotifierProvider.value(
-              value: context.read<NotificationProvider>(),
-            ),
-            ChangeNotifierProvider.value(
-              value: context.read<OrderProvider>(),
-            ),
-          ],
-          child: TablePickerDialog(
-            provider.tables,
-            selectedTable: provider.selectedTable,
-          ),
-        );
-      },
     );
   }
 }

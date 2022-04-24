@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:picnicgarden/ui/common/build_context_ext_screen_size.dart';
-import 'package:picnicgarden/ui/common/max_width_container.dart';
+import '../../common/build_context_ext_screen_size.dart';
+import '../../common/max_width_container.dart';
 import 'package:provider/provider.dart';
 
 import '../../../logic/pg_error.dart';
 import '../../../model/order.dart';
+import '../../../model/table_entity.dart';
+import '../../../provider/di.dart';
+import '../../../provider/order/order_builder.dart';
 import '../../../provider/order/order_provider.dart';
+import '../../../provider/order/order_status_provider.dart';
+import '../../../provider/phase_provider.dart';
 import '../../../provider/recipe_provider.dart';
 import '../../common/empty_refreshable.dart';
 import '../../common/snackbar_builder.dart';
@@ -93,6 +98,32 @@ class OrderAddDialog extends StatelessWidget {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBarBuilder.orderSucces(order, context),
+    );
+  }
+}
+
+extension BuildContextOrderAdd on BuildContext {
+  void showOrderAddDialog({required TableEntity table}) {
+    showDialog(
+      context: this,
+      builder: (_) => _buildOrderAdd(table: table),
+    );
+  }
+
+  Widget _buildOrderAdd({required TableEntity table}) {
+    final provider = read<OrderStatusProvider>();
+    return Provider(
+      create: (_) => di<OrderBuilder>()
+        ..setTable(table)
+        ..setOrderStatus(provider.orderStatusList.first),
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider.value(value: read<RecipeProvider>()),
+          ChangeNotifierProvider.value(value: read<PhaseProvider>()),
+          ChangeNotifierProvider.value(value: read<OrderProvider>())
+        ],
+        child: OrderAddDialog(),
+      ),
     );
   }
 }
