@@ -21,14 +21,9 @@ class HomePageWide extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider.value(
-      value: di<TableFilterProvider>(),
-      builder: (context, _) {
-        return Scaffold(
-          appBar: _buildAppBar(context),
-          body: _HomePageWideBody(),
-        );
-      },
+    return Scaffold(
+      appBar: _buildAppBar(context),
+      body: _HomePageWideBody(),
     );
   }
 
@@ -135,7 +130,17 @@ extension on Iterable<TableEntity> {
     required TableFilterProvider filterProvider,
     required OrderProvider orderProvider,
   }) {
-    if (!filterProvider.hidingEmptyTables) return toList();
-    return where((t) => orderProvider.ordersForTable(t).isNotEmpty).toList();
+    // If showing empty tables, they don't need to be filtered
+    if (filterProvider.showingEmptyTables) return toList();
+    // If hiding empty tables, we have to apply attribute filter
+    // before deciding if they are empty or not
+    final enabled = filterProvider.enabledAttributes;
+    // Return tables that have at least one order with an enabled attribute
+    return where(
+      (table) => orderProvider
+          .ordersForTable(table)
+          .filteredBy(enabledAttributes: enabled)
+          .isNotEmpty,
+    ).toList();
   }
 }

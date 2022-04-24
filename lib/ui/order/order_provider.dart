@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:collection';
 
 import '../../domain/api_response.dart';
+import '../../domain/model/attribute.dart';
 import '../../domain/pg_error.dart';
 import '../../domain/model/order.dart';
 import '../../domain/model/order_status.dart';
@@ -82,5 +83,17 @@ class FIROrderProvider extends FIREntityProvider<Order>
     } else {
       return Future.value(null);
     }
+  }
+}
+
+extension OrderListFilter on Iterable<Order> {
+  Iterable<Order> filteredBy({required Iterable<Attribute> enabledAttributes}) {
+    return where((o) => o.recipe.attributes.containsAnyFrom(enabledAttributes));
+  }
+}
+
+extension on Iterable {
+  bool containsAnyFrom(Iterable other) {
+    return toSet().intersection(other.toSet()).isNotEmpty;
   }
 }

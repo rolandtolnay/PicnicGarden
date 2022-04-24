@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:picnicgarden/ui/home/table/table_filter_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../injection.dart';
@@ -23,6 +24,7 @@ class HomePage extends StatelessWidget {
         ChangeNotifierProvider.value(value: di<TableProvider>()),
         ChangeNotifierProvider.value(value: di<TopicProvider>()),
         ChangeNotifierProvider.value(value: di<NotificationProvider>()),
+        ChangeNotifierProvider.value(value: di<TableFilterProvider>()),
         ChangeNotifierProvider(create: (_) => di<OrderProvider>()),
         ChangeNotifierProvider(create: (_) => di<RecipeProvider>()),
         ChangeNotifierProvider(create: (_) => di<PhaseProvider>()),

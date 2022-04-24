@@ -12,8 +12,8 @@ abstract class OrderListItem<T> {
 }
 
 class OrderListItemBuilder {
-  final List<Phase> phases;
-  final List<Order> orders;
+  final Iterable<Phase> phases;
+  final Iterable<Order> orders;
 
   final bool showTimer;
   final ValueChanged<Order>? onOrderTapped;

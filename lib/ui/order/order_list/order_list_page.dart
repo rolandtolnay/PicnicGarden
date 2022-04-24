@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:picnicgarden/ui/home/table/table_filter_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../../../domain/model/attribute.dart';
 import '../../../domain/pg_error.dart';
 import '../../../domain/model/table_entity.dart';
 import '../order_provider.dart';
@@ -30,6 +32,10 @@ class OrderListPage extends StatelessWidget {
     final phases = context.watch<PhaseProvider>().phases;
     final orderStatusList =
         context.watch<OrderStatusProvider>().orderStatusList;
+    final enabledAttributes =
+        context.select<TableFilterProvider, Iterable<Attribute>>(
+      (p) => p.enabledAttributes,
+    );
 
     SchedulerBinding.instance!.addPostFrameCallback((_) {
       provider.response.error?.showInDialog(context);
@@ -39,7 +45,9 @@ class OrderListPage extends StatelessWidget {
     }
 
     final builder = OrderListItemBuilder(
-      orders: provider.ordersForTable(table),
+      orders: provider
+          .ordersForTable(table)
+          .filteredBy(enabledAttributes: enabledAttributes),
       phases: phases,
       showTimer: showTimer,
       onOrderTapped: (order) async {

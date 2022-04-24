@@ -3,7 +3,7 @@ import '../../entity_provider.dart';
 import '../../restaurant/restaurant_provider.dart';
 
 abstract class TableFilterProvider extends EntityProvider {
-  bool get hidingEmptyTables;
+  bool get showingEmptyTables;
   void setShowingEmptyTables(bool showing);
 
   Future fetchAttributes();
@@ -11,6 +11,12 @@ abstract class TableFilterProvider extends EntityProvider {
   void setAttributeShowing(bool showing, {required Attribute attribute});
 
   bool get hasFiltersEnabled;
+}
+
+extension Convenience on TableFilterProvider {
+  Iterable<Attribute> get enabledAttributes {
+    return showingAttributes.entries.where((e) => e.value).map((e) => e.key);
+  }
 }
 
 class TableFilterProviderImpl extends FIREntityProvider<Attribute>
@@ -23,15 +29,15 @@ class TableFilterProviderImpl extends FIREntityProvider<Attribute>
           restaurant: restaurantProvider.selectedRestaurant,
         );
 
-  bool _hidingEmptyTables = false;
+  bool _showingEmptyTables = true;
   Map<Attribute, bool> _showingAttributes = {};
 
   @override
-  bool get hidingEmptyTables => _hidingEmptyTables;
+  bool get showingEmptyTables => _showingEmptyTables;
 
   @override
   void setShowingEmptyTables(bool showing) {
-    _hidingEmptyTables = showing;
+    _showingEmptyTables = showing;
     notifyListeners();
   }
 
@@ -54,5 +60,7 @@ class TableFilterProviderImpl extends FIREntityProvider<Attribute>
   }
 
   @override
-  bool get hasFiltersEnabled => _hidingEmptyTables;
+  bool get hasFiltersEnabled =>
+      !_showingEmptyTables ||
+      _showingAttributes.values.any((showing) => !showing);
 }

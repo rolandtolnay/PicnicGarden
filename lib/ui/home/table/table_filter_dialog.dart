@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:picnicgarden/domain/model/attribute.dart';
 import 'package:provider/provider.dart';
 
 import '../../common/build_context_ext_screen_size.dart';
@@ -33,37 +34,27 @@ class TableFilterDialog extends StatelessWidget {
             Text('Filter tables', style: textTheme.headline5),
           ],
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 16),
         CheckboxListTile(
-          title: Text('Hide empty tables'),
+          title: Text('Show empty tables'),
           controlAffinity: ListTileControlAffinity.leading,
-          value: provider.hidingEmptyTables,
+          value: provider.showingEmptyTables,
           onChanged: (value) {
             if (value == null) return;
             provider.setShowingEmptyTables(value);
           },
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 8),
         Padding(
           padding: const EdgeInsets.only(left: 24.0),
           child: Text(
             'Attributes',
-            style: textTheme.headline6,
+            style: textTheme.headline6!.copyWith(fontWeight: FontWeight.w300),
           ),
         ),
         const SizedBox(height: 8),
         ...provider.showingAttributes.entries
-            .map(
-              (entry) => CheckboxListTile(
-                title: Text(entry.key.name),
-                controlAffinity: ListTileControlAffinity.leading,
-                value: entry.value,
-                onChanged: (value) {
-                  if (value == null) return;
-                  provider.setAttributeShowing(value, attribute: entry.key);
-                },
-              ),
-            )
+            .map((entry) => _buildAttributeCheckbox(entry, provider))
             .toList(),
         const SizedBox(height: 24),
       ];
@@ -85,6 +76,21 @@ class TableFilterDialog extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  CheckboxListTile _buildAttributeCheckbox(
+    MapEntry<Attribute, bool> entry,
+    TableFilterProvider provider,
+  ) {
+    return CheckboxListTile(
+      title: Text(entry.key.name),
+      controlAffinity: ListTileControlAffinity.leading,
+      value: entry.value,
+      onChanged: (value) {
+        if (value == null) return;
+        provider.setAttributeShowing(value, attribute: entry.key);
+      },
     );
   }
 }
