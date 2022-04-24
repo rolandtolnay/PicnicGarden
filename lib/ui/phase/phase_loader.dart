@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import '../../provider/table_provider.dart';
+import '../home/table/table_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../../logic/pg_error.dart';
-import '../../provider/phase_provider.dart';
+import '../../domain/pg_error.dart';
+import 'phase_provider.dart';
 import '../common/empty_refreshable.dart';
 import '../order/order_list/order_list_page.dart';
 

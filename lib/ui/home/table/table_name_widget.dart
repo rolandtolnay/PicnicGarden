@@ -2,8 +2,8 @@ import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../model/table_entity.dart';
-import '../../../provider/notification_provider.dart';
+import '../../../domain/model/table_entity.dart';
+import '../topic/notification_provider.dart';
 
 class TableNameWidget extends StatelessWidget {
   final TableEntity table;

@@ -1,8 +1,8 @@
 import 'dart:collection';
 
-import '../model/recipe.dart';
-import 'entity_provider.dart';
-import 'restaurant_provider.dart';
+import '../../domain/model/recipe.dart';
+import '../entity_provider.dart';
+import '../restaurant/restaurant_provider.dart';
 
 abstract class RecipeProvider extends EntityProvider {
   UnmodifiableListView<Recipe> get recipes;

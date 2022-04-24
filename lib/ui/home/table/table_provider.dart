@@ -1,8 +1,8 @@
 import 'dart:collection';
 
-import '../model/table_entity.dart';
-import 'entity_provider.dart';
-import 'restaurant_provider.dart';
+import '../../../domain/model/table_entity.dart';
+import '../../entity_provider.dart';
+import '../../restaurant/restaurant_provider.dart';
 
 abstract class TableProvider extends EntityProvider {
   UnmodifiableListView<TableEntity> get tables;

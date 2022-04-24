@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
-import '../../logic/pg_error.dart';
-import '../../model/restaurant.dart';
-import '../../provider/restaurant_provider.dart';
+import '../../domain/pg_error.dart';
+import '../../domain/model/restaurant.dart';
+import 'restaurant_provider.dart';
 import '../common/empty_refreshable.dart';
-import 'home_page.dart';
+import '../home/home_page.dart';
 
 class RestaurantPicker extends StatelessWidget {
   const RestaurantPicker({Key? key}) : super(key: key);

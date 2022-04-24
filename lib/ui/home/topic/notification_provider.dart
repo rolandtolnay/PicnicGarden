@@ -4,16 +4,16 @@ import 'package:collection/collection.dart' show IterableExtension;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'restaurant_provider.dart';
+import '../../restaurant/restaurant_provider.dart';
 
-import '../logic/api_response.dart';
-import '../logic/pg_error.dart';
-import '../model/notification.dart';
-import '../model/order.dart';
-import '../model/table_entity.dart';
-import 'auth_provider.dart';
-import 'entity_provider.dart';
-import 'table_provider.dart';
+import '../../../domain/api_response.dart';
+import '../../../domain/pg_error.dart';
+import '../../../domain/model/notification.dart';
+import '../../../domain/model/order.dart';
+import '../../../domain/model/table_entity.dart';
+import '../../auth_provider.dart';
+import '../../entity_provider.dart';
+import '../table/table_provider.dart';
 import 'topic_provider.dart';
 
 abstract class NotificationProvider extends EntityProvider {

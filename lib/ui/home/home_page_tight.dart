@@ -2,14 +2,14 @@ import 'package:flutter/material.dart' hide Table;
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
-import '../../logic/pg_error.dart';
-import '../../provider/table_provider.dart';
+import '../../domain/pg_error.dart';
+import 'table/table_provider.dart';
 
 import '../common/empty_refreshable.dart';
 import '../order/order_add/order_add_floating_button.dart';
 import '../phase/phase_loader.dart';
-import 'widgets/home_page_app_bar.dart';
-import 'widgets/table_picker_dialog.dart';
+import 'home_page_app_bar.dart';
+import 'table/table_picker_dialog.dart';
 
 class HomePageTight extends StatelessWidget {
   const HomePageTight({Key? key}) : super(key: key);

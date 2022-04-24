@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../model/table_entity.dart';
-import '../../provider/di.dart';
-import '../../provider/restaurant_provider.dart';
-import '../../provider/table_provider.dart';
+import '../../domain/model/table_entity.dart';
+import '../../injection.dart';
+import '../restaurant/restaurant_provider.dart';
+import 'table/table_provider.dart';
 import '../order/order_add/order_add_dialog.dart';
 import '../order/order_list/order_list_dialog.dart';
 import '../order/order_list/order_list_page.dart';
-import 'widgets/table_name_widget.dart';
+import 'table/table_name_widget.dart';
 
 const _maxTableWidth = 360;
 
@@ -17,13 +17,38 @@ class HomePageWide extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final restaurant = di<RestaurantProvider>().selectedRestaurant;
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.black87,
-        title: Text(restaurant?.name ?? ''),
-      ),
+      appBar: _buildAppBar(context),
       body: _HomePageWideBody(),
+    );
+  }
+
+  AppBar _buildAppBar(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final restaurant = di<RestaurantProvider>().selectedRestaurant;
+    return AppBar(
+      backgroundColor: Colors.black87,
+      title: Text(restaurant?.name ?? ''),
+      leadingWidth: 168,
+      leading: TextButton.icon(
+        style: TextButton.styleFrom(
+          primary: Colors.white,
+          textStyle: textTheme.subtitle1,
+        ),
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (_) {
+              return AlertDialog(
+                title: Text('Filter tables'),
+                content: Column(mainAxisSize: MainAxisSize.min, children: []),
+              );
+            },
+          );
+        },
+        icon: Icon(Icons.filter_alt),
+        label: Text('FILTER TABLES'),
+      ),
     );
   }
 }

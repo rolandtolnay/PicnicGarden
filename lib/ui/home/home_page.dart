@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../provider/di.dart';
-import '../../provider/notification_provider.dart';
-import '../../provider/order/order_provider.dart';
-import '../../provider/order/order_status_provider.dart';
-import '../../provider/phase_provider.dart';
-import '../../provider/recipe_provider.dart';
-import '../../provider/table_provider.dart';
-import '../../provider/topic_provider.dart';
+import '../../injection.dart';
+import 'topic/notification_provider.dart';
+import '../order/order_provider.dart';
+import '../order/order_list/order_status_provider.dart';
+import '../phase/phase_provider.dart';
+import '../recipe/recipe_provider.dart';
+import 'table/table_provider.dart';
+import 'topic/topic_provider.dart';
 import '../common/build_context_ext_screen_size.dart';
 import 'home_page_tight.dart';
 import 'home_page_wide.dart';

@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:picnicgarden/model/table_entity.dart';
 import 'package:provider/provider.dart';
 
-import '../../../provider/order/order_provider.dart';
-import '../../../provider/order/order_status_provider.dart';
-import '../../../provider/phase_provider.dart';
-import '../../../provider/recipe_provider.dart';
-import '../../../provider/table_provider.dart';
+import '../order_provider.dart';
+import 'order_status_provider.dart';
+import '../../phase/phase_provider.dart';
+import '../../recipe/recipe_provider.dart';
+import '../../home/table/table_provider.dart';
 import '../../common/max_width_container.dart';
-import '../../home/widgets/table_name_widget.dart';
+import '../../home/table/table_name_widget.dart';
 import '../order_add/order_add_floating_button.dart';
 import 'order_list_page.dart';
 
@@ -27,26 +27,31 @@ class OrderListDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    return Scaffold(
-      floatingActionButton: OrderAddFloatingButton(),
-      body: Column(
-        children: [
-          Material(
-            elevation: 4,
-            color: colorScheme.primary,
-            child: TableNameWidget(
-              table: table,
-              showNotifications: false,
-            ),
+    return MaxWidthContainer(
+      child: Dialog(
+        elevation: 2,
+        child: Scaffold(
+          floatingActionButton: OrderAddFloatingButton(),
+          body: Column(
+            children: [
+              Material(
+                elevation: 4,
+                color: colorScheme.primary,
+                child: TableNameWidget(
+                  table: table,
+                  showNotifications: false,
+                ),
+              ),
+              Expanded(
+                child: OrderListPage(
+                  scrollable: true,
+                  showTimer: true,
+                  table: table,
+                ),
+              ),
+            ],
           ),
-          Expanded(
-            child: OrderListPage(
-              scrollable: true,
-              showTimer: true,
-              table: table,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -62,9 +67,7 @@ extension on BuildContext {
         ChangeNotifierProvider.value(value: read<TableProvider>()),
         ChangeNotifierProvider.value(value: read<RecipeProvider>())
       ],
-      child: MaxWidthContainer(
-        child: Dialog(child: OrderListDialog(table: table)),
-      ),
+      child: OrderListDialog(table: table),
     );
   }
 }

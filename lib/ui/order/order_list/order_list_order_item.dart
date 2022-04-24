@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../logic/extensions.dart';
-import '../../../model/order.dart';
+import '../../../domain/extensions.dart';
+import '../../../domain/model/order.dart';
 import 'order_list_item_builder.dart';
 
 class OrderListOrderItem implements OrderListItem<Order> {

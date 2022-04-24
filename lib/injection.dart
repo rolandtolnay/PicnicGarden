@@ -1,19 +1,19 @@
 import 'package:get_it/get_it.dart';
-import 'restaurant_provider.dart';
+import 'ui/restaurant/restaurant_provider.dart';
 
-import 'auth_provider.dart';
-import 'notification_provider.dart';
-import 'order/order_builder.dart';
-import 'order/order_provider.dart';
-import 'order/order_status_provider.dart';
-import 'phase_provider.dart';
-import 'recipe_provider.dart';
-import 'table_provider.dart';
-import 'topic_provider.dart';
+import 'ui/auth_provider.dart';
+import 'ui/home/topic/notification_provider.dart';
+import 'ui/order/order_add/order_builder.dart';
+import 'ui/order/order_provider.dart';
+import 'ui/order/order_list/order_status_provider.dart';
+import 'ui/phase/phase_provider.dart';
+import 'ui/recipe/recipe_provider.dart';
+import 'ui/home/table/table_provider.dart';
+import 'ui/home/topic/topic_provider.dart';
 
 final di = GetIt.instance;
 
-void setupProviders() {
+void configureDependencies() {
   di.registerLazySingleton<AuthProvider>(
     () => FIRAuthProvider()..signIn(),
   );

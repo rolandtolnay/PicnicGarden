@@ -1,8 +1,8 @@
 import 'dart:collection';
 
-import '../../model/order_status.dart';
-import '../entity_provider.dart';
-import '../restaurant_provider.dart';
+import '../../../domain/model/order_status.dart';
+import '../../entity_provider.dart';
+import '../../restaurant/restaurant_provider.dart';
 
 abstract class OrderStatusProvider extends EntityProvider {
   UnmodifiableListView<OrderStatus> get orderStatusList;

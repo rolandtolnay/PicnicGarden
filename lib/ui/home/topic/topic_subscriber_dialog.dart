@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:picnicgarden/model/topic.dart';
 import 'package:provider/provider.dart';
 
-import '../../../logic/extensions.dart';
-import '../../../provider/topic_provider.dart';
+import '../../../domain/extensions.dart';
+import 'topic_provider.dart';
 
 class TopicSubscriberDialog extends StatelessWidget {
   const TopicSubscriberDialog({Key? key}) : super(key: key);

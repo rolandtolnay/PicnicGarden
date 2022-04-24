@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../provider/auth_provider.dart';
-import '../provider/di.dart';
-import '../provider/restaurant_provider.dart';
-import 'home/restaurant_picker.dart';
+import 'auth_provider.dart';
+import '../injection.dart';
+import 'restaurant/restaurant_provider.dart';
+import 'restaurant/restaurant_picker.dart';
 
 class RootPage extends StatelessWidget {
   const RootPage({Key? key}) : super(key: key);

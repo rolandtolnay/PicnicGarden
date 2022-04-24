@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../model/phase.dart';
+import '../../domain/model/phase.dart';
 import '../common/dialog_title.dart';
 import '../common/list_item_widget.dart';
 

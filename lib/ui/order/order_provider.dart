@@ -1,14 +1,14 @@
 import 'dart:async';
 import 'dart:collection';
 
-import '../../logic/api_response.dart';
-import '../../logic/pg_error.dart';
-import '../../model/order.dart';
-import '../../model/order_status.dart';
-import '../../model/table_entity.dart';
+import '../../domain/api_response.dart';
+import '../../domain/pg_error.dart';
+import '../../domain/model/order.dart';
+import '../../domain/model/order_status.dart';
+import '../../domain/model/table_entity.dart';
 import '../entity_provider.dart';
-import '../notification_provider.dart';
-import '../restaurant_provider.dart';
+import '../home/topic/notification_provider.dart';
+import '../restaurant/restaurant_provider.dart';
 
 abstract class OrderProvider extends EntityProvider {
   UnmodifiableListView<Order> ordersForTable(TableEntity table);

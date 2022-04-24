@@ -2,12 +2,12 @@ import 'dart:collection';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-import '../logic/api_response.dart';
-import '../logic/pg_error.dart';
-import '../model/topic.dart';
-import 'auth_provider.dart';
-import 'entity_provider.dart';
-import 'restaurant_provider.dart';
+import '../../../domain/api_response.dart';
+import '../../../domain/pg_error.dart';
+import '../../../domain/model/topic.dart';
+import '../../auth_provider.dart';
+import '../../entity_provider.dart';
+import '../../restaurant/restaurant_provider.dart';
 
 abstract class TopicProvider extends EntityProvider {
   UnmodifiableListView<Topic> get topics;
@@ -27,7 +27,7 @@ class FIRTopicProvider extends FIREntityProvider<Topic>
   FIRTopicProvider({
     required AuthProvider authProvider,
     required RestaurantProvider restaurantProvider,
-  })   : _authProvider = authProvider,
+  })  : _authProvider = authProvider,
         super(
           'topics',
           Topic.fromJson,

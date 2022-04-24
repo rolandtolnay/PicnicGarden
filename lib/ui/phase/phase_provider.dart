@@ -1,8 +1,8 @@
 import 'dart:collection';
 
-import '../model/phase.dart';
-import 'entity_provider.dart';
-import 'restaurant_provider.dart';
+import '../../domain/model/phase.dart';
+import '../entity_provider.dart';
+import '../restaurant/restaurant_provider.dart';
 
 abstract class PhaseProvider extends EntityProvider {
   UnmodifiableListView<Phase> get phases;

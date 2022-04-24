@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../provider/order/order_status_provider.dart';
-import '../../../provider/table_provider.dart';
+import '../order_list/order_status_provider.dart';
+import '../../home/table/table_provider.dart';
 import 'order_add_dialog.dart';
 
 class OrderAddFloatingButton extends StatelessWidget {

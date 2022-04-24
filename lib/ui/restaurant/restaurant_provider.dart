@@ -1,7 +1,7 @@
 import 'dart:collection';
 
-import '../model/restaurant.dart';
-import 'entity_provider.dart';
+import '../../domain/model/restaurant.dart';
+import '../entity_provider.dart';
 
 abstract class RestaurantProvider extends EntityProvider {
   UnmodifiableListView<Restaurant> get restaurants;

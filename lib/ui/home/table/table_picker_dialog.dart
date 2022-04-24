@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart' hide Table;
 import 'package:provider/provider.dart';
 
-import '../../../model/table_entity.dart';
-import '../../../provider/notification_provider.dart';
-import '../../../provider/order/order_provider.dart';
+import '../../../domain/model/table_entity.dart';
+import '../topic/notification_provider.dart';
+import '../../order/order_provider.dart';
 import '../../common/dialog_title.dart';
 import '../../common/list_item_widget.dart';
 

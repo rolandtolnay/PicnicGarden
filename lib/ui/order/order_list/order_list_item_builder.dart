@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../model/order.dart';
-import '../../../model/phase.dart';
+import '../../../domain/model/order.dart';
+import '../../../domain/model/phase.dart';
 import 'order_list_order_item.dart';
 import 'order_list_phase_item.dart';
 

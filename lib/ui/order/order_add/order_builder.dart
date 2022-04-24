@@ -1,9 +1,9 @@
-import '../../model/order.dart';
-import '../../model/order_status.dart';
-import '../../model/phase.dart';
-import '../../model/recipe.dart';
-import '../../model/table_entity.dart';
-import '../auth_provider.dart';
+import '../../../domain/model/order.dart';
+import '../../../domain/model/order_status.dart';
+import '../../../domain/model/phase.dart';
+import '../../../domain/model/recipe.dart';
+import '../../../domain/model/table_entity.dart';
+import '../../auth_provider.dart';
 
 abstract class OrderBuilder {
   void setTable(TableEntity table);
