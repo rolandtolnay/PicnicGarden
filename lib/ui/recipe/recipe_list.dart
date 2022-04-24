@@ -37,7 +37,8 @@ class RecipeList extends StatelessWidget {
 
     Phase? phase;
     if (recipe.autoPhase == null || recipe.autoPhase!.isEmpty) {
-      phase = await context.showPhasePicker(
+      phase = await PhasePickerDialog.show(
+        context,
         phaseList: phases.where((p) => p.selectable).toList(),
       );
     } else {

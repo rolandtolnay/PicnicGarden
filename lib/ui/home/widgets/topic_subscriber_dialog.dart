@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:picnicgarden/model/topic.dart';
 import 'package:provider/provider.dart';
 
 import '../../../logic/extensions.dart';
@@ -7,6 +8,13 @@ import '../../../provider/topic_provider.dart';
 class TopicSubscriberDialog extends StatelessWidget {
   const TopicSubscriberDialog({Key? key}) : super(key: key);
 
+  static void show(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => context.buildTopicSubscriber(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<TopicProvider>();
@@ -14,14 +22,7 @@ class TopicSubscriberDialog extends StatelessWidget {
     var content = <Widget>[Center(child: CircularProgressIndicator())];
     if (!provider.isLoading) {
       content = provider.topics
-          .map((topic) => CheckboxListTile(
-                title: Text(topic.name.capitalized),
-                controlAffinity: ListTileControlAffinity.leading,
-                value: provider.isSubscribedToTopic(topic),
-                onChanged: (value) {
-                  provider.setSubscribedToTopic(value!, topic: topic);
-                },
-              ))
+          .map((topic) => _buildCheckboxTile(topic, provider))
           .toList();
     }
 
@@ -40,17 +41,22 @@ class TopicSubscriberDialog extends StatelessWidget {
       ],
     );
   }
-}
 
-extension BuildContextTopicSubscriber on BuildContext {
-  void showTopicSubcriberDialog() {
-    showDialog(
-      context: this,
-      builder: (_) => _buildTopicSubscriber(),
+  CheckboxListTile _buildCheckboxTile(Topic topic, TopicProvider provider) {
+    return CheckboxListTile(
+      title: Text(topic.name.capitalized),
+      controlAffinity: ListTileControlAffinity.leading,
+      value: provider.isSubscribedToTopic(topic),
+      onChanged: (value) {
+        if (value == null) return;
+        provider.setSubscribedToTopic(value, topic: topic);
+      },
     );
   }
+}
 
-  Widget _buildTopicSubscriber() {
+extension on BuildContext {
+  Widget buildTopicSubscriber() {
     return ChangeNotifierProvider.value(
       value: read<TopicProvider>(),
       child: TopicSubscriberDialog(),

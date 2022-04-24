@@ -8,11 +8,25 @@ import '../../common/dialog_title.dart';
 import '../../common/list_item_widget.dart';
 
 class TablePickerDialog extends StatelessWidget {
+  final List<TableEntity> tables;
+  final TableEntity? selectedTable;
+
   const TablePickerDialog(this.tables, {this.selectedTable, Key? key})
       : super(key: key);
 
-  final List<TableEntity> tables;
-  final TableEntity? selectedTable;
+  static Future<TableEntity?> show(
+    BuildContext context, {
+    required List<TableEntity> tableList,
+    TableEntity? selectedTable,
+  }) {
+    return showDialog<TableEntity?>(
+      context: context,
+      builder: (_) => context.buildTablePicker(
+        tableList: tableList,
+        selectedTable: selectedTable,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,21 +59,8 @@ class TablePickerDialog extends StatelessWidget {
   }
 }
 
-extension BuildContextTablePicker on BuildContext {
-  Future<TableEntity?> showTablePicker({
-    required List<TableEntity> tableList,
-    TableEntity? selectedTable,
-  }) {
-    return showDialog<TableEntity?>(
-      context: this,
-      builder: (_) => _buildTablePicker(
-        tableList: tableList,
-        selectedTable: selectedTable,
-      ),
-    );
-  }
-
-  Widget _buildTablePicker({
+extension on BuildContext {
+  Widget buildTablePicker({
     required List<TableEntity> tableList,
     TableEntity? selectedTable,
   }) {

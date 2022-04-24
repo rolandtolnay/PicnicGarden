@@ -20,6 +20,13 @@ import '../../recipe/recipe_tabs.dart';
 class OrderAddDialog extends StatelessWidget {
   const OrderAddDialog({Key? key}) : super(key: key);
 
+  static void show(BuildContext context, {required TableEntity table}) {
+    showDialog(
+      context: context,
+      builder: (_) => context.buildOrderAdd(table: table),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -102,15 +109,8 @@ class OrderAddDialog extends StatelessWidget {
   }
 }
 
-extension BuildContextOrderAdd on BuildContext {
-  void showOrderAddDialog({required TableEntity table}) {
-    showDialog(
-      context: this,
-      builder: (_) => _buildOrderAdd(table: table),
-    );
-  }
-
-  Widget _buildOrderAdd({required TableEntity table}) {
+extension on BuildContext {
+  Widget buildOrderAdd({required TableEntity table}) {
     final provider = read<OrderStatusProvider>();
     return Provider(
       create: (_) => di<OrderBuilder>()

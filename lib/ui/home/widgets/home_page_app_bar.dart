@@ -35,7 +35,7 @@ class HomePageAppBar extends StatelessWidget {
               child: IconButton(
                 color: colorScheme.onPrimary,
                 icon: Icon(Icons.settings),
-                onPressed: () => context.showTopicSubcriberDialog(),
+                onPressed: () => TopicSubscriberDialog.show(context),
               ),
             ),
           )

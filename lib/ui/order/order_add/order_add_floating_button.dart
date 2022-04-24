@@ -10,18 +10,18 @@ class OrderAddFloatingButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tablePvd = context.watch<TableProvider>();
-    final oStatusPvd = context.watch<OrderStatusProvider>();
-    if (tablePvd.isLoading ||
-        tablePvd.selectedTable == null ||
-        oStatusPvd.isLoading ||
-        oStatusPvd.orderStatusList.isEmpty) {
+    final tableProvider = context.watch<TableProvider>();
+    final oStatusProvider = context.watch<OrderStatusProvider>();
+    if (tableProvider.isLoading ||
+        tableProvider.selectedTable == null ||
+        oStatusProvider.isLoading ||
+        oStatusProvider.orderStatusList.isEmpty) {
       return Container();
     }
 
-    final table = tablePvd.selectedTable!;
+    final table = tableProvider.selectedTable!;
     return FloatingActionButton(
-      onPressed: () => context.showOrderAddDialog(table: table),
+      onPressed: () => OrderAddDialog.show(context, table: table),
       child: const Icon(Icons.add),
     );
   }

@@ -52,7 +52,8 @@ class _HomePageTightBody extends StatelessWidget {
         HomePageAppBar(
           provider.selectedTable!,
           onTableTapped: () async {
-            final table = await context.showTablePicker(
+            final table = await TablePickerDialog.show(
+              context,
               tableList: provider.tables,
               selectedTable: provider.selectedTable,
             );

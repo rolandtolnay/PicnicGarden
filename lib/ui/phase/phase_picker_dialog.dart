@@ -10,6 +10,16 @@ class PhasePickerDialog extends StatelessWidget {
   const PhasePickerDialog({required this.phaseList, Key? key})
       : super(key: key);
 
+  static Future<Phase?> show(
+    BuildContext context, {
+    required List<Phase> phaseList,
+  }) {
+    return showDialog(
+      context: context,
+      builder: (_) => PhasePickerDialog(phaseList: phaseList),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -28,15 +38,6 @@ class PhasePickerDialog extends StatelessWidget {
         phase.name,
         onTapped: () => Navigator.of(context).pop(phase),
       ),
-    );
-  }
-}
-
-extension BuildContextPhasePicker on BuildContext {
-  Future<Phase?> showPhasePicker({required List<Phase> phaseList}) {
-    return showDialog(
-      context: this,
-      builder: (_) => PhasePickerDialog(phaseList: phaseList),
     );
   }
 }

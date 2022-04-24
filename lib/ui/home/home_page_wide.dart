@@ -66,7 +66,7 @@ class _HomePageWideBody extends StatelessWidget {
 
     final orderAddButton = IconButton(
       color: colorScheme.onPrimary,
-      onPressed: () => context.showOrderAddDialog(table: table),
+      onPressed: () => OrderAddDialog.show(context, table: table),
       icon: const Icon(Icons.add, size: 32),
     );
 
