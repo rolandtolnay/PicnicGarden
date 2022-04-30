@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:picnicgarden/domain/model/attribute.dart';
+import 'package:picnicgarden/ui/common/dialog_title.dart';
 import 'package:provider/provider.dart';
 
+import '../../../domain/model/attribute.dart';
 import '../../common/build_context_ext_screen_size.dart';
-import '../../common/max_width_container.dart';
+import '../../common/common_dialog.dart';
 import 'table_filter_provider.dart';
 
 class TableFilterDialog extends StatelessWidget {
@@ -25,16 +26,7 @@ class TableFilterDialog extends StatelessWidget {
     var content = <Widget>[const Center(child: CircularProgressIndicator())];
     if (provider.isCompleted) {
       content = [
-        const SizedBox(height: 24),
-        Row(
-          children: [
-            const SizedBox(width: 16.0),
-            const Icon(Icons.filter_alt),
-            const SizedBox(width: 8.0),
-            Text('Filter tables', style: textTheme.headline5),
-          ],
-        ),
-        const SizedBox(height: 16),
+        const DialogTitle(text: 'Filter tables', icon: Icons.filter_alt),
         CheckboxListTile(
           title: Text('Show empty tables'),
           controlAffinity: ListTileControlAffinity.leading,
@@ -60,21 +52,14 @@ class TableFilterDialog extends StatelessWidget {
       ];
     }
 
-    return MaxWidthContainer(
+    return CommonDialog(
       maxWidth: kPhoneWidth,
-      child: Dialog(
-        elevation: 2,
-        insetPadding: EdgeInsets.symmetric(
-          horizontal: 16.0,
-          vertical: 24,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: content,
-          ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: content,
         ),
       ),
     );

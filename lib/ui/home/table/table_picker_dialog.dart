@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' hide Table;
 import 'package:provider/provider.dart';
 
 import '../../../domain/model/table_entity.dart';
+import '../../common/common_dialog.dart';
 import '../topic/notification_provider.dart';
 import '../../order/order_provider.dart';
 import '../../common/dialog_title.dart';
@@ -30,31 +31,36 @@ class TablePickerDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return CommonDialog(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const DialogTitle(text: 'Choose table', icon: Icons.tab),
+          Expanded(
+            child: GridView.count(
+              crossAxisCount: 3,
+              mainAxisSpacing: 8.0,
+              crossAxisSpacing: 8.0,
+              children: tables
+                  .map((table) => _buildTableListItem(table, context))
+                  .toList(),
+            ),
+          ),
+          const SizedBox(height: 8.0),
+        ],
+      ),
+    );
+  }
+
+  ListItemWidget _buildTableListItem(TableEntity table, BuildContext context) {
     final notificationProvider = context.watch<NotificationProvider>();
     final orderProvider = context.watch<OrderProvider>();
-
-    return AlertDialog(
-      elevation: 2,
-      title: const DialogTitle(text: 'Choose table', icon: Icons.tab),
-      content: SizedBox(
-        width: double.maxFinite,
-        child: GridView.count(
-          crossAxisCount: 3,
-          mainAxisSpacing: 8.0,
-          crossAxisSpacing: 8.0,
-          children: tables
-              .map((table) => ListItemWidget(
-                    table.name,
-                    isSelected: table == selectedTable,
-                    isMarked: orderProvider.ordersForTable(table).isNotEmpty,
-                    badgeCount: notificationProvider
-                        .notificationsForTable(table)
-                        .length,
-                    onTapped: () => Navigator.of(context).pop(table),
-                  ))
-              .toList(),
-        ),
-      ),
+    return ListItemWidget(
+      table.name,
+      isSelected: table == selectedTable,
+      isMarked: orderProvider.ordersForTable(table).isNotEmpty,
+      badgeCount: notificationProvider.notificationsForTable(table).length,
+      onTapped: () => Navigator.of(context).pop(table),
     );
   }
 }

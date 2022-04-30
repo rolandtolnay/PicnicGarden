@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../domain/model/order.dart';
 import '../../domain/model/recipe.dart';
-import 'recipe_list.dart';
+import 'recipe_picker.dart';
 
 enum RecipeTabs { food, drink }
 
@@ -28,7 +28,7 @@ extension WidgetBuilders on RecipeTabs {
     final recipes = allRecipes
         .where((r) => r.tabIndex == RecipeTabs.values.indexOf(this))
         .toList();
-    return RecipeList(recipeList: recipes, onOrderCreated: onOrderCreated);
+    return RecipePicker(recipeList: recipes, onOrderCreated: onOrderCreated);
   }
 
   IconData get icon {

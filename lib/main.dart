@@ -28,7 +28,51 @@ class Application extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final lightTheme = FlexThemeData.light(
+    return ChangeNotifierProvider.value(
+      value: di<ThemeModeProvider>(),
+      builder: (context, _) {
+        return GestureDetector(
+          onTap: () => _hideKeyboard(context),
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Picnic Garden',
+            theme: ThemeBuilder.light,
+            darkTheme: ThemeBuilder.dark,
+            themeMode: context.watch<ThemeModeProvider>().themeMode,
+            home: FutureBuilder(
+              future: _initialization,
+              builder: (_, snapshot) {
+                if (snapshot.connectionState != ConnectionState.done) {
+                  return Scaffold(
+                    body: Center(child: CircularProgressIndicator()),
+                  );
+                }
+                return ChangeNotifierProvider.value(
+                  value: di<AuthProvider>(),
+                  child: AnnotatedRegion(
+                    value: SystemUiOverlayStyle.light,
+                    child: RootPage(),
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _hideKeyboard(BuildContext context) {
+    final currentFocus = FocusScope.of(context);
+    if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+      FocusManager.instance.primaryFocus?.unfocus();
+    }
+  }
+}
+
+class ThemeBuilder {
+  static ThemeData get light {
+    return FlexThemeData.light(
       scheme: FlexScheme.jungle,
       surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
       blendLevel: 20,
@@ -41,7 +85,10 @@ class Application extends StatelessWidget {
       useMaterial3: true,
       fontFamily: GoogleFonts.notoSans().fontFamily,
     );
-    final darkTheme = FlexThemeData.dark(
+  }
+
+  static ThemeData get dark {
+    return FlexThemeData.dark(
       scheme: FlexScheme.jungle,
       surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
       blendLevel: 15,
@@ -53,36 +100,6 @@ class Application extends StatelessWidget {
       visualDensity: FlexColorScheme.comfortablePlatformDensity,
       useMaterial3: true,
       fontFamily: GoogleFonts.notoSans().fontFamily,
-    );
-
-    return ChangeNotifierProvider.value(
-      value: di<ThemeModeProvider>(),
-      builder: (context, _) {
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Picnic Garden',
-          theme: lightTheme,
-          darkTheme: darkTheme,
-          themeMode: context.watch<ThemeModeProvider>().themeMode,
-          home: FutureBuilder(
-            future: _initialization,
-            builder: (_, snapshot) {
-              if (snapshot.connectionState != ConnectionState.done) {
-                return Scaffold(
-                  body: Center(child: CircularProgressIndicator()),
-                );
-              }
-              return ChangeNotifierProvider.value(
-                value: di<AuthProvider>(),
-                child: AnnotatedRegion(
-                  value: SystemUiOverlayStyle.light,
-                  child: RootPage(),
-                ),
-              );
-            },
-          ),
-        );
-      },
     );
   }
 }

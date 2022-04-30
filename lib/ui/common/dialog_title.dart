@@ -14,17 +14,18 @@ class DialogTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon, color: color),
-        const SizedBox(width: 8.0),
-        Text(
-          text.toUpperCase(),
-          style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                color: color,
-              ),
-        ),
-      ],
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    return Padding(
+      padding: const EdgeInsets.only(top: 24.0, bottom: 16),
+      child: Row(
+        children: [
+          const SizedBox(width: 16.0),
+          Icon(icon, color: color),
+          const SizedBox(width: 8.0),
+          Text(text, style: textTheme.headline5?.copyWith(color: color)),
+        ],
+      ),
     );
   }
 }

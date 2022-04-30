@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:picnicgarden/domain/model/topic.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/extensions.dart';
+import '../../../domain/model/topic.dart';
+import '../../common/common_dialog.dart';
+import '../../common/dialog_cancel_button.dart';
+import '../../common/dialog_title.dart';
 import 'topic_provider.dart';
 
 class TopicSubscriberDialog extends StatelessWidget {
@@ -17,8 +20,6 @@ class TopicSubscriberDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
     final provider = context.watch<TopicProvider>();
 
     var content = <Widget>[Center(child: CircularProgressIndicator())];
@@ -28,41 +29,17 @@ class TopicSubscriberDialog extends StatelessWidget {
           .toList();
     }
 
-    // TODO: Extract common Dialog widget
-    return Dialog(
-      elevation: 2,
-      insetPadding: EdgeInsets.symmetric(
-        horizontal: 16.0,
-        vertical: 24,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(height: 24),
-            Row(
-              children: [
-                const SizedBox(width: 16.0),
-                const Icon(Icons.notifications),
-                const SizedBox(width: 8.0),
-                Text('Subscribed topics', style: textTheme.headline6),
-              ],
-            ),
-            const SizedBox(height: 16),
-            ...content,
-            Align(
-              alignment: Alignment.centerRight,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('CLOSE'),
-                ),
-              ),
-            )
-          ],
-        ),
+    return CommonDialog(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const DialogTitle(
+            text: 'Subscribed topics',
+            icon: Icons.notifications,
+          ),
+          ...content,
+          const DialogCancelButton(),
+        ],
       ),
     );
   }

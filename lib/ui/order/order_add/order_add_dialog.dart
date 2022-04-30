@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import '../../common/build_context_ext_screen_size.dart';
-import '../../common/max_width_container.dart';
 import 'package:provider/provider.dart';
 
-import '../../../domain/pg_error.dart';
 import '../../../domain/model/order.dart';
 import '../../../domain/model/table_entity.dart';
+import '../../../domain/pg_error.dart';
 import '../../../injection.dart';
-import 'order_builder.dart';
-import '../order_provider.dart';
-import '../order_list/order_status_provider.dart';
-import '../../phase/phase_provider.dart';
-import '../../recipe/recipe_provider.dart';
+import '../../common/common_dialog.dart';
+import '../../common/dialog_cancel_button.dart';
 import '../../common/empty_refreshable.dart';
 import '../../common/snackbar_builder.dart';
+import '../../phase/phase_provider.dart';
+import '../../recipe/recipe_provider.dart';
 import '../../recipe/recipe_tabs.dart';
+import '../order_list/order_status_provider.dart';
+import '../order_provider.dart';
+import 'order_builder.dart';
 
 class OrderAddDialog extends StatelessWidget {
   const OrderAddDialog({Key? key}) : super(key: key);
@@ -67,35 +67,20 @@ class OrderAddDialog extends StatelessWidget {
             .toList(),
       ),
     );
-    final cancelButton = TextButton(
-      onPressed: () => Navigator.of(context).pop(),
-      child: Text('CANCEL'),
-    );
 
-    return MaxWidthContainer(
-      child: Dialog(
-        elevation: 2,
-        insetPadding: EdgeInsets.symmetric(
-          horizontal: 16.0,
-          vertical: 24,
-        ),
-        child: DefaultTabController(
-          length: RecipeTabs.values.length,
-          child: Scaffold(
-            body: Column(
-              children: [
-                tabBar,
-                Expanded(child: tabBarView),
-                Divider(height: 8, thickness: 2),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: EdgeInsets.all(context.isTabletScreen ? 16.0 : 8),
-                    child: cancelButton,
-                  ),
-                ),
-              ],
-            ),
+    return CommonDialog(
+      padding: EdgeInsets.zero,
+      child: DefaultTabController(
+        length: RecipeTabs.values.length,
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Column(
+            children: [
+              tabBar,
+              Expanded(child: tabBarView),
+              const Divider(height: 8, thickness: 2),
+              const DialogCancelButton(),
+            ],
           ),
         ),
       ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../domain/model/phase.dart';
-import '../../common/dialog_title.dart';
 import 'order_list_item_builder.dart';
 
 class OrderListPhaseItem implements OrderListItem<Phase> {
@@ -11,14 +10,24 @@ class OrderListPhaseItem implements OrderListItem<Phase> {
 
   @override
   Widget buildContent(BuildContext context) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
+
     return ListTile(
       enabled: false,
-      tileColor: Theme.of(context).colorScheme.surface,
+      tileColor: colorScheme.surface,
       dense: true,
-      title: DialogTitle(
-        text: phase.name,
-        icon: Icons.timelapse,
-        color: Theme.of(context).unselectedWidgetColor,
+      title: Row(
+        children: [
+          Icon(Icons.timelapse, color: theme.unselectedWidgetColor),
+          const SizedBox(width: 8.0),
+          Text(
+            phase.name.toUpperCase(),
+            style: textTheme.subtitle2
+                ?.copyWith(color: theme.unselectedWidgetColor),
+          ),
+        ],
       ),
     );
   }

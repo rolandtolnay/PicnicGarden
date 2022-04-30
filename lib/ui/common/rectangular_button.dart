@@ -59,17 +59,17 @@ class RectangularButton extends StatelessWidget {
   }
 
   Widget _buildOutlineButton(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return SizedBox(
       height: 50.0,
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
           side: BorderSide(
-            color:
-                borderColor ?? Theme.of(context).colorScheme.primaryContainer,
+            color: borderColor ?? colorScheme.primaryContainer,
             style: BorderStyle.solid,
             width: 2,
           ),
-          primary: textColor ?? Theme.of(context).colorScheme.primaryContainer,
+          primary: textColor ?? colorScheme.primaryContainer,
         ),
         onPressed: onPressed,
         child: _buildButtonChild(context),
@@ -78,13 +78,13 @@ class RectangularButton extends StatelessWidget {
   }
 
   Widget _buildFlatButton(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return SizedBox(
       height: 50.0,
-      child: TextButton(
-        style: TextButton.styleFrom(
-          backgroundColor:
-              color ?? Theme.of(context).colorScheme.primaryContainer,
-          primary: textColor ?? Theme.of(context).colorScheme.onPrimary,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          primary: color ?? colorScheme.primary,
+          onPrimary: textColor ?? colorScheme.onPrimary,
         ),
         onPressed: onPressed,
         child: _buildButtonChild(context),
