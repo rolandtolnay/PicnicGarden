@@ -13,7 +13,7 @@ import '../../common/rectangular_button.dart';
 import 'order_builder.dart';
 
 /// Dialog for picking order phase and adding a custom note
-class OrderBuilderDialog extends StatelessWidget {
+class OrderBuilderDialog extends StatefulWidget {
   final List<Phase> phaseList;
   final Recipe recipe;
 
@@ -38,6 +38,13 @@ class OrderBuilderDialog extends StatelessWidget {
   }
 
   @override
+  State<OrderBuilderDialog> createState() => _OrderBuilderDialogState();
+}
+
+class _OrderBuilderDialogState extends State<OrderBuilderDialog> {
+  final TextEditingController _controller = TextEditingController();
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
@@ -48,70 +55,63 @@ class OrderBuilderDialog extends StatelessWidget {
     );
     return CommonDialog(
       maxWidth: kPhoneWidth,
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const DialogTitle(
-              text: 'Confirm order',
-              icon: Icons.pending_actions,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: TextFormField(
-                decoration: InputDecoration(
-                  hintText: 'Custom note',
-                  enabledBorder: border,
-                  focusedBorder: border,
-                ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const DialogTitle(
+            text: 'Confirm order',
+            icon: Icons.pending_actions,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: TextField(
+              controller: _controller,
+              decoration: InputDecoration(
+                hintText: 'Custom note',
+                enabledBorder: border,
+                focusedBorder: border,
               ),
             ),
-            const SizedBox(height: 24.0),
-            if (recipe.shouldPickPhase) ...[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.timelapse),
-                  const SizedBox(width: 4.0),
-                  Text('Choose phase', style: textTheme.subtitle1),
-                ],
-              ),
-              const SizedBox(height: 8),
-              GridView.count(
-                crossAxisCount: 3,
-                childAspectRatio: 1.5,
-                shrinkWrap: true,
-                children: phaseList
-                    .where((p) => p.selectable)
-                    .map((p) => _buildPhaseItem(p, context))
-                    .toList(),
-              ),
-            ] else ...[
-              _buildAutoPhaseButton(context)
-            ],
-            const DialogCancelButton(),
+          ),
+          const SizedBox(height: 24.0),
+          if (widget.recipe.shouldPickPhase) ...[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.timelapse),
+                const SizedBox(width: 4.0),
+                Text('Choose phase', style: textTheme.subtitle1),
+              ],
+            ),
+            const SizedBox(height: 8),
+            GridView.count(
+              crossAxisCount: 3,
+              childAspectRatio: 1.5,
+              shrinkWrap: true,
+              children: widget.phaseList
+                  .where((p) => p.selectable)
+                  .map((p) => _buildPhaseItem(p, context))
+                  .toList(),
+            ),
+          ] else ...[
+            _buildAutoPhaseButton(context)
           ],
-        ),
+          const DialogCancelButton(),
+        ],
       ),
     );
   }
 
   Widget _buildAutoPhaseButton(BuildContext context) {
-    final phase = phaseList.firstWhereOrNull(
-      (p) => p.id == recipe.autoPhase,
+    final phase = widget.phaseList.firstWhereOrNull(
+      (p) => p.id == widget.recipe.autoPhase,
     );
     final phaseTitle = phase != null ? ' FOR ${phase.name}' : '';
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: RectangularButton.flat(
         title: 'CONFIRM$phaseTitle',
-        onPressed: () {
-          final builder = context.read<OrderBuilder>();
-          builder.setRecipe(recipe);
-          if (phase != null) builder.setPhase(phase);
-          final order = builder.makeOrder();
-          Navigator.of(context).pop(order);
-        },
+        onPressed: () => _onOrderConfirm(phase, context),
       ),
     );
   }
@@ -121,15 +121,19 @@ class OrderBuilderDialog extends StatelessWidget {
       padding: const EdgeInsets.all(4.0),
       child: RectangularButton.flat(
         title: phase.name,
-        onPressed: () {
-          final builder = context.read<OrderBuilder>();
-          builder.setRecipe(recipe);
-          builder.setPhase(phase);
-          final order = builder.makeOrder();
-          Navigator.of(context).pop(order);
-        },
+        onPressed: () => _onOrderConfirm(phase, context),
       ),
     );
+  }
+
+  void _onOrderConfirm(Phase? phase, BuildContext context) {
+    final builder = context.read<OrderBuilder>();
+    builder.setRecipe(widget.recipe);
+    final note = _controller.text;
+    if (note.isNotEmpty) builder.setCustomNote(note);
+    if (phase != null) builder.setPhase(phase);
+    final order = builder.makeOrder();
+    Navigator.of(context).pop(order);
   }
 }
 

@@ -10,6 +10,7 @@ abstract class OrderBuilder {
   void setRecipe(Recipe recipe);
   void setPhase(Phase phase);
   void setOrderStatus(OrderStatus orderStatus);
+  void setCustomNote(String note);
 
   Order? makeOrder();
 }
@@ -20,6 +21,7 @@ class OrderBuilderImpl implements OrderBuilder {
   Recipe? _recipe;
   Phase? _phase;
   OrderStatus? _orderStatus;
+  String? _customNote;
 
   OrderBuilderImpl({required AuthProvider authProvider})
       : _authProvider = authProvider;
@@ -37,6 +39,7 @@ class OrderBuilderImpl implements OrderBuilder {
       currentStatus: _orderStatus!,
       phase: _phase!,
       createdBy: _authProvider.userId!,
+      customNote: _customNote,
     );
   }
 
@@ -58,5 +61,10 @@ class OrderBuilderImpl implements OrderBuilder {
   @override
   void setTable(TableEntity table) {
     _table = table;
+  }
+
+  @override
+  void setCustomNote(String note) {
+    _customNote = note;
   }
 }

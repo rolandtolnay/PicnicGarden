@@ -19,6 +19,7 @@ class Order {
 
   final DateTime createdAt;
   final String createdBy;
+  final String? customNote;
 
   DateTime? delivered;
 
@@ -34,6 +35,7 @@ class Order {
     Map<String, Duration>? flow,
     required this.currentStatus,
     this.delivered,
+    this.customNote,
   })  : id = id ?? Uuid().v4(),
         createdAt = createdAt ?? DateTime.now(),
         flow = flow ?? {};
