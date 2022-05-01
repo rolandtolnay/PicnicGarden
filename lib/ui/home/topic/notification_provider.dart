@@ -136,7 +136,7 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
   }
 
   Future _initLocalNotifications() async {
-    final initializationSettingsIOS = IOSInitializationSettings(
+    final settingsIos = IOSInitializationSettings(
         requestAlertPermission: false,
         requestBadgePermission: false,
         requestSoundPermission: false,
@@ -144,9 +144,12 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
             (int id, String? title, String? body, String? payload) async {
           print('Received local notification');
         });
+    const settingsAndroid = AndroidInitializationSettings('ic_launcher');
     final initializationSettings = InitializationSettings(
-      iOS: initializationSettingsIOS,
+      iOS: settingsIos,
+      android: settingsAndroid,
     );
+
     await _localNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: (tableId) async {
       if (tableId != null) {

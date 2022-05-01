@@ -33,13 +33,14 @@ class OrderBuilderImpl implements OrderBuilder {
         _phase == null ||
         _orderStatus == null) return null;
 
+    final note = (_customNote ?? '').isEmpty ? null : _customNote;
     return Order(
       recipe: _recipe!,
       table: _table!,
       currentStatus: _orderStatus!,
       phase: _phase!,
       createdBy: _authProvider.userId!,
-      customNote: _customNote,
+      customNote: note,
     );
   }
 

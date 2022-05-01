@@ -129,8 +129,7 @@ class _OrderBuilderDialogState extends State<OrderBuilderDialog> {
   void _onOrderConfirm(Phase? phase, BuildContext context) {
     final builder = context.read<OrderBuilder>();
     builder.setRecipe(widget.recipe);
-    final note = _controller.text;
-    if (note.isNotEmpty) builder.setCustomNote(note);
+    builder.setCustomNote(_controller.text);
     if (phase != null) builder.setPhase(phase);
     final order = builder.makeOrder();
     Navigator.of(context).pop(order);
