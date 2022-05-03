@@ -32,6 +32,9 @@ class _HomePageTightBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<TableProvider>();
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
 
     SchedulerBinding.instance!.addPostFrameCallback((_) {
       provider.response.error?.showInDialog(context);
@@ -60,8 +63,36 @@ class _HomePageTightBody extends StatelessWidget {
             if (table != null) provider.selectTable(table);
           },
         ),
+        Divider(height: 0, color: colorScheme.primaryContainer),
+        TableStatusPickerBar(),
         Expanded(child: PhaseLoader()),
       ],
+    );
+  }
+}
+
+class TableStatusPickerBar extends StatelessWidget {
+  const TableStatusPickerBar({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
+    return Container(
+      height: 44,
+      color: colorScheme.primary,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.threesixty, color: colorScheme.onPrimary),
+          SizedBox(width: 8.0),
+          Text(
+            'SET TABLE STATUS',
+            style: textTheme.caption?.copyWith(color: colorScheme.onPrimary),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -25,10 +25,11 @@ class RectangularButton extends StatelessWidget {
     this.textColor,
     this.textStyle,
     this.isMarked = false,
+    Color? backgroundColor,
     badgeCount,
   })  : _type = _RectangularButtonType.outlined,
         badgeCount = badgeCount ?? 0,
-        color = null,
+        color = backgroundColor,
         super(key: key);
 
   const RectangularButton.flat({
@@ -70,6 +71,7 @@ class RectangularButton extends StatelessWidget {
             width: 2,
           ),
           primary: textColor ?? colorScheme.primaryContainer,
+          backgroundColor: color,
         ),
         onPressed: onPressed,
         child: _buildButtonChild(context),

@@ -1,5 +1,8 @@
 import 'dart:collection';
 
+import 'package:picnicgarden/domain/model/table_status.dart';
+import 'package:picnicgarden/domain/pg_error.dart';
+
 import '../../../domain/model/table_entity.dart';
 import '../../entity_provider.dart';
 import '../../restaurant/restaurant_provider.dart';
@@ -10,6 +13,11 @@ abstract class TableProvider extends EntityProvider {
 
   TableEntity? get selectedTable;
   void selectTable(TableEntity table);
+
+  Future<PGError?> setTableStatus(
+    TableStatus status, {
+    required TableEntity table,
+  });
 }
 
 class FIRTableProvider extends FIREntityProvider<TableEntity>
@@ -44,5 +52,13 @@ class FIRTableProvider extends FIREntityProvider<TableEntity>
   void selectTable(TableEntity table) async {
     _selectedTable = table;
     notifyListeners();
+  }
+
+  @override
+  Future<PGError?> setTableStatus(
+    TableStatus status, {
+    required TableEntity table,
+  }) async {
+    return postEntity(table.id, table.copyWith(status: status).toJson());
   }
 }

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart' hide Table;
+import 'package:picnicgarden/domain/model/table_status.dart';
 import 'package:provider/provider.dart';
 
+import '../../../domain/extensions.dart';
 import '../../../domain/model/table_entity.dart';
 import '../../common/common_dialog.dart';
 import '../topic/notification_provider.dart';
 import '../../order/order_provider.dart';
 import '../../common/dialog_title.dart';
-import '../../common/list_item_widget.dart';
+import 'table_list_item_widget.dart';
 
 class TablePickerDialog extends StatelessWidget {
   final List<TableEntity> tables;
@@ -52,15 +54,19 @@ class TablePickerDialog extends StatelessWidget {
     );
   }
 
-  ListItemWidget _buildTableListItem(TableEntity table, BuildContext context) {
+  TableListItemWidget _buildTableListItem(
+    TableEntity table,
+    BuildContext context,
+  ) {
     final notificationProvider = context.watch<NotificationProvider>();
     final orderProvider = context.watch<OrderProvider>();
-    return ListItemWidget(
+    return TableListItemWidget(
       table.name,
       isSelected: table == selectedTable,
       isMarked: orderProvider.ordersForTable(table).isNotEmpty,
       badgeCount: notificationProvider.notificationsForTable(table).length,
       onTapped: () => Navigator.of(context).pop(table),
+      backgroundColor: table.status?.backgroundColor,
     );
   }
 }
@@ -78,4 +84,8 @@ extension on BuildContext {
       child: TablePickerDialog(tableList, selectedTable: selectedTable),
     );
   }
+}
+
+extension on TableStatus {
+  Color get backgroundColor => HexColor.fromHex(colorHex);
 }
