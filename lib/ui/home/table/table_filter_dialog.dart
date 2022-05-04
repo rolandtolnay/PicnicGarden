@@ -8,7 +8,7 @@ import '../../common/common_dialog.dart';
 import 'table_filter_provider.dart';
 
 class TableFilterDialog extends StatelessWidget {
-  const TableFilterDialog({Key? key}) : super(key: key);
+  const TableFilterDialog._({Key? key}) : super(key: key);
 
   static void show(BuildContext context) {
     showDialog(
@@ -85,7 +85,7 @@ extension on BuildContext {
   Widget buildTableFilterDialog() {
     return ChangeNotifierProvider.value(
       value: read<TableFilterProvider>(),
-      child: TableFilterDialog(),
+      child: TableFilterDialog._(),
     );
   }
 }

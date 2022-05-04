@@ -1,9 +1,10 @@
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'table_status.g.dart';
 
 @JsonSerializable()
-class TableStatus {
+class TableStatus extends Equatable {
   final String id;
   final String name;
   final String colorHex;
@@ -23,4 +24,7 @@ class TableStatus {
       _$TableStatusFromJson(json);
 
   Map<String, dynamic> toJson() => _$TableStatusToJson(this);
+
+  @override
+  List<Object?> get props => [id];
 }

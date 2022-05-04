@@ -9,7 +9,7 @@ import '../../common/dialog_title.dart';
 import 'topic_provider.dart';
 
 class TopicSubscriberDialog extends StatelessWidget {
-  const TopicSubscriberDialog({Key? key}) : super(key: key);
+  const TopicSubscriberDialog._({Key? key}) : super(key: key);
 
   static void show(BuildContext context) {
     showDialog(
@@ -61,7 +61,7 @@ extension on BuildContext {
   Widget buildTopicSubscriber() {
     return ChangeNotifierProvider.value(
       value: read<TopicProvider>(),
-      child: TopicSubscriberDialog(),
+      child: TopicSubscriberDialog._(),
     );
   }
 }

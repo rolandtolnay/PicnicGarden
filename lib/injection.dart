@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:picnicgarden/ui/home/table/table_status_provider.dart';
 import 'package:picnicgarden/ui/theme_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -64,6 +65,10 @@ Future<void> configureDependencies() async {
     () => FIROrderStatusProvider(
       restaurantProvider: di(),
     )..fetchOrderStatusList(),
+  );
+  di.registerFactory<TableStatusProvider>(
+    () => FIRTableStatusProvider(restaurantProvider: di())
+      ..fetchTableStatusList(),
   );
   di.registerFactory<OrderBuilder>(
     () => OrderBuilderImpl(authProvider: di()),

@@ -14,7 +14,7 @@ class TablePickerDialog extends StatelessWidget {
   final List<TableEntity> tables;
   final TableEntity? selectedTable;
 
-  const TablePickerDialog(this.tables, {this.selectedTable, Key? key})
+  const TablePickerDialog._(this.tables, {this.selectedTable, Key? key})
       : super(key: key);
 
   static Future<TableEntity?> show(
@@ -81,7 +81,7 @@ extension on BuildContext {
         ChangeNotifierProvider.value(value: read<NotificationProvider>()),
         ChangeNotifierProvider.value(value: read<OrderProvider>()),
       ],
-      child: TablePickerDialog(tableList, selectedTable: selectedTable),
+      child: TablePickerDialog._(tableList, selectedTable: selectedTable),
     );
   }
 }

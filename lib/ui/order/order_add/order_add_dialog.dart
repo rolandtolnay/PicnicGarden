@@ -18,7 +18,7 @@ import '../order_provider.dart';
 import 'order_builder.dart';
 
 class OrderAddDialog extends StatelessWidget {
-  const OrderAddDialog({Key? key}) : super(key: key);
+  const OrderAddDialog._({Key? key}) : super(key: key);
 
   static void show(BuildContext context, {required TableEntity table}) {
     showDialog(
@@ -110,7 +110,7 @@ extension on BuildContext {
           ChangeNotifierProvider.value(value: read<PhaseProvider>()),
           ChangeNotifierProvider.value(value: read<OrderProvider>())
         ],
-        child: OrderAddDialog(),
+        child: OrderAddDialog._(),
       ),
     );
   }

@@ -17,7 +17,7 @@ class OrderBuilderDialog extends StatefulWidget {
   final List<Phase> phaseList;
   final Recipe recipe;
 
-  const OrderBuilderDialog({
+  const OrderBuilderDialog._({
     required this.phaseList,
     required this.recipe,
     Key? key,
@@ -32,7 +32,7 @@ class OrderBuilderDialog extends StatefulWidget {
       context: context,
       builder: (_) => Provider.value(
         value: context.read<OrderBuilder>(),
-        child: OrderBuilderDialog(phaseList: phaseList, recipe: recipe),
+        child: OrderBuilderDialog._(phaseList: phaseList, recipe: recipe),
       ),
     );
   }

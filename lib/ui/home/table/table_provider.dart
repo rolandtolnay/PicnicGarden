@@ -1,5 +1,4 @@
-import 'dart:collection';
-
+import 'package:collection/collection.dart';
 import 'package:picnicgarden/domain/model/table_status.dart';
 import 'package:picnicgarden/domain/pg_error.dart';
 
@@ -15,14 +14,14 @@ abstract class TableProvider extends EntityProvider {
   void selectTable(TableEntity table);
 
   Future<PGError?> setTableStatus(
-    TableStatus status, {
+    TableStatus? status, {
     required TableEntity table,
   });
 }
 
 class FIRTableProvider extends FIREntityProvider<TableEntity>
     implements TableProvider {
-  TableEntity? _selectedTable;
+  String? _selectedTableId;
 
   FIRTableProvider({
     required RestaurantProvider restaurantProvider,
@@ -37,28 +36,33 @@ class FIRTableProvider extends FIREntityProvider<TableEntity>
       UnmodifiableListView(entities);
 
   @override
-  TableEntity? get selectedTable => _selectedTable;
+  TableEntity? get selectedTable =>
+      entities.firstWhereOrNull((t) => t.id == _selectedTableId);
 
   @override
   Future fetchTables() async {
     await fetchEntities();
     entities.sort((a, b) => a.number.compareTo(b.number));
-    if (_selectedTable == null && tables.isNotEmpty) {
+    if (_selectedTableId == null && tables.isNotEmpty) {
       selectTable(tables.first);
     }
   }
 
   @override
   void selectTable(TableEntity table) async {
-    _selectedTable = table;
+    _selectedTableId = table.id;
     notifyListeners();
   }
 
   @override
   Future<PGError?> setTableStatus(
-    TableStatus status, {
+    TableStatus? status, {
     required TableEntity table,
   }) async {
-    return postEntity(table.id, table.copyWith(status: status).toJson());
+    final updated = table.copyWith(status: status);
+    final error = await postEntity(table.id, updated.toJson());
+    if (error == null) entities[entities.indexOf(table)] = updated;
+    notifyListeners();
+    return error;
   }
 }

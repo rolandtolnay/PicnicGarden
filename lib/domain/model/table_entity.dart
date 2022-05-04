@@ -24,7 +24,7 @@ class TableEntity extends Equatable {
 
   Map<String, dynamic> toJson() => _$TableEntityToJson(this);
 
-  TableEntity copyWith({required TableStatus status}) => TableEntity(
+  TableEntity copyWith({required TableStatus? status}) => TableEntity(
         id: id,
         name: name,
         number: number,

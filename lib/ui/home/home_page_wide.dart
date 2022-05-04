@@ -86,7 +86,7 @@ class HomePageWide extends StatelessWidget {
               isDarkMode ? ThemeMode.light : ThemeMode.dark,
             );
           },
-          icon: Icon(isDarkMode ? Icons.bedtime : Icons.brightness_5),
+          icon: Icon(isDarkMode ? Icons.light_mode : Icons.dark_mode),
           label: Text(isDarkMode ? 'DARK THEME' : 'LIGHT THEME'),
           style: TextButton.styleFrom(primary: colorScheme.onPrimary),
         )

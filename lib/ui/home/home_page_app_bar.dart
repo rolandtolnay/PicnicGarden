@@ -52,7 +52,7 @@ class HomePageAppBar extends StatelessWidget {
                   isDarkMode ? ThemeMode.light : ThemeMode.dark,
                 );
               },
-              icon: Icon(isDarkMode ? Icons.bedtime : Icons.brightness_5),
+              icon: Icon(isDarkMode ? Icons.dark_mode : Icons.light_mode),
               color: colorScheme.onPrimary,
             ),
           )
