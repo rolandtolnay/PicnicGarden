@@ -37,7 +37,7 @@ class OrderListDialog extends StatelessWidget {
           children: [
             Material(
               elevation: 4,
-              color: colorScheme.primary,
+              color: table.status?.backgroundColor ?? colorScheme.primary,
               child: TableNameWidget(
                 table: table,
                 showNotifications: false,

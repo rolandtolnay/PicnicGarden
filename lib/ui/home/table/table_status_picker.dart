@@ -7,10 +7,11 @@ import '../../../injection.dart';
 import 'table_provider.dart';
 import 'table_status_provider.dart';
 
-class TableStatusPicker extends StatelessWidget {
+class TableStatusPickerSheet extends StatelessWidget {
   final TableEntity table;
 
-  const TableStatusPicker._({Key? key, required this.table}) : super(key: key);
+  const TableStatusPickerSheet._({Key? key, required this.table})
+      : super(key: key);
 
   static void show(BuildContext context, {required TableEntity table}) {
     showModalBottomSheet(
@@ -20,7 +21,7 @@ class TableStatusPicker extends StatelessWidget {
           ChangeNotifierProvider.value(value: context.read<TableProvider>()),
           ChangeNotifierProvider(create: (_) => di<TableStatusProvider>()),
         ],
-        child: TableStatusPicker._(table: table),
+        child: TableStatusPickerSheet._(table: table),
       ),
     );
   }

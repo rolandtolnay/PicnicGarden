@@ -7,11 +7,11 @@ import '../theme_provider.dart';
 import 'table/widgets/table_name_widget.dart';
 import 'topic/topic_subscriber_dialog.dart';
 
-class HomePageAppBar extends StatelessWidget {
+class HomePageTightAppBar extends StatelessWidget {
   final TableEntity selectedTable;
   final VoidCallback? onTableTapped;
 
-  const HomePageAppBar(
+  const HomePageTightAppBar(
     this.selectedTable, {
     this.onTableTapped,
     Key? key,

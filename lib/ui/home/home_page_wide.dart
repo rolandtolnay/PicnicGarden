@@ -1,6 +1,5 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
-import 'package:picnicgarden/ui/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../domain/model/table_entity.dart';
@@ -10,10 +9,13 @@ import '../order/order_list/order_list_dialog.dart';
 import '../order/order_list/order_list_page.dart';
 import '../order/order_provider.dart';
 import '../restaurant/restaurant_provider.dart';
+import '../theme_provider.dart';
 import 'table/table_filter_dialog.dart';
 import 'table/table_filter_provider.dart';
-import 'table/widgets/table_name_widget.dart';
 import 'table/table_provider.dart';
+import 'table/table_status_provider.dart';
+import 'table/widgets/table_name_widget.dart';
+import 'table/widgets/table_status_popup_button.dart';
 
 const _maxTableWidth = 360;
 
@@ -24,15 +26,17 @@ class HomePageWide extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(context),
-      body: _HomePageWideBody(),
+      body: ChangeNotifierProvider(
+        create: (_) => di<TableStatusProvider>(),
+        child: _HomePageWideBody(),
+      ),
     );
   }
 
   AppBar _buildAppBar(BuildContext context) {
     final theme = Theme.of(context);
-
     final colorScheme = theme.colorScheme;
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final isDarkMode = theme.brightness == Brightness.dark;
 
     final filterProvider = context.watch<TableFilterProvider>();
     final themeProvider = context.watch<ThemeModeProvider>();
@@ -143,15 +147,22 @@ class _HomePageWideBody extends StatelessWidget {
     );
 
     return Material(
-      color: colorScheme.primary,
+      color: table.status?.backgroundColor ?? colorScheme.primary,
       elevation: 4,
       child: Row(
         children: [
           const SizedBox(width: 16.0),
-          TableNameWidget(
-            table: table,
-            showNotifications: false,
-            onTapped: () => OrderListDialog.show(context, table: table),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 4.0),
+              TableStatusPopupButton(table: table),
+              TableNameWidget(
+                table: table,
+                showNotifications: false,
+                onTapped: () => OrderListDialog.show(context, table: table),
+              ),
+            ],
           ),
           Spacer(),
           orderAddButton,

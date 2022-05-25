@@ -6,7 +6,7 @@ import '../../domain/pg_error.dart';
 import '../common/empty_refreshable.dart';
 import '../order/order_add/order_add_floating_button.dart';
 import '../phase/phase_loader.dart';
-import 'home_page_app_bar.dart';
+import 'home_page_tight_app_bar.dart';
 import 'table/table_picker_dialog.dart';
 import 'table/table_provider.dart';
 import 'table/widgets/table_status_bar.dart';
@@ -51,7 +51,7 @@ class _HomePageTightBody extends StatelessWidget {
 
     return Column(
       children: [
-        HomePageAppBar(
+        HomePageTightAppBar(
           selectedTable,
           onTableTapped: () async {
             final table = await TablePickerDialog.show(
