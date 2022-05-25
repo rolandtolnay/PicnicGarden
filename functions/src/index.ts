@@ -29,30 +29,62 @@ export const onNewNotification = functions
   .onCreate(async (snap, _) => {
     //
     const notification = snap.data() as Notification;
-    const order = notification.order;
 
-    const title = `${order.recipe.name} ${order.currentStatus.name} @ ${order.table.name}`;
-    const message = {
-      notification: {
-        title: title,
-      },
-      data: {
-        createdBy: notification.createdBy,
-        tableId: order.table.id,
-        sound: "squeak_toy.wav",
-      },
-      apns: {
-        payload: {
-          aps: {
-            sound: "squeak_toy.wav",
+    var message;
+
+    const order = notification.order;
+    if (order != null) {
+      const title = `${order.recipe.name} ${order.currentStatus.name} @ ${order.table.name}`;
+      message = {
+        notification: {
+          title: title,
+        },
+        data: {
+          createdBy: notification.createdBy,
+          tableId: order.table.id,
+          sound: "squeak_toy.wav",
+        },
+        apns: {
+          payload: {
+            aps: {
+              sound: "squeak_toy.wav",
+            },
           },
         },
-      },
-      condition: makeCondition(notification),
-    };
-    console.log(`Sending message: ${JSON.stringify(message)}`);
+        condition: makeCondition(notification),
+      };
+    }
 
-    return messaging.send(message);
+    const statusChange = notification.tableStatusChange;
+    if (statusChange != null) {
+      const title = `${statusChange.table.name} status change: ${statusChange.status.name}`;
+      message = {
+        notification: {
+          title: title,
+        },
+        data: {
+          createdBy: notification.createdBy,
+          tableId: statusChange.table.id,
+          sound: "squeak_toy.wav",
+        },
+        apns: {
+          payload: {
+            aps: {
+              sound: "squeak_toy.wav",
+            },
+          },
+        },
+        condition: makeCondition(notification),
+      };
+    }
+
+    if (message != null) {
+      console.log(`Sending message: ${JSON.stringify(message)}`);
+      return messaging.send(message);
+    } else {
+      console.warn(`Unexpected notification: ${JSON.stringify(notification)}`);
+      return Promise.resolve();
+    }
   });
 
 function makeCondition(notification: Notification) {
@@ -70,8 +102,18 @@ function makeCondition(notification: Notification) {
 
 interface Notification {
   createdBy: string;
-  order: Order;
+  order: Order | undefined;
+  tableStatusChange: TableStatusChange | undefined;
   topicNames: string[];
+}
+
+interface TableStatusChange {
+  table: Table;
+  status: TableStatus;
+}
+
+interface TableStatus {
+  name: string;
 }
 
 interface Order {

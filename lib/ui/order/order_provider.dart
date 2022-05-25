@@ -48,7 +48,7 @@ class FIROrderProvider extends FIREntityProvider<Order>
   Future<PGError?> commitOrder(Order order) async {
     final error = await postEntity(order.id, order.toJson());
     if (order.shouldNotifyStatus) {
-      return _notificationProvider.postNotificationForOrder(order);
+      return _notificationProvider.postForOrder(order);
     }
     return error;
   }

@@ -3,6 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:uuid/uuid.dart';
 
 import 'order.dart';
+import 'table_status_change.dart';
 
 part 'notification.g.dart';
 
@@ -10,6 +11,7 @@ part 'notification.g.dart';
 class Notification extends Equatable {
   final String id;
   final Order? order;
+  final TableStatusChange? tableStatusChange;
 
   final List<String> topicNames;
   final DateTime createdAt;
@@ -23,11 +25,11 @@ class Notification extends Equatable {
     required this.createdAt,
     required this.createdBy,
     this.order,
+    this.tableStatusChange,
   });
 
   factory Notification.forOrder(Order order, {required String createdBy}) {
-    // ignore: omit_local_variable_types
-    final Set<String> topicNames = order.recipe.attributes.fold(
+    final topicNames = order.recipe.attributes.fold<Set<String>>(
       <String>{},
       (topicNames, attribute) {
         order.currentStatus.notifyTopics.forEach((key, value) {
@@ -46,6 +48,20 @@ class Notification extends Equatable {
       createdAt: DateTime.now(),
       createdBy: createdBy,
       order: order,
+    );
+  }
+
+  factory Notification.forTableStatusChange(
+    TableStatusChange change, {
+    required String createdBy,
+  }) {
+    return Notification(
+      id: Uuid().v4(),
+      topicNames: change.status.notifyTopics,
+      readBy: const {},
+      createdAt: DateTime.now(),
+      createdBy: createdBy,
+      tableStatusChange: change,
     );
   }
 

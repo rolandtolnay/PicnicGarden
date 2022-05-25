@@ -4,15 +4,16 @@ import 'package:collection/collection.dart' show IterableExtension;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import '../../restaurant/restaurant_provider.dart';
 
 import '../../../domain/api_response.dart';
-import '../../../domain/pg_error.dart';
 import '../../../domain/model/notification.dart';
 import '../../../domain/model/order.dart';
 import '../../../domain/model/table_entity.dart';
+import '../../../domain/model/table_status_change.dart';
+import '../../../domain/pg_error.dart';
 import '../../auth_provider.dart';
 import '../../entity_provider.dart';
+import '../../restaurant/restaurant_provider.dart';
 import '../table/table_provider.dart';
 import 'topic_provider.dart';
 
@@ -24,7 +25,9 @@ abstract class NotificationProvider extends EntityProvider {
   );
   UnmodifiableListView<Notification> notificationsForTable(TableEntity table);
 
-  Future<PGError?> postNotificationForOrder(Order order);
+  Future<PGError?> postForOrder(Order order);
+
+  Future<PGError?> postForTableStatusChange(TableStatusChange change);
 }
 
 class FIRNotificationProvider extends FIREntityProvider<Notification>
@@ -92,7 +95,7 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
     return UnmodifiableListView<Notification>(
       entities
           .where((n) =>
-              n.order!.table != table &&
+              n.order?.table != table &&
               n.readBy[_authProvider.userId!] == null &&
               n.topicNames.any(_isSubscribedToTopic))
           .toList(),
@@ -104,7 +107,7 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
     return UnmodifiableListView<Notification>(
       entities
           .where((n) =>
-              n.order!.table == table &&
+              n.order?.table == table &&
               n.readBy[_authProvider.userId!] == null &&
               n.topicNames.any(_isSubscribedToTopic))
           .toList(),
@@ -112,9 +115,18 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
   }
 
   @override
-  Future<PGError?> postNotificationForOrder(Order order) {
+  Future<PGError?> postForOrder(Order order) {
     final notification = Notification.forOrder(
       order,
+      createdBy: _authProvider.userId!,
+    );
+    return postEntity(notification.id, notification.toJson());
+  }
+
+  @override
+  Future<PGError?> postForTableStatusChange(TableStatusChange change) {
+    final notification = Notification.forTableStatusChange(
+      change,
       createdBy: _authProvider.userId!,
     );
     return postEntity(notification.id, notification.toJson());
@@ -225,8 +237,9 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
   }
 
   void _selectTableId(String tableId) {
-    final table =
-        _tableProvider.tables.firstWhereOrNull((t) => t.id == tableId);
+    final table = _tableProvider.tables.firstWhereOrNull(
+      (t) => t.id == tableId,
+    );
     if (table != null) {
       _tableProvider.selectTable(table);
     }

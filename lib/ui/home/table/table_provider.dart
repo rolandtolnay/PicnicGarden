@@ -1,10 +1,12 @@
 import 'package:collection/collection.dart';
-import 'package:picnicgarden/domain/model/table_status.dart';
-import 'package:picnicgarden/domain/pg_error.dart';
 
 import '../../../domain/model/table_entity.dart';
+import '../../../domain/model/table_status.dart';
+import '../../../domain/model/table_status_change.dart';
+import '../../../domain/pg_error.dart';
 import '../../entity_provider.dart';
 import '../../restaurant/restaurant_provider.dart';
+import '../topic/notification_provider.dart';
 
 abstract class TableProvider extends EntityProvider {
   UnmodifiableListView<TableEntity> get tables;
@@ -23,9 +25,13 @@ class FIRTableProvider extends FIREntityProvider<TableEntity>
     implements TableProvider {
   String? _selectedTableId;
 
+  final NotificationProvider _notificationProvider;
+
   FIRTableProvider({
     required RestaurantProvider restaurantProvider,
-  }) : super(
+    required NotificationProvider notificationProvider,
+  })  : _notificationProvider = notificationProvider,
+        super(
           'tables',
           TableEntity.fromJson,
           restaurant: restaurantProvider.selectedRestaurant,
@@ -61,7 +67,13 @@ class FIRTableProvider extends FIREntityProvider<TableEntity>
   }) async {
     final updated = table.copyWith(status: status);
     final error = await postEntity(table.id, updated.toJson());
-    if (error == null) entities[entities.indexOf(table)] = updated;
+    if (error == null) {
+      entities[entities.indexOf(table)] = updated;
+      if (status != null) {
+        final change = TableStatusChange(status, table);
+        _notificationProvider.postForTableStatusChange(change);
+      }
+    }
     notifyListeners();
     return error;
   }
