@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../domain/model/table_entity.dart';
 import '../../common/common_dialog.dart';
 import '../../home/table/table_filter_provider.dart';
-import '../../home/table/table_name_widget.dart';
+import '../../home/table/widgets/table_name_widget.dart';
 import '../../home/table/table_provider.dart';
 import '../../phase/phase_provider.dart';
 import '../../recipe/recipe_provider.dart';

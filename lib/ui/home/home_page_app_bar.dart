@@ -4,18 +4,18 @@ import 'package:provider/provider.dart';
 
 import '../../domain/model/table_entity.dart';
 import '../theme_provider.dart';
-import 'table/table_name_widget.dart';
+import 'table/widgets/table_name_widget.dart';
 import 'topic/topic_subscriber_dialog.dart';
 
 class HomePageAppBar extends StatelessWidget {
+  final TableEntity selectedTable;
+  final VoidCallback? onTableTapped;
+
   const HomePageAppBar(
     this.selectedTable, {
     this.onTableTapped,
     Key? key,
   }) : super(key: key);
-
-  final TableEntity selectedTable;
-  final VoidCallback? onTableTapped;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class HomePageAppBar extends StatelessWidget {
 
     final colorScheme = Theme.of(context).colorScheme;
     return Container(
-      color: colorScheme.primary,
+      color: selectedTable.status?.backgroundColor ?? colorScheme.primary,
       child: Stack(
         alignment: Alignment.center,
         children: [

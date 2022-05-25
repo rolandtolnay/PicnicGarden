@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../common/rectangular_button.dart';
+import '../../../common/rectangular_button.dart';
 
 class TableListItemWidget extends StatelessWidget {
   const TableListItemWidget(
@@ -35,7 +35,7 @@ class TableListItemWidget extends StatelessWidget {
       textStyle: textStyle,
       badgeCount: badgeCount,
       isMarked: isMarked,
-      borderColor: isSelected ? color : null,
+      borderColor: isSelected ? color : backgroundColor,
       onPressed: () => onTapped?.call(),
       backgroundColor: backgroundColor,
     );

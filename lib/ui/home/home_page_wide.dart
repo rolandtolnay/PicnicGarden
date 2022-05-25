@@ -12,7 +12,7 @@ import '../order/order_provider.dart';
 import '../restaurant/restaurant_provider.dart';
 import 'table/table_filter_dialog.dart';
 import 'table/table_filter_provider.dart';
-import 'table/table_name_widget.dart';
+import 'table/widgets/table_name_widget.dart';
 import 'table/table_provider.dart';
 
 const _maxTableWidth = 360;

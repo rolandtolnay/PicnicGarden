@@ -1,5 +1,9 @@
+import 'dart:ui';
+
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import '../extensions.dart';
 
 part 'table_status.g.dart';
 
@@ -27,4 +31,7 @@ class TableStatus extends Equatable {
 
   @override
   List<Object?> get props => [id];
+
+  Color? get backgroundColor =>
+      colorHex.isNotEmpty ? HexColor.fromHex(colorHex) : null;
 }
