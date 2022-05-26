@@ -36,10 +36,7 @@ Future<void> configureDependencies() async {
     )..requestPermissions(),
   );
   di.registerLazySingleton<TableProvider>(
-    () => FIRTableProvider(
-      restaurantProvider: di(),
-      notificationProvider: di(),
-    )..fetchTables(),
+    () => FIRTableProvider(restaurantProvider: di())..fetchTables(),
   );
   di.registerLazySingleton<RestaurantProvider>(
     () => FIRRestaurantProvider()..fetchRestaurants(),

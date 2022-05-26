@@ -69,6 +69,7 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
     }
     _listenOnTableSelected();
     _listenOnSubscribedTopic();
+    _listenOnTableStatusChange();
   }
 
   @override
@@ -233,6 +234,12 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
       if (!_topicProvider.isLoading) {
         notifyListeners();
       }
+    });
+  }
+
+  void _listenOnTableStatusChange() {
+    _tableProvider.onTableStatusChanged.listen((change) {
+      postForTableStatusChange(change);
     });
   }
 

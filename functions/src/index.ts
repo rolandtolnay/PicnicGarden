@@ -30,7 +30,7 @@ export const onNewNotification = functions
     //
     const notification = snap.data() as Notification;
 
-    var message;
+    let message;
 
     const order = notification.order;
     if (order != null) {
