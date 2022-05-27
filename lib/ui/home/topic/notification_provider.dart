@@ -9,7 +9,6 @@ import '../../../domain/api_response.dart';
 import '../../../domain/model/notification.dart';
 import '../../../domain/model/order.dart';
 import '../../../domain/model/table_entity.dart';
-import '../../../domain/model/table_status_change.dart';
 import '../../../domain/pg_error.dart';
 import '../../auth_provider.dart';
 import '../../entity_provider.dart';
@@ -27,7 +26,7 @@ abstract class NotificationProvider extends EntityProvider {
 
   Future<PGError?> postForOrder(Order order);
 
-  Future<PGError?> postForTableStatusChange(TableStatusChange change);
+  Future<PGError?> postForTableStatusChange(TableEntity table);
 }
 
 class FIRNotificationProvider extends FIREntityProvider<Notification>
@@ -125,9 +124,9 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
   }
 
   @override
-  Future<PGError?> postForTableStatusChange(TableStatusChange change) {
+  Future<PGError?> postForTableStatusChange(TableEntity table) {
     final notification = Notification.forTableStatusChange(
-      change,
+      table,
       createdBy: _authProvider.userId!,
     );
     return postEntity(notification.id, notification.toJson());
@@ -238,8 +237,8 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
   }
 
   void _listenOnTableStatusChange() {
-    _tableProvider.onTableStatusChanged.listen((change) {
-      postForTableStatusChange(change);
+    _tableProvider.onTableStatusChanged.listen((table) {
+      postForTableStatusChange(table);
     });
   }
 

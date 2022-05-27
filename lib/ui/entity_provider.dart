@@ -69,10 +69,7 @@ class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
         } catch (e, stacktrace) {
           print('[ERROR] Failed fetching $T: $e');
           print(stacktrace);
-          response = ApiResponse.error(PGError.backend(
-            '$e',
-            error: e as Exception,
-          ));
+          response = ApiResponse.error(PGError.backend('$e', error: e));
         }
         notifyListeners();
       },
@@ -92,7 +89,7 @@ class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
         } catch (e, stacktrace) {
           print('[ERROR] Failed putting $T: $e');
           print(stacktrace);
-          return PGError.backend('$e', error: e as Exception);
+          return PGError.backend('$e', error: e);
         }
       },
       (error) => error,
@@ -115,7 +112,7 @@ class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
         } catch (e, stacktrace) {
           print('[ERROR] Failed putting $T: $e');
           print(stacktrace);
-          return PGError.backend('$e', error: e as Exception);
+          return PGError.backend('$e', error: e);
         }
       },
       (error) => error,
@@ -131,7 +128,7 @@ class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
         } catch (e, stacktrace) {
           print('[ERROR] Failed deleting $T: $e');
           print(stacktrace);
-          return PGError.backend('$e', error: e as Exception);
+          return PGError.backend('$e', error: e);
         }
       },
       (error) => error,
@@ -149,10 +146,7 @@ class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
     }, onError: (e, stacktrace) {
       print('[ERROR] Received snapshot error listening on $T: $e');
       print(stacktrace);
-      response = ApiResponse.error(PGError.backend(
-        '$e',
-        error: e as Exception,
-      ));
+      response = ApiResponse.error(PGError.backend('$e', error: e));
       notifyListeners();
     });
   }

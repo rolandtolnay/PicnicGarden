@@ -7,7 +7,7 @@ class PGError implements Exception {
   final String message;
 
   /// Underlying error
-  Exception? error;
+  Object? error;
 
   PGError.noInternet()
       : type = PGErrorType.noInternet,

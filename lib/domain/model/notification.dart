@@ -2,8 +2,9 @@ import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:uuid/uuid.dart';
 
+import '../compact_map.dart';
 import 'order.dart';
-import 'table_status_change.dart';
+import 'table_entity.dart';
 
 part 'notification.g.dart';
 
@@ -11,7 +12,7 @@ part 'notification.g.dart';
 class Notification extends Equatable {
   final String id;
   final Order? order;
-  final TableStatusChange? tableStatusChange;
+  final TableEntity? table;
 
   final List<String> topicNames;
   final DateTime createdAt;
@@ -25,7 +26,7 @@ class Notification extends Equatable {
     required this.createdAt,
     required this.createdBy,
     this.order,
-    this.tableStatusChange,
+    this.table,
   });
 
   factory Notification.forOrder(Order order, {required String createdBy}) {
@@ -52,16 +53,19 @@ class Notification extends Equatable {
   }
 
   factory Notification.forTableStatusChange(
-    TableStatusChange change, {
+    TableEntity table, {
     required String createdBy,
   }) {
     return Notification(
       id: Uuid().v4(),
-      topicNames: change.status.notifyTopics,
+      topicNames: table.status?.notifyTopics
+              .compactMap((e) => e.isNotEmpty ? e.toLowerCase() : null)
+              .toList() ??
+          [],
       readBy: const {},
       createdAt: DateTime.now(),
       createdBy: createdBy,
-      tableStatusChange: change,
+      table: table,
     );
   }
 
