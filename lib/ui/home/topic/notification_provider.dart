@@ -95,6 +95,7 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
     return UnmodifiableListView<Notification>(
       entities
           .where((n) =>
+              n.order != null &&
               n.order?.table != table &&
               n.readBy[_authProvider.userId!] == null &&
               n.topicNames.any(_isSubscribedToTopic))
@@ -107,6 +108,7 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
     return UnmodifiableListView<Notification>(
       entities
           .where((n) =>
+              n.order != null &&
               n.order?.table == table &&
               n.readBy[_authProvider.userId!] == null &&
               n.topicNames.any(_isSubscribedToTopic))
