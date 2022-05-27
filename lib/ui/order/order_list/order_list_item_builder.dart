@@ -16,7 +16,7 @@ class OrderListItemBuilder {
   final Iterable<Order> orders;
 
   final bool showTimer;
-  final ValueChanged<Order>? onOrderTapped;
+  final ValueChanged<List<Order>>? onOrderTapped;
 
   OrderListItemBuilder({
     required this.phases,
@@ -25,7 +25,7 @@ class OrderListItemBuilder {
     this.onOrderTapped,
   });
 
-  List<OrderListItem> buildListItems() {
+  List<OrderListItem> buildListItems({required bool grouped}) {
     final sortedPhases = List.from(phases);
     sortedPhases.sort((a, b) => a.number.compareTo(b.number));
 
@@ -48,15 +48,19 @@ class OrderListItemBuilder {
     return sortedPhases.fold(<OrderListItem>[], (list, phase) {
       list.add(OrderListPhaseItem(phase));
       if (phaseMap[phase.id] != null) {
-        list.addAll(
-          phaseMap[phase.id]!.map(
+        final Iterable<OrderListOrderItem> orderItems;
+        if (grouped == false) {
+          orderItems = phaseMap[phase.id]!.map(
             (order) => OrderListOrderItem(
-              order,
+              [order],
               showTimer: showTimer,
               onTapped: onOrderTapped,
             ),
-          ),
-        );
+          );
+        } else {
+          orderItems = [];
+        }
+        list.addAll(orderItems);
       }
       return list;
     });

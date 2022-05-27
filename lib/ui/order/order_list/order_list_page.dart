@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:picnicgarden/domain/compact_map.dart';
 import 'package:picnicgarden/ui/home/table/table_filter_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -50,17 +52,23 @@ class OrderListPage extends StatelessWidget {
           .filteredBy(enabledAttributes: enabledAttributes),
       phases: phases,
       showTimer: showTimer,
-      onOrderTapped: (order) async {
+      onOrderTapped: (orderList) async {
         final provider = context.read<OrderProvider>();
-        final error = await provider.commitNextFlow(
-          order: order,
-          orderStatusList: orderStatusList,
+        // TODO: Send one commit for all orders
+        final errorList = await Future.wait(
+          orderList.map(
+            (e) => provider.commitNextFlow(
+              order: e,
+              orderStatusList: orderStatusList,
+            ),
+          ),
         );
+        final error = errorList.compactMap((e) => e).firstOrNull;
         error?.showInDialog(context);
       },
     );
     return _OrderList(
-      items: builder.buildListItems(),
+      items: builder.buildListItems(grouped: false),
       showTimer: showTimer,
       scrollable: scrollable,
     );
