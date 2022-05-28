@@ -24,18 +24,39 @@ class OrderListOrderItem implements OrderListItem<Order> {
   Widget buildContent(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
 
     final count = orderGroup.orderList.length;
+    final countVisible = orderGroup.orderList.length > 1;
+    final orderCount = Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        color: countVisible ? theme.disabledColor : null,
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Visibility(
+        visible: countVisible,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('$count',
+                style: textTheme.headline4
+                    ?.copyWith(color: colorScheme.onSurface)),
+            Text('x', style: textTheme.caption),
+          ],
+        ),
+      ),
+    );
+
     return ListTile(
       onTap: () => onTapped?.call(orderGroup),
       contentPadding: EdgeInsets.fromLTRB(4, 8, 8, 4),
       title: Row(
         children: [
-          Visibility(
-            visible: orderGroup.orderList.length > 1,
-            child: Text('${count}x', style: textTheme.headline6),
-          ),
-          const SizedBox(width: 8.0),
+          orderCount,
+          const SizedBox(width: 4.0),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

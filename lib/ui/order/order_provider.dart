@@ -26,6 +26,8 @@ abstract class OrderProvider extends ChangeNotifier with ApiResponder {
     required Order order,
     required List<OrderStatus> orderStatusList,
   });
+
+  void groupSimilarOrders();
 }
 
 @Injectable(as: OrderProvider)
@@ -82,6 +84,12 @@ class FIROrderProvider extends ChangeNotifier
   @override
   Iterable<OrderGroup> orderGroupList({required TableEntity table}) =>
       _cache.orderGroupList(table: table);
+
+  @override
+  void groupSimilarOrders() {
+    _cache.groupSimilarOrders();
+    notifyListeners();
+  }
 }
 
 extension OrderGroupListFilter on Iterable<OrderGroup> {

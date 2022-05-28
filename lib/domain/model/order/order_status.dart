@@ -1,17 +1,20 @@
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import '../attribute.dart';
+import '../topic.dart';
 
 part 'order_status.g.dart';
 
 @JsonSerializable()
-class OrderStatus {
+class OrderStatus extends Equatable {
   final String id;
   final String name;
   final String colorHex;
   final int flow;
 
-  /// { topic_name: [attribute_id] }
   @JsonKey(defaultValue: {})
-  final Map<String, List<String>> notifyTopics;
+  final Map<TopicName, List<AttributeId>> notifyTopics;
 
   const OrderStatus({
     required this.id,
@@ -25,4 +28,7 @@ class OrderStatus {
       _$OrderStatusFromJson(json);
 
   Map<String, dynamic> toJson() => _$OrderStatusToJson(this);
+
+  @override
+  List<Object?> get props => [id];
 }

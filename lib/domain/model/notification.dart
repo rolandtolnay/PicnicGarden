@@ -31,14 +31,14 @@ class Notification extends Equatable {
 
   factory Notification.forOrder(Order order, {required String createdBy}) {
     final topicNames = order.recipe.attributes.fold<Set<String>>(
-      <String>{},
-      (topicNames, attribute) {
-        order.currentStatus.notifyTopics.forEach((key, value) {
-          if (value.contains(attribute.id)) {
-            topicNames.add(key.toLowerCase());
+      {},
+      (topicNameList, attribute) {
+        order.currentStatus.notifyTopics.forEach((topicName, attrIdList) {
+          if (attrIdList.contains(attribute.id)) {
+            topicNameList.add(topicName.toLowerCase());
           }
         });
-        return topicNames;
+        return topicNameList;
       },
     );
 

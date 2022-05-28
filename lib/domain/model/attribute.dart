@@ -3,9 +3,11 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'attribute.g.dart';
 
+typedef AttributeId = String;
+
 @JsonSerializable()
 class Attribute extends Equatable {
-  final String id;
+  final AttributeId id;
   final String name;
 
   const Attribute({required this.id, required this.name});

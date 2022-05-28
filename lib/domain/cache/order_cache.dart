@@ -17,6 +17,8 @@ abstract class OrderCache implements Disposable {
   void listenOnOrderUpdates(Restaurant restaurant);
 
   Iterable<OrderGroup> orderGroupList({required TableEntity table});
+
+  void groupSimilarOrders();
 }
 
 @LazySingleton(as: OrderCache)
@@ -48,24 +50,67 @@ class OrderCacheImpl implements OrderCache {
   }
 
   void _process(OrderUpdate update) {
-    final key = update.order.table;
     final order = update.order;
     switch (update.type) {
       case OrderUpdateType.added:
-        _tableOrderGroupMap[key] ??= <OrderGroup>[];
-        _tableOrderGroupMap[key]?.add(OrderGroup([order]));
+        _tableOrderGroupMap.addOrder(order);
         break;
       case OrderUpdateType.modified:
-        _tableOrderGroupMap.groupForOrder(order)?.update(order);
+        _tableOrderGroupMap.modifyOrder(order);
         break;
       case OrderUpdateType.removed:
-        final group = _tableOrderGroupMap.groupForOrder(order);
+        final group = _tableOrderGroupMap.removeOrder(order);
         if (group == null) break;
-        group.remove(order);
-        if (group.orderList.isEmpty) _tableOrderGroupMap[key]?.remove(group);
+        final table = update.order.table;
+        if (group.orderList.isEmpty) _tableOrderGroupMap[table]?.remove(group);
         break;
     }
     dev.log('Processed $update');
+  }
+
+  @override
+  void groupSimilarOrders() {
+    for (final table in _tableOrderGroupMap.keys) {
+      final map = _tableOrderGroupMap[table]!;
+      _tableOrderGroupMap[table] = map.fold<List<OrderGroup>>(
+        [],
+        (result, group) {
+          final existing = result.firstWhereOrNull(
+            (e) =>
+                e.recipe.name == group.recipe.name &&
+                e.phase == group.phase &&
+                e.currentStatus == group.currentStatus,
+          );
+          if (existing == null) {
+            result.add(group);
+          } else {
+            existing.orderList.addAll(group.orderList);
+          }
+          return result;
+        },
+      );
+    }
+  }
+}
+
+extension on Map<TableEntity, List<OrderGroup>> {
+  void addOrder(Order order) {
+    this[order.table] ??= <OrderGroup>[];
+    this[order.table]?.add(OrderGroup([order]));
+  }
+
+  void modifyOrder(Order order) {
+    _groupForOrder(order)?.modify(order);
+  }
+
+  OrderGroup? removeOrder(Order order) {
+    final group = _groupForOrder(order);
+    group?.remove(order);
+    return group;
+  }
+
+  OrderGroup? _groupForOrder(Order order) {
+    return this[order.table]?.firstWhereOrNull((e) => e.contains(order));
   }
 }
 
@@ -77,7 +122,7 @@ extension on OrderGroup {
     _sortOrders();
   }
 
-  void update(Order order) {
+  void modify(Order order) {
     orderList.remove(order);
     orderList.add(order);
     _sortOrders();
@@ -85,11 +130,5 @@ extension on OrderGroup {
 
   void _sortOrders() {
     orderList.sort((a, b) => a.createdAt.compareTo(b.createdAt));
-  }
-}
-
-extension on Map<TableEntity, List<OrderGroup>> {
-  OrderGroup? groupForOrder(Order order) {
-    return this[order.table]?.firstWhereOrNull((e) => e.contains(order));
   }
 }

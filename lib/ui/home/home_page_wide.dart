@@ -86,7 +86,7 @@ class HomePageWide extends StatelessWidget {
               isDarkMode ? ThemeMode.light : ThemeMode.dark,
             );
           },
-          icon: Icon(isDarkMode ? Icons.light_mode : Icons.dark_mode),
+          icon: Icon(isDarkMode ? Icons.dark_mode : Icons.light_mode),
           label: Text(isDarkMode ? 'DARK THEME' : 'LIGHT THEME'),
           style: TextButton.styleFrom(primary: colorScheme.onPrimary),
         )
@@ -136,6 +136,11 @@ class _HomePageWideBody extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
+    final orderGroupButton = IconButton(
+      color: colorScheme.onPrimary,
+      onPressed: () => context.read<OrderProvider>().groupSimilarOrders(),
+      icon: Icon(Icons.workspaces),
+    );
     final orderAddButton = IconButton(
       color: colorScheme.onPrimary,
       onPressed: () => OrderAddDialog.show(context, table: table),
@@ -161,6 +166,7 @@ class _HomePageWideBody extends StatelessWidget {
             ],
           ),
           Spacer(),
+          orderGroupButton,
           orderAddButton,
           const SizedBox(width: 16.0),
         ],
