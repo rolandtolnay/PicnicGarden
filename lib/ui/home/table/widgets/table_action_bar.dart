@@ -56,19 +56,25 @@ class TableActionButton extends StatelessWidget {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
-    return InkWell(
-      onTap: onTap,
-      child: Row(
-        children: [
-          Icon(icon, color: colorScheme.onPrimary, size: 16),
-          const SizedBox(width: 8.0),
-          Text(
-            title,
-            style: textTheme.bodyText2?.copyWith(
-              color: colorScheme.onPrimary,
-            ),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Icon(icon, color: colorScheme.onPrimary, size: 16),
+              const SizedBox(width: 8.0),
+              Text(
+                title,
+                style: textTheme.bodyText2?.copyWith(
+                  color: colorScheme.onPrimary,
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
