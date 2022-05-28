@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/model/attribute.dart';
@@ -36,24 +35,21 @@ class _OrderListPageState extends State<OrderListPage> {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<OrderProvider>();
+    if (provider.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     final phases = context.select<PhaseProvider, Iterable<Phase>>(
       (p) => p.phases,
     );
     final orderStatusList =
-        context.select<OrderStatusProvider, Iterable<OrderStatus>>(
+        context.select<OrderStatusProvider, List<OrderStatus>>(
       (p) => p.orderStatusList,
     );
     final enabledAttributes =
         context.select<TableFilterProvider, Iterable<Attribute>>(
       (p) => p.enabledAttributes,
     );
-
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      provider.response.error?.showInDialog(context);
-    });
-    if (provider.isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
 
     final builder = OrderListItemBuilder(
       orderGroupList: provider
@@ -63,14 +59,9 @@ class _OrderListPageState extends State<OrderListPage> {
       showTimer: widget.showTimer,
       onOrderTapped: (orderGroup) async {
         final provider = context.read<OrderProvider>();
-        // TODO: Send one commit for all orders
-        await Future.wait(
-          orderGroup.orderList.map(
-            (e) => provider.commitNextFlow(
-              order: e,
-              orderStatusList: orderStatusList.toList(),
-            ),
-          ),
+        await provider.commitNextFlow(
+          orderGroup: orderGroup,
+          orderStatusList: orderStatusList,
         );
 
         if (!mounted) return;

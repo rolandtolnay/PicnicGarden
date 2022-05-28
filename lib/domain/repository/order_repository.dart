@@ -3,7 +3,7 @@ import 'package:cloud_firestore_odm/cloud_firestore_odm.dart';
 import 'package:injectable/injectable.dart';
 
 import '../compact_map.dart';
-import '../model/order/order.dart';
+import '../model/order/order_group.dart';
 import '../model/order/order_status.dart';
 import '../model/order/order_update.dart';
 import '../model/restaurant.dart';
@@ -16,13 +16,13 @@ abstract class OrderRepository {
   Stream<Iterable<OrderUpdate>> onOrderListUpdated(Restaurant restaurant);
 
   Future<ServiceError?> commitNextFlow(
-    Order order, {
+    OrderGroup orderGroup, {
     required List<OrderStatus> orderStatusList,
     required Restaurant restaurant,
   });
 
-  Future<ServiceError?> commitOrder(
-    Order order, {
+  Future<ServiceError?> commitOrderGroup(
+    OrderGroup orderGroup, {
     required Restaurant restaurant,
   });
 }
@@ -43,23 +43,31 @@ class FirOrderRepository with ConnectivityChecker implements OrderRepository {
           .map((e) => e.docChanges.compactMap(OrderUpdateFactory.from));
 
   @override
-  Future<ServiceError?> commitOrder(
-    Order order, {
+  Future<ServiceError?> commitOrderGroup(
+    OrderGroup orderGroup, {
     required Restaurant restaurant,
   }) {
     return _client.execute(
-      () => _ref.orders(restaurant).doc(order.id).set(order),
+      () async {
+        for (final order in orderGroup.orderList) {
+          await _ref.orders(restaurant).doc(order.id).set(order);
+        }
+      },
     );
   }
 
   @override
   Future<ServiceError?> commitNextFlow(
-    Order order, {
+    OrderGroup orderGroup, {
     required List<OrderStatus> orderStatusList,
     required Restaurant restaurant,
   }) {
-    final updated = order.moveToNextFlow(orderStatusList: orderStatusList);
-    return commitOrder(updated, restaurant: restaurant);
+    final updated = OrderGroup(
+      orderGroup.orderList
+          .map((e) => e.moveToNextFlow(orderStatusList: orderStatusList))
+          .toList(),
+    );
+    return commitOrderGroup(updated, restaurant: restaurant);
   }
 }
 

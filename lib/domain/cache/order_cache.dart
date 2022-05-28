@@ -18,7 +18,7 @@ abstract class OrderCache implements Disposable {
 
   Iterable<OrderGroup> orderGroupList({required TableEntity table});
 
-  void groupSimilarOrders();
+  void groupSimilarOrders(TableEntity table);
 }
 
 @LazySingleton(as: OrderCache)
@@ -69,27 +69,28 @@ class OrderCacheImpl implements OrderCache {
   }
 
   @override
-  void groupSimilarOrders() {
-    for (final table in _tableOrderGroupMap.keys) {
-      final map = _tableOrderGroupMap[table]!;
-      _tableOrderGroupMap[table] = map.fold<List<OrderGroup>>(
-        [],
-        (result, group) {
-          final existing = result.firstWhereOrNull(
-            (e) =>
-                e.recipe.name == group.recipe.name &&
-                e.phase == group.phase &&
-                e.currentStatus == group.currentStatus,
-          );
-          if (existing == null) {
-            result.add(group);
-          } else {
-            existing.orderList.addAll(group.orderList);
-          }
-          return result;
-        },
-      );
-    }
+  void groupSimilarOrders(TableEntity table) {
+    final map = _tableOrderGroupMap[table];
+    if (map == null || map.isEmpty) return;
+
+    _tableOrderGroupMap[table] = map.fold<List<OrderGroup>>(
+      [],
+      (result, group) {
+        final existing = result.firstWhereOrNull(
+          (e) =>
+              e.recipe.name == group.recipe.name &&
+              e.phase == group.phase &&
+              e.currentStatus == group.currentStatus &&
+              e.customNote == group.customNote,
+        );
+        if (existing == null) {
+          result.add(group);
+        } else {
+          existing.orderList.addAll(group.orderList);
+        }
+        return result;
+      },
+    );
   }
 }
 

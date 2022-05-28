@@ -23,11 +23,11 @@ abstract class OrderProvider extends ChangeNotifier with ApiResponder {
   Future<void> commitOrder(Order order);
 
   Future<void> commitNextFlow({
-    required Order order,
+    required OrderGroup orderGroup,
     required List<OrderStatus> orderStatusList,
   });
 
-  void groupSimilarOrders();
+  void groupSimilarOrders(TableEntity table);
 }
 
 @Injectable(as: OrderProvider)
@@ -52,11 +52,18 @@ class FIROrderProvider extends ChangeNotifier
   ApiResponse get response => _response;
 
   @override
+  Iterable<OrderGroup> orderGroupList({required TableEntity table}) =>
+      _cache.orderGroupList(table: table);
+
+  @override
   Future<void> commitOrder(Order order) async {
     _response = ApiResponse.loading();
     notifyListeners();
 
-    var error = await _repository.commitOrder(order, restaurant: _restaurant);
+    var error = await _repository.commitOrderGroup(
+      OrderGroup([order]),
+      restaurant: _restaurant,
+    );
 
     if (error == null && order.shouldNotifyStatus) {
       error = await _notificationProvider.postForOrder(order);
@@ -68,11 +75,11 @@ class FIROrderProvider extends ChangeNotifier
 
   @override
   Future<void> commitNextFlow({
-    required Order order,
+    required OrderGroup orderGroup,
     required List<OrderStatus> orderStatusList,
   }) async {
     final error = await _repository.commitNextFlow(
-      order,
+      orderGroup,
       orderStatusList: orderStatusList,
       restaurant: _restaurant,
     );
@@ -82,12 +89,8 @@ class FIROrderProvider extends ChangeNotifier
   }
 
   @override
-  Iterable<OrderGroup> orderGroupList({required TableEntity table}) =>
-      _cache.orderGroupList(table: table);
-
-  @override
-  void groupSimilarOrders() {
-    _cache.groupSimilarOrders();
+  void groupSimilarOrders(TableEntity table) {
+    _cache.groupSimilarOrders(table);
     notifyListeners();
   }
 }

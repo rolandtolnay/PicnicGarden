@@ -29,7 +29,9 @@ class TableActionBar extends StatelessWidget {
           TableActionButton(
             icon: Icons.workspaces,
             title: 'GROUP ORDERS',
-            onTap: () => context.read<OrderProvider>().groupSimilarOrders(),
+            onTap: () {
+              context.read<OrderProvider>().groupSimilarOrders(table);
+            },
           )
         ],
       ),

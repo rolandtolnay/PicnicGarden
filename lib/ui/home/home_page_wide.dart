@@ -138,7 +138,7 @@ class _HomePageWideBody extends StatelessWidget {
 
     final orderGroupButton = IconButton(
       color: colorScheme.onPrimary,
-      onPressed: () => context.read<OrderProvider>().groupSimilarOrders(),
+      onPressed: () => context.read<OrderProvider>().groupSimilarOrders(table),
       icon: Icon(Icons.workspaces),
     );
     final orderAddButton = IconButton(
