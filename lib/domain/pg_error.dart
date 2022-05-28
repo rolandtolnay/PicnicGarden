@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class PGError implements Exception {
-  final PGErrorType type;
+class ServiceError implements Exception {
+  final ServiceErrorType type;
 
   /// Further information about the error if available
   final String message;
@@ -9,21 +9,23 @@ class PGError implements Exception {
   /// Underlying error
   Object? error;
 
-  PGError.noInternet()
-      : type = PGErrorType.noInternet,
+  ServiceError.noInternet()
+      : type = ServiceErrorType.noInternet,
         message = 'No internet connection.';
-  PGError.backend(this.message, {this.error}) : type = PGErrorType.backendError;
-  PGError.network(this.message) : type = PGErrorType.networkError;
-  PGError.unexpected(this.message) : type = PGErrorType.unexpected;
-  PGError.unknown(this.message, {this.error}) : type = PGErrorType.unknown;
-  PGError.auth(this.message) : type = PGErrorType.authentication;
-  PGError.validation(this.message) : type = PGErrorType.validation;
+  ServiceError.backend(this.message, {this.error})
+      : type = ServiceErrorType.backendError;
+  ServiceError.network(this.message) : type = ServiceErrorType.networkError;
+  ServiceError.unexpected(this.message) : type = ServiceErrorType.unexpected;
+  ServiceError.unknown(this.message, {this.error})
+      : type = ServiceErrorType.unknown;
+  ServiceError.auth(this.message) : type = ServiceErrorType.authentication;
+  ServiceError.validation(this.message) : type = ServiceErrorType.validation;
 
   @override
   String toString() => message;
 }
 
-enum PGErrorType {
+enum ServiceErrorType {
   /// timeout, cannot connect to server, could not establish trusted connection
   networkError,
 
@@ -46,7 +48,7 @@ enum PGErrorType {
   unknown
 }
 
-extension ErrorHandling on PGError {
+extension ErrorHandling on ServiceError {
   Future showInDialog(BuildContext context) {
     return showDialog(
       context: context,

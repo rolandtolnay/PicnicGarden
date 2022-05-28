@@ -16,8 +16,8 @@ import '../restaurant/restaurant_provider.dart';
 abstract class OrderProvider extends EntityProvider {
   UnmodifiableListView<Order> ordersForTable(TableEntity table);
 
-  Future<PGError?> commitOrder(Order order);
-  Future<PGError?> commitNextFlow({
+  Future<ServiceError?> commitOrder(Order order);
+  Future<ServiceError?> commitNextFlow({
     required Order order,
     required List<OrderStatus> orderStatusList,
   });
@@ -48,7 +48,7 @@ class FIROrderProvider extends FIREntityProvider<Order>
       );
 
   @override
-  Future<PGError?> commitOrder(Order order) async {
+  Future<ServiceError?> commitOrder(Order order) async {
     final error = await postEntity(order.id, order.toJson());
     if (order.shouldNotifyStatus) {
       return _notificationProvider.postForOrder(order);
@@ -57,7 +57,7 @@ class FIROrderProvider extends FIREntityProvider<Order>
   }
 
   @override
-  Future<PGError?> commitNextFlow({
+  Future<ServiceError?> commitNextFlow({
     required Order order,
     required List<OrderStatus> orderStatusList,
   }) {
@@ -80,7 +80,7 @@ class FIROrderProvider extends FIREntityProvider<Order>
       order.currentStatus = nextStatus;
       // Update delivered
       if (nextFlow == orderStatusList.length - 1) {
-        order.delivered = DateTime.now();
+        order.delivered = DateTime.now().toIso8601String();
       }
       return commitOrder(order);
     } else {

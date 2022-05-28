@@ -69,7 +69,7 @@ class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
         } catch (e, stacktrace) {
           print('[ERROR] Failed fetching $T: $e');
           print(stacktrace);
-          response = ApiResponse.error(PGError.backend('$e', error: e));
+          response = ApiResponse.error(ServiceError.backend('$e', error: e));
         }
         notifyListeners();
       },
@@ -80,7 +80,8 @@ class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
     );
   }
 
-  Future<PGError?> postEntity(String id, Map<String, dynamic> entity) async {
+  Future<ServiceError?> postEntity(
+      String id, Map<String, dynamic> entity) async {
     return (await _checkConnectivity()).fold(
       () async {
         try {
@@ -89,14 +90,14 @@ class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
         } catch (e, stacktrace) {
           print('[ERROR] Failed putting $T: $e');
           print(stacktrace);
-          return PGError.backend('$e', error: e);
+          return ServiceError.backend('$e', error: e);
         }
       },
       (error) => error,
     );
   }
 
-  Future<PGError?> batchPutEntities(
+  Future<ServiceError?> batchPutEntities(
     Iterable<String> ids,
     Map<String, dynamic> change,
   ) async {
@@ -112,14 +113,14 @@ class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
         } catch (e, stacktrace) {
           print('[ERROR] Failed putting $T: $e');
           print(stacktrace);
-          return PGError.backend('$e', error: e);
+          return ServiceError.backend('$e', error: e);
         }
       },
       (error) => error,
     );
   }
 
-  Future<PGError?> deleteEntity(String id) async {
+  Future<ServiceError?> deleteEntity(String id) async {
     return (await _checkConnectivity()).fold(
       () async {
         try {
@@ -128,7 +129,7 @@ class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
         } catch (e, stacktrace) {
           print('[ERROR] Failed deleting $T: $e');
           print(stacktrace);
-          return PGError.backend('$e', error: e);
+          return ServiceError.backend('$e', error: e);
         }
       },
       (error) => error,
@@ -146,7 +147,7 @@ class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
     }, onError: (e, stacktrace) {
       print('[ERROR] Received snapshot error listening on $T: $e');
       print(stacktrace);
-      response = ApiResponse.error(PGError.backend('$e', error: e));
+      response = ApiResponse.error(ServiceError.backend('$e', error: e));
       notifyListeners();
     });
   }
@@ -170,10 +171,10 @@ class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
   }
 }
 
-Future<Option<PGError>> _checkConnectivity() async {
+Future<Option<ServiceError>> _checkConnectivity() async {
   final connectivityResult = await Connectivity().checkConnectivity();
   return Option.cond(
     connectivityResult == ConnectivityResult.none,
-    PGError.noInternet(),
+    ServiceError.noInternet(),
   );
 }

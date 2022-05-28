@@ -17,7 +17,7 @@ abstract class TableProvider extends EntityProvider {
   void selectTable(TableEntity table);
 
   Stream<TableEntity> get onTableStatusChanged;
-  Future<PGError?> setTableStatus(
+  Future<ServiceError?> setTableStatus(
     TableStatus? status, {
     required TableEntity table,
   });
@@ -61,7 +61,7 @@ class FIRTableProvider extends FIREntityProvider<TableEntity>
   }
 
   @override
-  Future<PGError?> setTableStatus(
+  Future<ServiceError?> setTableStatus(
     TableStatus? status, {
     required TableEntity table,
   }) async {

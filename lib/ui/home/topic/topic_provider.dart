@@ -70,7 +70,7 @@ class FIRTopicProvider extends FIREntityProvider<Topic>
         response = ApiResponse.error(error);
       }
     } catch (e) {
-      response = ApiResponse.error(PGError.unknown('$e', error: e));
+      response = ApiResponse.error(ServiceError.unknown('$e', error: e));
     }
     notifyListeners();
   }

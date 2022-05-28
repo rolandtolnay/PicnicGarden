@@ -5,7 +5,7 @@ import 'pg_error.dart';
 
 class ApiResponse {
   final ApiStatus status;
-  final PGError? error;
+  final ServiceError? error;
 
   ApiResponse.initial()
       : status = ApiStatus.initial,
@@ -16,7 +16,7 @@ class ApiResponse {
   ApiResponse.completed()
       : status = ApiStatus.completed,
         error = null;
-  ApiResponse.error(PGError error)
+  ApiResponse.error(ServiceError error)
       : status = ApiStatus.error,
         // ignore: prefer_initializing_formals
         error = error;
@@ -36,10 +36,10 @@ enum ApiStatus {
   error
 }
 
-Future<Option<PGError>> checkConnectivity() async {
+Future<Option<ServiceError>> checkConnectivity() async {
   final connectivityResult = await Connectivity().checkConnectivity();
   return Option.cond(
     connectivityResult == ConnectivityResult.none,
-    PGError.noInternet(),
+    ServiceError.noInternet(),
   );
 }

@@ -25,9 +25,9 @@ abstract class NotificationProvider extends EntityProvider {
   );
   UnmodifiableListView<Notification> notificationsForTable(TableEntity table);
 
-  Future<PGError?> postForOrder(Order order);
+  Future<ServiceError?> postForOrder(Order order);
 
-  Future<PGError?> postForTableStatusChange(TableEntity table);
+  Future<ServiceError?> postForTableStatusChange(TableEntity table);
 }
 
 @LazySingleton(as: NotificationProvider)
@@ -119,7 +119,7 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
   }
 
   @override
-  Future<PGError?> postForOrder(Order order) {
+  Future<ServiceError?> postForOrder(Order order) {
     final notification = Notification.forOrder(
       order,
       createdBy: _authProvider.userId!,
@@ -128,7 +128,7 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
   }
 
   @override
-  Future<PGError?> postForTableStatusChange(TableEntity table) {
+  Future<ServiceError?> postForTableStatusChange(TableEntity table) {
     final notification = Notification.forTableStatusChange(
       table,
       createdBy: _authProvider.userId!,
@@ -143,7 +143,7 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
     return _topicProvider.isSubscribedToTopic(topic);
   }
 
-  Future<PGError?> _markAsReadNotifications(TableEntity table) {
+  Future<ServiceError?> _markAsReadNotifications(TableEntity table) {
     final notifications = notificationsForTable(table);
     return batchPutEntities(
       notifications.map((n) => n.id),

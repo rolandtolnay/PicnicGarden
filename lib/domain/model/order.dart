@@ -21,7 +21,7 @@ class Order {
   final String createdBy;
   final String? customNote;
 
-  DateTime? delivered;
+  String? delivered;
 
   Map<String, Duration> flow;
 
@@ -62,6 +62,7 @@ class Order {
     );
   }
 
+  @JsonKey(ignore: true)
   String get userFriendlyDescription =>
       '${recipe.name} @ ${table.name} ${phase.name}';
 
