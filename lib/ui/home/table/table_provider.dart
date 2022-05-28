@@ -5,7 +5,6 @@ import 'package:injectable/injectable.dart';
 
 import '../../../domain/model/table_entity.dart';
 import '../../../domain/model/table_status.dart';
-import '../../../domain/model/table_status_change.dart';
 import '../../../domain/pg_error.dart';
 import '../../entity_provider.dart';
 import '../../restaurant/restaurant_provider.dart';
@@ -17,7 +16,7 @@ abstract class TableProvider extends EntityProvider {
   TableEntity? get selectedTable;
   void selectTable(TableEntity table);
 
-  Stream<TableStatusChange> get onTableStatusChanged;
+  Stream<TableEntity> get onTableStatusChanged;
   Future<PGError?> setTableStatus(
     TableStatus? status, {
     required TableEntity table,
@@ -27,7 +26,7 @@ abstract class TableProvider extends EntityProvider {
 @LazySingleton(as: TableProvider)
 class FIRTableProvider extends FIREntityProvider<TableEntity>
     implements TableProvider {
-  final StreamController<TableStatusChange> tableStatusChangeController =
+  final StreamController<TableEntity> tableStatusChangeController =
       StreamController.broadcast();
   String? _selectedTableId;
 
@@ -70,16 +69,13 @@ class FIRTableProvider extends FIREntityProvider<TableEntity>
     final error = await postEntity(table.id, updated.toJson());
     if (error == null) {
       entities[entities.indexOf(table)] = updated;
-      if (status != null) {
-        final change = TableStatusChange(status, table);
-        tableStatusChangeController.add(change);
-      }
+      if (updated.status != null) tableStatusChangeController.add(updated);
     }
     notifyListeners();
     return error;
   }
 
   @override
-  Stream<TableStatusChange> get onTableStatusChanged =>
+  Stream<TableEntity> get onTableStatusChanged =>
       tableStatusChangeController.stream;
 }

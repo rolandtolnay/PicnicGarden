@@ -55,16 +55,16 @@ export const onNewNotification = functions
       };
     }
 
-    const statusChange = notification.tableStatusChange;
-    if (statusChange != null) {
-      const title = `${statusChange.table.name} status change: ${statusChange.status.name}`;
+    const table = notification.table;
+    if (table != null) {
+      const title = `${table.name} updated to: ${table.status?.name}`;
       message = {
         notification: {
           title: title,
         },
         data: {
           createdBy: notification.createdBy,
-          tableId: statusChange.table.id,
+          tableId: table.id,
           sound: "squeak_toy.wav",
         },
         apns: {
@@ -103,13 +103,14 @@ function makeCondition(notification: Notification) {
 interface Notification {
   createdBy: string;
   order: Order | undefined;
-  tableStatusChange: TableStatusChange | undefined;
+  table: Table | undefined;
   topicNames: string[];
 }
 
-interface TableStatusChange {
-  table: Table;
-  status: TableStatus;
+interface Table {
+  id: string;
+  name: string;
+  status: TableStatus | undefined;
 }
 
 interface TableStatus {
@@ -123,11 +124,6 @@ interface Order {
 }
 
 interface Recipe {
-  name: string;
-}
-
-interface Table {
-  id: string;
   name: string;
 }
 

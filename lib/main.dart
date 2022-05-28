@@ -35,7 +35,7 @@ class Application extends StatelessWidget {
           onTap: () => _hideKeyboard(context),
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
-            title: 'Picnic Garden',
+            title: 'PICNIC',
             theme: ThemeBuilder.light,
             darkTheme: ThemeBuilder.dark,
             themeMode: context.watch<ThemeModeProvider>().themeMode,
