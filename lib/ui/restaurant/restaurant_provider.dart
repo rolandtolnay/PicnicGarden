@@ -1,5 +1,7 @@
 import 'dart:collection';
 
+import 'package:injectable/injectable.dart';
+
 import '../../domain/model/restaurant.dart';
 import '../entity_provider.dart';
 
@@ -12,6 +14,7 @@ abstract class RestaurantProvider extends EntityProvider {
   void selectRestaurant(Restaurant restaurant);
 }
 
+@LazySingleton(as: RestaurantProvider)
 class FIRRestaurantProvider extends FIREntityProvider<Restaurant>
     implements RestaurantProvider {
   Restaurant? _selectedRestaurant;

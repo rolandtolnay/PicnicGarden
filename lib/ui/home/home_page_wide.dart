@@ -13,7 +13,6 @@ import '../theme_provider.dart';
 import 'table/table_filter_dialog.dart';
 import 'table/table_filter_provider.dart';
 import 'table/table_provider.dart';
-import 'table/table_status_provider.dart';
 import 'table/widgets/table_name_widget.dart';
 import 'table/widgets/table_status_popup_button.dart';
 
@@ -26,10 +25,7 @@ class HomePageWide extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(context),
-      body: ChangeNotifierProvider(
-        create: (_) => di<TableStatusProvider>(),
-        child: _HomePageWideBody(),
-      ),
+      body: _HomePageWideBody(),
     );
   }
 
@@ -74,7 +70,7 @@ class HomePageWide extends StatelessWidget {
       ),
     );
 
-    final restaurant = di<RestaurantProvider>().selectedRestaurant;
+    final restaurant = getIt<RestaurantProvider>().selectedRestaurant;
     return AppBar(
       title: Text(restaurant?.name ?? ''),
       leadingWidth: 240,

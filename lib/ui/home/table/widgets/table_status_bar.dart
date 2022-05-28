@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../domain/model/table_entity.dart';
-import '../table_status_picker.dart';
+import '../table_status_picker_sheet.dart';
 import 'table_status_ui_ext.dart';
 
 class TableStatusBar extends StatelessWidget {

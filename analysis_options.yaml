@@ -7,7 +7,6 @@ linter:
     - unnecessary_new
     - unnecessary_const
     - unnecessary_await_in_return
-    - unnecessary_lambdas
     - prefer_interpolation_to_compose_strings
     - prefer_collection_literals
     - prefer_function_declarations_over_variables
@@ -25,7 +24,7 @@ linter:
 analyzer:
   errors:
     prefer_const_constructors: ignore
-    unnecessary_lambdas: ignore
     avoid_print: ignore
   exclude:
     - "lib/**.g.dart"
+    - "lib/**.config.dart"

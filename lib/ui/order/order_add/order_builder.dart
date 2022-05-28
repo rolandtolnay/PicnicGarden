@@ -1,3 +1,5 @@
+import 'package:injectable/injectable.dart';
+
 import '../../../domain/model/order.dart';
 import '../../../domain/model/order_status.dart';
 import '../../../domain/model/phase.dart';
@@ -15,6 +17,7 @@ abstract class OrderBuilder {
   Order? makeOrder();
 }
 
+@Injectable(as: OrderBuilder)
 class OrderBuilderImpl implements OrderBuilder {
   final AuthProvider _authProvider;
   TableEntity? _table;

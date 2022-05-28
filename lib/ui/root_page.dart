@@ -15,7 +15,7 @@ class RootPage extends StatelessWidget {
 
     return isAuthenticated
         ? ChangeNotifierProvider.value(
-            value: di<RestaurantProvider>(),
+            value: getIt<RestaurantProvider>()..fetchRestaurants(),
             child: RestaurantPicker(),
           )
         : const Scaffold(body: Center(child: CircularProgressIndicator()));

@@ -108,7 +108,7 @@ extension on BuildContext {
   Widget buildOrderAdd({required TableEntity table}) {
     final provider = read<OrderStatusProvider>();
     return Provider(
-      create: (_) => di<OrderBuilder>()
+      create: (_) => getIt<OrderBuilder>()
         ..setTable(table)
         ..setOrderStatus(provider.orderStatusList.first),
       child: MultiProvider(

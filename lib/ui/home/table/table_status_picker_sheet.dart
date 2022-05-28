@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:picnicgarden/domain/model/table_status.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/model/table_entity.dart';
-import '../../../injection.dart';
+import '../../../domain/model/table_status.dart';
 import 'table_provider.dart';
 import 'table_status_provider.dart';
 
@@ -19,7 +18,9 @@ class TableStatusPickerSheet extends StatelessWidget {
       builder: (_) => MultiProvider(
         providers: [
           ChangeNotifierProvider.value(value: context.read<TableProvider>()),
-          ChangeNotifierProvider(create: (_) => di<TableStatusProvider>()),
+          ChangeNotifierProvider.value(
+            value: context.read<TableStatusProvider>(),
+          ),
         ],
         child: TableStatusPickerSheet._(table: table),
       ),

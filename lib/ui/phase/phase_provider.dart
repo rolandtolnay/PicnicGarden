@@ -1,5 +1,7 @@
 import 'dart:collection';
 
+import 'package:injectable/injectable.dart';
+
 import '../../domain/model/phase.dart';
 import '../entity_provider.dart';
 import '../restaurant/restaurant_provider.dart';
@@ -10,6 +12,7 @@ abstract class PhaseProvider extends EntityProvider {
   Future fetchPhases();
 }
 
+@Injectable(as: PhaseProvider)
 class FIRPhaseProvider extends FIREntityProvider<Phase>
     implements PhaseProvider {
   FIRPhaseProvider({

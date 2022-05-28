@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../../domain/api_response.dart';
 import '../../../domain/pg_error.dart';
@@ -19,6 +20,7 @@ abstract class TopicProvider extends EntityProvider {
   Future setSubscribedToTopic(bool isSubscribed, {required Topic topic});
 }
 
+@LazySingleton(as: TopicProvider)
 class FIRTopicProvider extends FIREntityProvider<Topic>
     implements TopicProvider {
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;

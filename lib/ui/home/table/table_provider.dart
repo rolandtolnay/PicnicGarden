@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../../domain/model/table_entity.dart';
 import '../../../domain/model/table_status.dart';
@@ -23,6 +24,7 @@ abstract class TableProvider extends EntityProvider {
   });
 }
 
+@LazySingleton(as: TableProvider)
 class FIRTableProvider extends FIREntityProvider<TableEntity>
     implements TableProvider {
   final StreamController<TableStatusChange> tableStatusChangeController =

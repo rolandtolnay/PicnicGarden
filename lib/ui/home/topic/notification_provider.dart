@@ -4,6 +4,7 @@ import 'package:collection/collection.dart' show IterableExtension;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../../domain/api_response.dart';
 import '../../../domain/model/notification.dart';
@@ -30,6 +31,7 @@ abstract class NotificationProvider extends EntityProvider {
   Future<PGError?> postForTableStatusChange(TableStatusChange change);
 }
 
+@LazySingleton(as: NotificationProvider)
 class FIRNotificationProvider extends FIREntityProvider<Notification>
     implements NotificationProvider {
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;

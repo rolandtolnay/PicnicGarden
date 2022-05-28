@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:picnicgarden/ui/home/table/table_filter_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../injection.dart';
-import 'topic/notification_provider.dart';
-import '../order/order_provider.dart';
+import '../common/build_context_ext_screen_size.dart';
 import '../order/order_list/order_status_provider.dart';
+import '../order/order_provider.dart';
 import '../phase/phase_provider.dart';
 import '../recipe/recipe_provider.dart';
-import 'table/table_provider.dart';
-import 'topic/topic_provider.dart';
-import '../common/build_context_ext_screen_size.dart';
 import 'home_page_tight.dart';
 import 'home_page_wide.dart';
+import 'table/table_filter_provider.dart';
+import 'table/table_provider.dart';
+import 'table/table_status_provider.dart';
+import 'topic/notification_provider.dart';
+import 'topic/topic_provider.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -21,15 +22,31 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: di<TableProvider>()),
-        ChangeNotifierProvider.value(value: di<TopicProvider>()),
-        ChangeNotifierProvider.value(value: di<NotificationProvider>()),
-        ChangeNotifierProvider.value(value: di<TableFilterProvider>()),
-        ChangeNotifierProvider(create: (_) => di<OrderProvider>()),
-        ChangeNotifierProvider(create: (_) => di<RecipeProvider>()),
-        ChangeNotifierProvider(create: (_) => di<PhaseProvider>()),
-        ChangeNotifierProvider(create: (_) => di<RecipeProvider>()),
-        ChangeNotifierProvider(create: (_) => di<OrderStatusProvider>()),
+        ChangeNotifierProvider.value(
+          value: getIt<TableProvider>()..fetchTables(),
+        ),
+        ChangeNotifierProvider.value(
+          value: getIt<TopicProvider>()..fetchTopics(),
+        ),
+        ChangeNotifierProvider.value(
+          value: getIt<NotificationProvider>()..requestPermissions(),
+        ),
+        ChangeNotifierProvider.value(
+          value: getIt<TableFilterProvider>()..fetchAttributes(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => getIt<RecipeProvider>()..fetchRecipes(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => getIt<PhaseProvider>()..fetchPhases(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => getIt<OrderStatusProvider>()..fetchOrderStatusList(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => getIt<TableStatusProvider>()..fetchTableStatusList(),
+        ),
+        ChangeNotifierProvider(create: (_) => getIt<OrderProvider>()),
       ],
       child: Container(
         color: Theme.of(context).colorScheme.primary,

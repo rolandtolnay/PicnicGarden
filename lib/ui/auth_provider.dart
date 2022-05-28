@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:injectable/injectable.dart';
 
 abstract class AuthProvider extends ChangeNotifier {
   bool get isAuthenticated;
@@ -9,6 +10,7 @@ abstract class AuthProvider extends ChangeNotifier {
   Future<void> signIn();
 }
 
+@LazySingleton(as: AuthProvider)
 class FIRAuthProvider extends ChangeNotifier implements AuthProvider {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 

@@ -1,5 +1,7 @@
 import 'dart:collection';
 
+import 'package:injectable/injectable.dart';
+
 import '../../../domain/model/order_status.dart';
 import '../../entity_provider.dart';
 import '../../restaurant/restaurant_provider.dart';
@@ -10,6 +12,7 @@ abstract class OrderStatusProvider extends EntityProvider {
   Future fetchOrderStatusList();
 }
 
+@Injectable(as: OrderStatusProvider)
 class FIROrderStatusProvider extends FIREntityProvider<OrderStatus>
     implements OrderStatusProvider {
   FIROrderStatusProvider({

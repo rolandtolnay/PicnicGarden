@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:collection';
 
+import 'package:injectable/injectable.dart';
+
 import '../../domain/api_response.dart';
 import '../../domain/model/attribute.dart';
 import '../../domain/pg_error.dart';
@@ -21,6 +23,7 @@ abstract class OrderProvider extends EntityProvider {
   });
 }
 
+@Injectable(as: OrderProvider)
 class FIROrderProvider extends FIREntityProvider<Order>
     implements OrderProvider {
   final NotificationProvider _notificationProvider;
