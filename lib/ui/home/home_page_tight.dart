@@ -2,7 +2,7 @@ import 'package:flutter/material.dart' hide Table;
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
-import '../../domain/pg_error.dart';
+import '../../domain/service_error.dart';
 import '../common/empty_refreshable.dart';
 import '../order/order_add/order_add_floating_button.dart';
 import '../phase/phase_loader.dart';

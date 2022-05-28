@@ -22,6 +22,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        // TODO: These should be creatorrs
         ChangeNotifierProvider.value(
           value: getIt<TableProvider>()..fetchTables(),
         ),

@@ -1,91 +1,84 @@
 import 'dart:async';
-import 'dart:collection';
 
+import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../domain/api_response.dart';
+import '../../domain/cache/order_cache.dart';
 import '../../domain/model/attribute.dart';
-import '../../domain/pg_error.dart';
 import '../../domain/model/order.dart';
 import '../../domain/model/order_status.dart';
+import '../../domain/model/restaurant.dart';
 import '../../domain/model/table_entity.dart';
-import '../entity_provider.dart';
+import '../../domain/repository/order_repository.dart';
+import '../common/api_responder.dart';
+import '../common/api_response.dart';
 import '../home/topic/notification_provider.dart';
 import '../restaurant/restaurant_provider.dart';
 
-abstract class OrderProvider extends EntityProvider {
-  UnmodifiableListView<Order> ordersForTable(TableEntity table);
+abstract class OrderProvider extends ChangeNotifier with ApiResponder {
+  Iterable<Order> ordersForTable(TableEntity table);
 
-  Future<ServiceError?> commitOrder(Order order);
-  Future<ServiceError?> commitNextFlow({
+  Future<void> commitOrder(Order order);
+
+  Future<void> commitNextFlow({
     required Order order,
     required List<OrderStatus> orderStatusList,
   });
 }
 
 @Injectable(as: OrderProvider)
-class FIROrderProvider extends FIREntityProvider<Order>
+class FIROrderProvider extends ChangeNotifier
+    with ApiResponder
     implements OrderProvider {
   final NotificationProvider _notificationProvider;
+  final OrderRepository _repository;
+  final OrderCache _cache;
+  final Restaurant _restaurant;
 
-  FIROrderProvider({
-    required NotificationProvider notificationProvider,
+  FIROrderProvider(
+    this._repository,
+    this._cache,
+    this._notificationProvider, {
     required RestaurantProvider restaurantProvider,
-  })  : _notificationProvider = notificationProvider,
-        super(
-          'orders',
-          Order.fromJson,
-          restaurant: restaurantProvider.selectedRestaurant,
-        ) {
-    response = ApiResponse.loading();
-    listenOnSnapshots(query: collection.where('delivered', isNull: true));
-  }
+  }) : _restaurant = restaurantProvider.selectedRestaurant!;
+
+  ApiResponse _response = ApiResponse.initial();
 
   @override
-  UnmodifiableListView<Order> ordersForTable(TableEntity table) =>
-      UnmodifiableListView(
-        entities.where((order) => order.table == table),
-      );
+  ApiResponse get response => _response;
 
   @override
-  Future<ServiceError?> commitOrder(Order order) async {
-    final error = await postEntity(order.id, order.toJson());
-    if (order.shouldNotifyStatus) {
-      return _notificationProvider.postForOrder(order);
+  Iterable<Order> ordersForTable(TableEntity table) =>
+      _cache.ordersForTable(table);
+
+  @override
+  Future<void> commitOrder(Order order) async {
+    _response = ApiResponse.loading();
+    notifyListeners();
+
+    var error = await _repository.commitOrder(order, restaurant: _restaurant);
+
+    if (error == null && order.shouldNotifyStatus) {
+      error = await _notificationProvider.postForOrder(order);
     }
-    return error;
+
+    _response = ApiResponse.fromErrorResult(error);
+    notifyListeners();
   }
 
   @override
-  Future<ServiceError?> commitNextFlow({
+  Future<void> commitNextFlow({
     required Order order,
     required List<OrderStatus> orderStatusList,
-  }) {
-    final currentFlow = order.currentStatus.flow;
-    final nextFlow = currentFlow + 1;
-    if (nextFlow < orderStatusList.length) {
-      // Update flow
-      var lastFlowEndDate = order.createdAt;
-      final previousFlow = currentFlow - 1;
-      if (previousFlow >= 0) {
-        lastFlowEndDate = order.createdAt.add(order.flow.values.reduce(
-            (value, element) =>
-                Duration(seconds: value.inSeconds + element.inSeconds)));
-      }
-      order.flow[order.currentStatus.name] = Duration(
-        seconds: DateTime.now().difference(lastFlowEndDate).inSeconds,
-      );
-      // Update current status
-      final nextStatus = orderStatusList[nextFlow];
-      order.currentStatus = nextStatus;
-      // Update delivered
-      if (nextFlow == orderStatusList.length - 1) {
-        order.delivered = DateTime.now().toIso8601String();
-      }
-      return commitOrder(order);
-    } else {
-      return Future.value(null);
-    }
+  }) async {
+    final error = await _repository.commitNextFlow(
+      order,
+      orderStatusList: orderStatusList,
+      restaurant: _restaurant,
+    );
+
+    _response = ApiResponse.fromErrorResult(error);
+    notifyListeners();
   }
 }
 

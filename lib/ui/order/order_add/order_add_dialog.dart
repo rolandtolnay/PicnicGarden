@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../domain/model/order.dart';
 import '../../../domain/model/table_entity.dart';
-import '../../../domain/pg_error.dart';
+import '../../../domain/service_error.dart';
 import '../../../injection.dart';
 import '../../common/common_dialog.dart';
 import '../../common/dialog_cancel_button.dart';
@@ -93,10 +93,11 @@ class _OrderAddDialogState extends State<OrderAddDialog> {
   }
 
   void _onOrderCreated(Order order, BuildContext context) async {
-    final error = await context.read<OrderProvider>().commitOrder(order);
+    final provider = context.read<OrderProvider>();
+    await provider.commitOrder(order);
 
     if (!mounted) return;
-    if (error != null) return error.showInDialog(context);
+    if (provider.hasError) return context.showError(provider);
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBarBuilder.orderSucces(order, context),

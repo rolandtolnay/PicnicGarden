@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:injectable/injectable.dart';
+import 'package:picnicgarden/domain/cache/order_cache.dart';
 
 import '../../domain/model/restaurant.dart';
 import '../entity_provider.dart';
@@ -17,9 +18,12 @@ abstract class RestaurantProvider extends EntityProvider {
 @LazySingleton(as: RestaurantProvider)
 class FIRRestaurantProvider extends FIREntityProvider<Restaurant>
     implements RestaurantProvider {
+  final OrderCache _orderCache;
+
   Restaurant? _selectedRestaurant;
 
-  FIRRestaurantProvider() : super('restaurants', Restaurant.fromJson);
+  FIRRestaurantProvider(this._orderCache)
+      : super('restaurants', Restaurant.fromJson);
 
   @override
   UnmodifiableListView<Restaurant> get restaurants =>
@@ -36,6 +40,7 @@ class FIRRestaurantProvider extends FIREntityProvider<Restaurant>
   @override
   void selectRestaurant(Restaurant restaurant) {
     _selectedRestaurant = restaurant;
+    _orderCache.listenOnOrderUpdates(restaurant);
     notifyListeners();
   }
 }

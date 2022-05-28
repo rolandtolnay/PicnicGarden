@@ -1,8 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore_odm/cloud_firestore_odm.dart';
 import 'package:injectable/injectable.dart';
-import 'package:picnicgarden/domain/model/restaurant.dart';
 
 import '../model/order.dart';
+import '../model/restaurant.dart';
 
 part 'fir_collection_reference.g.dart';
 
@@ -15,5 +16,6 @@ OrderCollectionReference _ordersRef(String restaurant) =>
 
 @Injectable()
 class FirCollectionReference {
-  OrderCollectionReference orders(String restaurant) => _ordersRef(restaurant);
+  OrderCollectionReference orders(Restaurant restaurant) =>
+      _ordersRef(restaurant.name);
 }

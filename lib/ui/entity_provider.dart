@@ -4,10 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:either_option/either_option.dart';
 import 'package:flutter/material.dart';
-import '../domain/pg_error.dart';
+import '../domain/service_error.dart';
 import '../domain/model/restaurant.dart';
 
-import '../domain/api_response.dart';
+import 'common/api_response.dart';
 
 abstract class EntityProvider extends ChangeNotifier {
   ApiResponse get response;

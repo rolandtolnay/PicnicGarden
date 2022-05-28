@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../ui/common/api_responder.dart';
+
 class ServiceError implements Exception {
   final ServiceErrorType type;
 
@@ -55,6 +57,29 @@ extension ErrorHandling on ServiceError {
       builder: (context) => AlertDialog(
         title: Text('Oops!'),
         content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+extension BuildContextExt on BuildContext {
+  Future showError(
+    ApiResponder apiResponder, {
+    VoidCallback? onPressed,
+  }) {
+    return showDialog(
+      context: this,
+      builder: (context) => AlertDialog(
+        title: Text('Oops!'),
+        content: Text(
+          apiResponder.errorDescription ?? 'An unknown error occured',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),

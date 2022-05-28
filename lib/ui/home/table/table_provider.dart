@@ -5,7 +5,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../domain/model/table_entity.dart';
 import '../../../domain/model/table_status.dart';
-import '../../../domain/pg_error.dart';
+import '../../../domain/service_error.dart';
 import '../../entity_provider.dart';
 import '../../restaurant/restaurant_provider.dart';
 

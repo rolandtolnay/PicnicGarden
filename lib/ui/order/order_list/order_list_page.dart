@@ -1,22 +1,20 @@
 import 'dart:async';
 
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:picnicgarden/domain/compact_map.dart';
-import 'package:picnicgarden/ui/home/table/table_filter_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/model/attribute.dart';
 import '../../../domain/model/order_status.dart';
 import '../../../domain/model/phase.dart';
-import '../../../domain/pg_error.dart';
 import '../../../domain/model/table_entity.dart';
-import '../order_provider.dart';
-import 'order_status_provider.dart';
+import '../../../domain/service_error.dart';
+import '../../home/table/table_filter_provider.dart';
 import '../../phase/phase_provider.dart';
+import '../order_provider.dart';
 import 'order_list_item_builder.dart';
 import 'order_list_phase_item.dart';
+import 'order_status_provider.dart';
 
 class OrderListPage extends StatefulWidget {
   final TableEntity table;
@@ -66,7 +64,7 @@ class _OrderListPageState extends State<OrderListPage> {
       onOrderTapped: (orderList) async {
         final provider = context.read<OrderProvider>();
         // TODO: Send one commit for all orders
-        final errorList = await Future.wait(
+        await Future.wait(
           orderList.map(
             (e) => provider.commitNextFlow(
               order: e,
@@ -76,8 +74,7 @@ class _OrderListPageState extends State<OrderListPage> {
         );
 
         if (!mounted) return;
-        final error = errorList.compactMap((e) => e).firstOrNull;
-        error?.showInDialog(context);
+        if (provider.hasError) context.showError(provider);
       },
     );
     return _OrderList(

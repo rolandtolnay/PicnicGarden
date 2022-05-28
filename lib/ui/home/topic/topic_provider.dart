@@ -3,8 +3,8 @@ import 'dart:collection';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../domain/api_response.dart';
-import '../../../domain/pg_error.dart';
+import '../../common/api_response.dart';
+import '../../../domain/service_error.dart';
 import '../../../domain/model/topic.dart';
 import '../../auth_provider.dart';
 import '../../entity_provider.dart';

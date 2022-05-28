@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
-import '../../domain/pg_error.dart';
+import '../../domain/service_error.dart';
 import '../../domain/model/restaurant.dart';
 import 'restaurant_provider.dart';
 import '../common/empty_refreshable.dart';

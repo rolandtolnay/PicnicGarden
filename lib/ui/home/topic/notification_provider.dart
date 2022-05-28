@@ -6,11 +6,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../domain/api_response.dart';
+import '../../common/api_response.dart';
 import '../../../domain/model/notification.dart';
 import '../../../domain/model/order.dart';
 import '../../../domain/model/table_entity.dart';
-import '../../../domain/pg_error.dart';
+import '../../../domain/service_error.dart';
 import '../../auth_provider.dart';
 import '../../entity_provider.dart';
 import '../../restaurant/restaurant_provider.dart';
