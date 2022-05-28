@@ -9,7 +9,7 @@ import '../phase/phase_loader.dart';
 import 'home_page_tight_app_bar.dart';
 import 'table/table_picker_dialog.dart';
 import 'table/table_provider.dart';
-import 'table/widgets/table_status_bar.dart';
+import 'table/widgets/table_action_bar.dart';
 
 class HomePageTight extends StatelessWidget {
   const HomePageTight({Key? key}) : super(key: key);
@@ -63,7 +63,7 @@ class _HomePageTightBody extends StatelessWidget {
           },
         ),
         Divider(height: 0, color: colorScheme.primaryContainer),
-        TableStatusBar(table: selectedTable),
+        TableActionBar(table: selectedTable),
         Expanded(child: PhaseLoader()),
       ],
     );
