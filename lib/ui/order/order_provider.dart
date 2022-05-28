@@ -18,8 +18,6 @@ import '../home/topic/notification_provider.dart';
 import '../restaurant/restaurant_provider.dart';
 
 abstract class OrderProvider extends ChangeNotifier with ApiResponder {
-  Iterable<Order> ordersForTable(TableEntity table);
-
   Iterable<OrderGroup> orderGroupList({required TableEntity table});
 
   Future<void> commitOrder(Order order);
@@ -50,10 +48,6 @@ class FIROrderProvider extends ChangeNotifier
 
   @override
   ApiResponse get response => _response;
-
-  @override
-  Iterable<Order> ordersForTable(TableEntity table) =>
-      _cache.ordersForTable(table);
 
   @override
   Future<void> commitOrder(Order order) async {
@@ -90,9 +84,11 @@ class FIROrderProvider extends ChangeNotifier
       _cache.orderGroupList(table: table);
 }
 
-extension OrderListFilter on Iterable<Order> {
-  Iterable<Order> filteredBy({required Iterable<Attribute> enabledAttributes}) {
-    return where((o) => o.recipe.attributes.containsAnyFrom(enabledAttributes));
+extension OrderGroupListFilter on Iterable<OrderGroup> {
+  Iterable<OrderGroup> filteredBy({
+    required Iterable<Attribute> enabledAttributes,
+  }) {
+    return where((e) => e.recipe.attributes.containsAnyFrom(enabledAttributes));
   }
 }
 

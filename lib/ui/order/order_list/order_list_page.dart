@@ -56,9 +56,9 @@ class _OrderListPageState extends State<OrderListPage> {
     }
 
     final builder = OrderListItemBuilder(
-      orderGroupList: provider.orderGroupList(table: widget.table),
-      // TODO: Filter order group list
-      // .filteredBy(enabledAttributes: enabledAttributes),
+      orderGroupList: provider
+          .orderGroupList(table: widget.table)
+          .filteredBy(enabledAttributes: enabledAttributes),
       phaseList: phases,
       showTimer: widget.showTimer,
       onOrderTapped: (orderGroup) async {

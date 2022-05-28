@@ -182,7 +182,7 @@ extension on Iterable<TableEntity> {
     // Return tables that have at least one order with an enabled attribute
     return where(
       (table) => orderProvider
-          .ordersForTable(table)
+          .orderGroupList(table: table)
           .filteredBy(enabledAttributes: enabled)
           .isNotEmpty,
     ).toList();

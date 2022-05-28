@@ -61,7 +61,7 @@ class TablePickerDialog extends StatelessWidget {
     return TableListItemWidget(
       table.name,
       isSelected: table == selectedTable,
-      isMarked: orderProvider.ordersForTable(table).isNotEmpty,
+      isMarked: orderProvider.orderGroupList(table: table).isNotEmpty,
       badgeCount: notificationProvider.notificationsForTable(table).length,
       onTapped: () => Navigator.of(context).pop(table),
       backgroundColor: table.status?.backgroundColor,

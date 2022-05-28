@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:picnicgarden/domain/model/order/order_update.dart';
@@ -15,8 +16,6 @@ import 'dart:developer' as dev;
 abstract class OrderCache implements Disposable {
   void listenOnOrderUpdates(Restaurant restaurant);
 
-  Iterable<Order> ordersForTable(TableEntity table);
-
   Iterable<OrderGroup> orderGroupList({required TableEntity table});
 }
 
@@ -27,8 +26,6 @@ class OrderCacheImpl implements OrderCache {
   OrderCacheImpl(this._repository);
 
   StreamSubscription? _listener;
-  final Map<TableEntity, List<Order>> _tableOrderMap = {};
-
   final Map<TableEntity, List<OrderGroup>> _tableOrderGroupMap = {};
 
   @override
@@ -36,45 +33,10 @@ class OrderCacheImpl implements OrderCache {
     _listener?.cancel();
     _listener = _repository.onOrderListUpdated(restaurant).listen((updateList) {
       for (final update in updateList) {
-        final key = update.order.table;
-        final order = update.order;
-        switch (update.type) {
-          case OrderUpdateType.added:
-            _tableOrderMap[key] ??= <Order>[];
-            _tableOrderMap[key]?.add(order);
-
-            _tableOrderGroupMap[key] ??= <OrderGroup>[];
-            _tableOrderGroupMap[key]?.add(OrderGroup([order]));
-            break;
-          case OrderUpdateType.removed:
-            _tableOrderMap[key]?.remove(order);
-
-            final group =
-                _tableOrderGroupMap[key]?.firstWhere((e) => e.contains(order));
-            if (group != null) {
-              group.remove(order);
-              if (group.orderList.isEmpty) {
-                _tableOrderGroupMap[key]?.remove(group);
-              }
-            }
-            break;
-          case OrderUpdateType.modified:
-            _tableOrderMap[key]?.remove(order);
-            _tableOrderMap[key]?.add(order);
-
-            _tableOrderGroupMap[key]
-                ?.firstWhere((e) => e.contains(order))
-                .update(order);
-            break;
-        }
-        dev.log('Processed $update');
+        _process(update);
       }
     });
   }
-
-  @override
-  Iterable<Order> ordersForTable(TableEntity table) =>
-      _tableOrderMap[table] ?? [];
 
   @override
   Iterable<OrderGroup> orderGroupList({required TableEntity table}) =>
@@ -83,6 +45,27 @@ class OrderCacheImpl implements OrderCache {
   @override
   FutureOr onDispose() {
     _listener?.cancel();
+  }
+
+  void _process(OrderUpdate update) {
+    final key = update.order.table;
+    final order = update.order;
+    switch (update.type) {
+      case OrderUpdateType.added:
+        _tableOrderGroupMap[key] ??= <OrderGroup>[];
+        _tableOrderGroupMap[key]?.add(OrderGroup([order]));
+        break;
+      case OrderUpdateType.modified:
+        _tableOrderGroupMap.groupForOrder(order)?.update(order);
+        break;
+      case OrderUpdateType.removed:
+        final group = _tableOrderGroupMap.groupForOrder(order);
+        if (group == null) break;
+        group.remove(order);
+        if (group.orderList.isEmpty) _tableOrderGroupMap[key]?.remove(group);
+        break;
+    }
+    dev.log('Processed $update');
   }
 }
 
@@ -102,5 +85,11 @@ extension on OrderGroup {
 
   void _sortOrders() {
     orderList.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+  }
+}
+
+extension on Map<TableEntity, List<OrderGroup>> {
+  OrderGroup? groupForOrder(Order order) {
+    return this[order.table]?.firstWhereOrNull((e) => e.contains(order));
   }
 }
