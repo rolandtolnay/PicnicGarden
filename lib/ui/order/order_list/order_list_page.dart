@@ -8,6 +8,8 @@ import 'package:picnicgarden/ui/home/table/table_filter_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/model/attribute.dart';
+import '../../../domain/model/order_status.dart';
+import '../../../domain/model/phase.dart';
 import '../../../domain/pg_error.dart';
 import '../../../domain/model/table_entity.dart';
 import '../order_provider.dart';
@@ -16,7 +18,7 @@ import '../../phase/phase_provider.dart';
 import 'order_list_item_builder.dart';
 import 'order_list_phase_item.dart';
 
-class OrderListPage extends StatelessWidget {
+class OrderListPage extends StatefulWidget {
   final TableEntity table;
   final bool showTimer;
   final bool scrollable;
@@ -29,17 +31,26 @@ class OrderListPage extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<OrderListPage> createState() => _OrderListPageState();
+}
+
+class _OrderListPageState extends State<OrderListPage> {
+  @override
   Widget build(BuildContext context) {
     final provider = context.watch<OrderProvider>();
-    final phases = context.watch<PhaseProvider>().phases;
+    final phases = context.select<PhaseProvider, Iterable<Phase>>(
+      (p) => p.phases,
+    );
     final orderStatusList =
-        context.watch<OrderStatusProvider>().orderStatusList;
+        context.select<OrderStatusProvider, Iterable<OrderStatus>>(
+      (p) => p.orderStatusList,
+    );
     final enabledAttributes =
         context.select<TableFilterProvider, Iterable<Attribute>>(
       (p) => p.enabledAttributes,
     );
 
-    SchedulerBinding.instance!.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       provider.response.error?.showInDialog(context);
     });
     if (provider.isLoading) {
@@ -48,10 +59,10 @@ class OrderListPage extends StatelessWidget {
 
     final builder = OrderListItemBuilder(
       orders: provider
-          .ordersForTable(table)
+          .ordersForTable(widget.table)
           .filteredBy(enabledAttributes: enabledAttributes),
       phases: phases,
-      showTimer: showTimer,
+      showTimer: widget.showTimer,
       onOrderTapped: (orderList) async {
         final provider = context.read<OrderProvider>();
         // TODO: Send one commit for all orders
@@ -59,18 +70,20 @@ class OrderListPage extends StatelessWidget {
           orderList.map(
             (e) => provider.commitNextFlow(
               order: e,
-              orderStatusList: orderStatusList,
+              orderStatusList: orderStatusList.toList(),
             ),
           ),
         );
+
+        if (!mounted) return;
         final error = errorList.compactMap((e) => e).firstOrNull;
         error?.showInDialog(context);
       },
     );
     return _OrderList(
       items: builder.buildListItems(grouped: false),
-      showTimer: showTimer,
-      scrollable: scrollable,
+      showTimer: widget.showTimer,
+      scrollable: widget.scrollable,
     );
   }
 }

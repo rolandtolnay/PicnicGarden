@@ -16,7 +16,7 @@ class PhaseLoader extends StatelessWidget {
     final provider = context.watch<PhaseProvider>();
     final selectedTable = context.watch<TableProvider>().selectedTable;
 
-    SchedulerBinding.instance!.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       provider.response.error?.showInDialog(context);
     });
     if (provider.isLoading || selectedTable == null) {

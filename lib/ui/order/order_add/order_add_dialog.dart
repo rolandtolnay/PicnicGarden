@@ -17,7 +17,7 @@ import '../order_list/order_status_provider.dart';
 import '../order_provider.dart';
 import 'order_builder.dart';
 
-class OrderAddDialog extends StatelessWidget {
+class OrderAddDialog extends StatefulWidget {
   const OrderAddDialog._({Key? key}) : super(key: key);
 
   static void show(BuildContext context, {required TableEntity table}) {
@@ -28,12 +28,17 @@ class OrderAddDialog extends StatelessWidget {
   }
 
   @override
+  State<OrderAddDialog> createState() => _OrderAddDialogState();
+}
+
+class _OrderAddDialogState extends State<OrderAddDialog> {
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final provider = context.watch<RecipeProvider>();
 
-    SchedulerBinding.instance!.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       provider.response.error?.showInDialog(context);
     });
     if (provider.isLoading) {
@@ -89,6 +94,8 @@ class OrderAddDialog extends StatelessWidget {
 
   void _onOrderCreated(Order order, BuildContext context) async {
     final error = await context.read<OrderProvider>().commitOrder(order);
+
+    if (!mounted) return;
     if (error != null) return error.showInDialog(context);
 
     ScaffoldMessenger.of(context).showSnackBar(

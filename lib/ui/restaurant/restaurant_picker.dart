@@ -25,7 +25,7 @@ class _RestaurantPickerBody extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final provider = context.watch<RestaurantProvider>();
 
-    SchedulerBinding.instance!.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       provider.response.error?.showInDialog(context);
     });
     if (provider.isLoading) {
@@ -40,7 +40,7 @@ class _RestaurantPickerBody extends StatelessWidget {
     }
 
     // TODO: Remove after development finished
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       Future.delayed(
         Duration(milliseconds: 500),
         () => _selectRestaurant(provider.restaurants[1], context),

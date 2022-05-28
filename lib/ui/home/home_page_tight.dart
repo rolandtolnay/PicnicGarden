@@ -34,7 +34,7 @@ class _HomePageTightBody extends StatelessWidget {
     final provider = context.watch<TableProvider>();
     final colorScheme = Theme.of(context).colorScheme;
 
-    SchedulerBinding.instance!.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       provider.response.error?.showInDialog(context);
     });
     final selectedTable = provider.selectedTable;

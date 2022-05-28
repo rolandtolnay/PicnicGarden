@@ -64,8 +64,8 @@ class TableStatusPopupButton extends StatelessWidget {
         children: [
           Visibility(
             visible: status == table.status,
-            child: Icon(Icons.check, color: colorScheme.primary),
             replacement: const SizedBox(width: 24),
+            child: Icon(Icons.check, color: colorScheme.primary),
           ),
           const SizedBox(width: 4.0),
           Text(status.name)

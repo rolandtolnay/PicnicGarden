@@ -50,7 +50,7 @@ extension ErrorHandling on PGError {
   Future showInDialog(BuildContext context) {
     return showDialog(
       context: context,
-      builder: (_) => AlertDialog(
+      builder: (context) => AlertDialog(
         title: Text('Oops!'),
         content: Text(message),
         actions: [
