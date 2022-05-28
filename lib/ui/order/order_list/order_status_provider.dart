@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:injectable/injectable.dart';
 
-import '../../../domain/model/order_status.dart';
+import '../../../domain/model/order/order_status.dart';
 import '../../entity_provider.dart';
 import '../../restaurant/restaurant_provider.dart';
 

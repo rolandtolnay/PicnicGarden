@@ -1,15 +1,16 @@
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:uuid/uuid.dart';
 
 import 'order_status.dart';
-import 'phase.dart';
-import 'recipe.dart';
-import 'table_entity.dart';
+import '../phase.dart';
+import '../recipe.dart';
+import '../table_entity.dart';
 
 part 'order.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class Order {
+class Order extends Equatable {
   final String id;
 
   final Recipe recipe;
@@ -81,4 +82,7 @@ class Order {
     }
     return result;
   }
+
+  @override
+  List<Object?> get props => [id];
 }

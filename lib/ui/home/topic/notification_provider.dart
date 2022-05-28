@@ -8,7 +8,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../common/api_response.dart';
 import '../../../domain/model/notification.dart';
-import '../../../domain/model/order.dart';
+import '../../../domain/model/order/order.dart';
 import '../../../domain/model/table_entity.dart';
 import '../../../domain/service_error.dart';
 import '../../auth_provider.dart';

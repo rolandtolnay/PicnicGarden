@@ -2,7 +2,7 @@ import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../domain/model/order.dart';
+import '../../../domain/model/order/order.dart';
 import '../../../domain/model/phase.dart';
 import '../../../domain/model/recipe.dart';
 import '../../common/build_context_ext_screen_size.dart';

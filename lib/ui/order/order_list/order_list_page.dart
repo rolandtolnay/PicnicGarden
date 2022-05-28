@@ -5,7 +5,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/model/attribute.dart';
-import '../../../domain/model/order_status.dart';
+import '../../../domain/model/order/order_status.dart';
 import '../../../domain/model/phase.dart';
 import '../../../domain/model/table_entity.dart';
 import '../../../domain/service_error.dart';
@@ -56,16 +56,16 @@ class _OrderListPageState extends State<OrderListPage> {
     }
 
     final builder = OrderListItemBuilder(
-      orders: provider
-          .ordersForTable(widget.table)
-          .filteredBy(enabledAttributes: enabledAttributes),
-      phases: phases,
+      orderGroupList: provider.orderGroupList(table: widget.table),
+      // TODO: Filter order group list
+      // .filteredBy(enabledAttributes: enabledAttributes),
+      phaseList: phases,
       showTimer: widget.showTimer,
-      onOrderTapped: (orderList) async {
+      onOrderTapped: (orderGroup) async {
         final provider = context.read<OrderProvider>();
         // TODO: Send one commit for all orders
         await Future.wait(
-          orderList.map(
+          orderGroup.orderList.map(
             (e) => provider.commitNextFlow(
               order: e,
               orderStatusList: orderStatusList.toList(),
@@ -78,7 +78,7 @@ class _OrderListPageState extends State<OrderListPage> {
       },
     );
     return _OrderList(
-      items: builder.buildListItems(grouped: false),
+      items: builder.buildListItems(),
       showTimer: widget.showTimer,
       scrollable: widget.scrollable,
     );

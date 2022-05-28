@@ -1,7 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore_odm/cloud_firestore_odm.dart';
 import 'package:injectable/injectable.dart';
 
-import '../model/order.dart';
-import '../model/order_status.dart';
+import '../compact_map.dart';
+import '../model/order/order.dart';
+import '../model/order/order_status.dart';
+import '../model/order/order_update.dart';
 import '../model/restaurant.dart';
 import '../service_error.dart';
 import 'api_client.dart';
@@ -9,7 +13,7 @@ import 'connectivity_checker.dart';
 import 'fir_collection_reference.dart';
 
 abstract class OrderRepository {
-  Stream<Iterable<Order>> onOrderListUpdated(Restaurant restaurant);
+  Stream<Iterable<OrderUpdate>> onOrderListUpdated(Restaurant restaurant);
 
   Future<ServiceError?> commitNextFlow(
     Order order, {
@@ -31,11 +35,12 @@ class FirOrderRepository with ConnectivityChecker implements OrderRepository {
   FirOrderRepository(this._ref, this._client);
 
   @override
-  Stream<Iterable<Order>> onOrderListUpdated(Restaurant restaurant) => _ref
-      .orders(restaurant)
-      .whereDelivered(isNull: true)
-      .snapshots()
-      .map((e) => e.docs.map((e) => e.data));
+  Stream<Iterable<OrderUpdate>> onOrderListUpdated(Restaurant restaurant) =>
+      _ref
+          .orders(restaurant)
+          .whereDelivered(isNull: true)
+          .snapshots()
+          .map((e) => e.docChanges.compactMap(OrderUpdateFactory.from));
 
   @override
   Future<ServiceError?> commitOrder(
@@ -81,5 +86,21 @@ class FirOrderRepository with ConnectivityChecker implements OrderRepository {
       order.delivered = now.toIso8601String();
     }
     return commitOrder(order, restaurant: restaurant);
+  }
+}
+
+extension OrderUpdateFactory on OrderUpdate {
+  static OrderUpdate? from(
+      FirestoreDocumentChange<OrderDocumentSnapshot> snapshot) {
+    final data = snapshot.doc.data;
+    if (data == null) return null;
+    switch (snapshot.type) {
+      case DocumentChangeType.added:
+        return OrderUpdate.added(data);
+      case DocumentChangeType.removed:
+        return OrderUpdate.removed(data);
+      case DocumentChangeType.modified:
+        return OrderUpdate.modified(data);
+    }
   }
 }

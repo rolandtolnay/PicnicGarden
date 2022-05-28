@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../domain/model/order.dart';
+import '../../domain/model/order/order.dart';
 import '../../domain/model/recipe.dart';
 import '../order/order_add/order_builder_dialog.dart';
 import '../phase/phase_provider.dart';

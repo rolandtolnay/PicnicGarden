@@ -13,12 +13,13 @@ class OrderStatus {
   @JsonKey(defaultValue: {})
   final Map<String, List<String>> notifyTopics;
 
-  const OrderStatus(
-      {required this.id,
-      required this.name,
-      required this.colorHex,
-      required this.flow,
-      required this.notifyTopics});
+  const OrderStatus({
+    required this.id,
+    required this.name,
+    required this.colorHex,
+    required this.flow,
+    required this.notifyTopics,
+  });
 
   factory OrderStatus.fromJson(Map<String, dynamic> json) =>
       _$OrderStatusFromJson(json);

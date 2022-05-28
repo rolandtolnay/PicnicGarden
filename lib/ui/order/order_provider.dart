@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../domain/cache/order_cache.dart';
 import '../../domain/model/attribute.dart';
-import '../../domain/model/order.dart';
-import '../../domain/model/order_status.dart';
+import '../../domain/model/order/order.dart';
+import '../../domain/model/order/order_group.dart';
+import '../../domain/model/order/order_status.dart';
 import '../../domain/model/restaurant.dart';
 import '../../domain/model/table_entity.dart';
 import '../../domain/repository/order_repository.dart';
@@ -17,6 +19,8 @@ import '../restaurant/restaurant_provider.dart';
 
 abstract class OrderProvider extends ChangeNotifier with ApiResponder {
   Iterable<Order> ordersForTable(TableEntity table);
+
+  Iterable<OrderGroup> orderGroupList({required TableEntity table});
 
   Future<void> commitOrder(Order order);
 
@@ -80,6 +84,10 @@ class FIROrderProvider extends ChangeNotifier
     _response = ApiResponse.fromErrorResult(error);
     notifyListeners();
   }
+
+  @override
+  Iterable<OrderGroup> orderGroupList({required TableEntity table}) =>
+      _cache.orderGroupList(table: table);
 }
 
 extension OrderListFilter on Iterable<Order> {

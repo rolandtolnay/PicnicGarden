@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore_odm/cloud_firestore_odm.dart';
 import 'package:injectable/injectable.dart';
 
-import '../model/order.dart';
+import '../model/order/order.dart';
 import '../model/restaurant.dart';
 
 part 'fir_collection_reference.g.dart';
@@ -17,5 +17,5 @@ OrderCollectionReference _ordersRef(String restaurant) =>
 @Injectable()
 class FirCollectionReference {
   OrderCollectionReference orders(Restaurant restaurant) =>
-      _ordersRef(restaurant.name);
+      _ordersRef(restaurant.id);
 }

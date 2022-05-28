@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
-import '../../../domain/model/order.dart';
+import '../../../domain/model/order/order.dart';
 import '../../../domain/model/table_entity.dart';
 import '../../../domain/service_error.dart';
 import '../../../injection.dart';

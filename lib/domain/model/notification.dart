@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:uuid/uuid.dart';
 
 import '../compact_map.dart';
-import 'order.dart';
+import 'order/order.dart';
 import 'table_entity.dart';
 
 part 'notification.g.dart';
