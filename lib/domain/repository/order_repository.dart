@@ -58,34 +58,8 @@ class FirOrderRepository with ConnectivityChecker implements OrderRepository {
     required List<OrderStatus> orderStatusList,
     required Restaurant restaurant,
   }) {
-    // TODO: Make Order immutable and extract below into factory constructor
-    final currentFlow = order.currentStatus.flow;
-    final nextFlow = currentFlow + 1;
-    if (nextFlow >= orderStatusList.length) return Future.value(null);
-
-    final now = DateTime.now();
-    // Update flow
-    var lastFlowEndDate = order.createdAt;
-    final previousFlow = currentFlow - 1;
-    if (previousFlow >= 0) {
-      lastFlowEndDate = order.createdAt.add(
-        order.flow.values.reduce(
-          (value, element) =>
-              Duration(seconds: value.inSeconds + element.inSeconds),
-        ),
-      );
-    }
-    order.flow[order.currentStatus.name] = Duration(
-      seconds: now.difference(lastFlowEndDate).inSeconds,
-    );
-    // Update current status
-    final nextStatus = orderStatusList[nextFlow];
-    order.currentStatus = nextStatus;
-    // Update delivered
-    if (nextFlow == orderStatusList.length - 1) {
-      order.delivered = now.toIso8601String();
-    }
-    return commitOrder(order, restaurant: restaurant);
+    final updated = order.moveToNextFlow(orderStatusList: orderStatusList);
+    return commitOrder(updated, restaurant: restaurant);
   }
 }
 

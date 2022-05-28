@@ -16,27 +16,26 @@ class Order extends Equatable {
   final Recipe recipe;
   final TableEntity table;
   final Phase phase;
-  OrderStatus currentStatus;
+  final String? customNote;
 
   final DateTime createdAt;
   final String createdBy;
-  final String? customNote;
 
-  String? delivered;
-
-  Map<String, Duration> flow;
+  final Map<String, Duration> flow;
+  final OrderStatus currentStatus;
+  final String? delivered;
 
   Order({
+    String? id,
     required this.recipe,
     required this.table,
-    required this.createdBy,
     required this.phase,
-    String? id,
+    required this.createdBy,
+    required this.currentStatus,
+    this.customNote,
     DateTime? createdAt,
     Map<String, Duration>? flow,
-    required this.currentStatus,
     this.delivered,
-    this.customNote,
   })  : id = id ?? Uuid().v4(),
         createdAt = createdAt ?? DateTime.now(),
         flow = flow ?? {};
@@ -47,6 +46,9 @@ class Order extends Equatable {
 
   @override
   String toString() => '${toJson()}';
+
+  @override
+  List<Object?> get props => [id];
 
   Duration get currentDuration {
     final now = DateTime.now();
@@ -63,7 +65,6 @@ class Order extends Equatable {
     );
   }
 
-  @JsonKey(ignore: true)
   String get userFriendlyDescription =>
       '${recipe.name} @ ${table.name} ${phase.name}';
 
@@ -74,15 +75,52 @@ class Order extends Equatable {
     return attributeIds.any(notifyAttributeIds.contains);
   }
 
+  Order moveToNextFlow({required List<OrderStatus> orderStatusList}) {
+    final currentFlow = currentStatus.flow;
+    final nextFlow = currentFlow + 1;
+    if (nextFlow >= orderStatusList.length) return this;
+
+    var lastFlowEndDate = createdAt;
+    final previousFlow = currentFlow - 1;
+    if (previousFlow >= 0) {
+      lastFlowEndDate = createdAt.add(
+        flow.values.reduce(
+          (result, element) {
+            return Duration(seconds: result.inSeconds + element.inSeconds);
+          },
+        ),
+      );
+    }
+
+    final now = DateTime.now();
+    final updatedFlow = flow;
+    updatedFlow[currentStatus.name] = Duration(
+      seconds: now.difference(lastFlowEndDate).inSeconds,
+    );
+
+    String? updatedDelivered;
+    if (nextFlow == orderStatusList.length - 1) {
+      updatedDelivered = now.toIso8601String();
+    }
+
+    return Order(
+      id: id,
+      createdAt: createdAt,
+      recipe: recipe,
+      table: table,
+      createdBy: createdBy,
+      phase: phase,
+      customNote: customNote,
+      currentStatus: orderStatusList[nextFlow],
+      delivered: updatedDelivered,
+      flow: updatedFlow,
+    );
+  }
+
   static int sort(Order a, Order b) {
     var result =
         b.currentDuration.inSeconds.compareTo(a.currentDuration.inSeconds);
-    if (result == 0) {
-      result = a.recipe.name.compareTo(b.recipe.name);
-    }
+    if (result == 0) result = a.recipe.name.compareTo(b.recipe.name);
     return result;
   }
-
-  @override
-  List<Object?> get props => [id];
 }
