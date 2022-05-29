@@ -30,7 +30,9 @@ class TableFilterProviderImpl extends FIREntityProvider<Attribute>
           'attributes',
           Attribute.fromJson,
           restaurant: restaurantProvider.selectedRestaurant,
-        );
+        ) {
+    fetchAttributes();
+  }
 
   bool _showingEmptyTables = true;
   Map<Attribute, bool> _showingAttributes = {};

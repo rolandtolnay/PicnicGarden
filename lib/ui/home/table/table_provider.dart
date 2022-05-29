@@ -35,7 +35,9 @@ class FIRTableProvider extends FIREntityProvider<TableEntity>
           'tables',
           TableEntity.fromJson,
           restaurant: restaurantProvider.selectedRestaurant,
-        );
+        ) {
+    fetchTables();
+  }
 
   @override
   UnmodifiableListView<TableEntity> get tables =>

@@ -21,7 +21,9 @@ class FIROrderStatusProvider extends FIREntityProvider<OrderStatus>
           'orderStatus',
           OrderStatus.fromJson,
           restaurant: restaurantProvider.selectedRestaurant,
-        );
+        ) {
+    fetchOrderStatusList();
+  }
 
   @override
   UnmodifiableListView<OrderStatus> get orderStatusList =>

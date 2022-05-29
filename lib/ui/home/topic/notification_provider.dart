@@ -54,7 +54,8 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
           Notification.fromJson,
           restaurant: restaurantProvider.selectedRestaurant,
         ) {
-    //
+    requestPermissions();
+
     response = ApiResponse.loading();
     if (authProvider.userId != null) {
       listenOnSnapshots(

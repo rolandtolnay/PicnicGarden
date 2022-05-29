@@ -22,31 +22,14 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        // TODO: These should be creatorrs
-        ChangeNotifierProvider.value(
-          value: getIt<TableProvider>()..fetchTables(),
-        ),
-        ChangeNotifierProvider.value(
-          value: getIt<TopicProvider>()..fetchTopics(),
-        ),
-        ChangeNotifierProvider.value(
-          value: getIt<NotificationProvider>()..requestPermissions(),
-        ),
-        ChangeNotifierProvider.value(
-          value: getIt<TableFilterProvider>()..fetchAttributes(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => getIt<RecipeProvider>()..fetchRecipes(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => getIt<PhaseProvider>()..fetchPhases(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => getIt<OrderStatusProvider>()..fetchOrderStatusList(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => getIt<TableStatusProvider>()..fetchTableStatusList(),
-        ),
+        ChangeNotifierProvider.value(value: getIt<TableProvider>()),
+        ChangeNotifierProvider.value(value: getIt<TopicProvider>()),
+        ChangeNotifierProvider.value(value: getIt<NotificationProvider>()),
+        ChangeNotifierProvider.value(value: getIt<TableFilterProvider>()),
+        ChangeNotifierProvider(create: (_) => getIt<RecipeProvider>()),
+        ChangeNotifierProvider(create: (_) => getIt<PhaseProvider>()),
+        ChangeNotifierProvider(create: (_) => getIt<OrderStatusProvider>()),
+        ChangeNotifierProvider(create: (_) => getIt<TableStatusProvider>()),
         ChangeNotifierProvider(create: (_) => getIt<OrderProvider>()),
       ],
       child: Container(

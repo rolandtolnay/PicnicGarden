@@ -12,12 +12,12 @@ import '../../restaurant/restaurant_provider.dart';
 
 abstract class TopicProvider extends EntityProvider {
   UnmodifiableListView<Topic> get topics;
-  Future fetchTopics();
+  Future<void> fetchTopics();
 
   bool isSubscribedToTopic(Topic topic);
 
   // ignore: avoid_positional_boolean_parameters
-  Future setSubscribedToTopic(bool isSubscribed, {required Topic topic});
+  Future<void> setSubscribedToTopic(bool isSubscribed, {required Topic topic});
 }
 
 @LazySingleton(as: TopicProvider)
@@ -34,22 +34,23 @@ class FIRTopicProvider extends FIREntityProvider<Topic>
           'topics',
           Topic.fromJson,
           restaurant: restaurantProvider.selectedRestaurant,
-        );
+        ) {
+    fetchTopics();
+  }
 
   @override
   UnmodifiableListView<Topic> get topics => UnmodifiableListView(entities);
 
   @override
-  Future fetchTopics() {
-    return fetchEntities();
-  }
+  Future<void> fetchTopics() => fetchEntities();
 
   @override
   bool isSubscribedToTopic(Topic topic) =>
       topic.subscribedUserIds.contains(_authProvider.userId);
 
   @override
-  Future setSubscribedToTopic(bool isSubscribed, {required Topic topic}) async {
+  Future<void> setSubscribedToTopic(bool isSubscribed,
+      {required Topic topic}) async {
     response = ApiResponse.loading();
     notifyListeners();
 

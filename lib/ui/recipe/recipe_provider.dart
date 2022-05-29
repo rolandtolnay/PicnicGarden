@@ -21,7 +21,9 @@ class FIRRecipeProvider extends FIREntityProvider<Recipe>
           'recipes',
           Recipe.fromJson,
           restaurant: restaurantProvider.selectedRestaurant,
-        );
+        ) {
+    fetchRecipes();
+  }
 
   @override
   UnmodifiableListView<Recipe> get recipes => UnmodifiableListView(entities);

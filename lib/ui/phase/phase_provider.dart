@@ -21,7 +21,9 @@ class FIRPhaseProvider extends FIREntityProvider<Phase>
           'phases',
           Phase.fromJson,
           restaurant: restaurantProvider.selectedRestaurant,
-        );
+        ) {
+    fetchPhases();
+  }
 
   @override
   UnmodifiableListView<Phase> get phases => UnmodifiableListView(entities);
