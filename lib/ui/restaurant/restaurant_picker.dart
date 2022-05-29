@@ -40,12 +40,12 @@ class _RestaurantPickerBody extends StatelessWidget {
     }
 
     // TODO: Remove after development finished
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Future.delayed(
-        Duration(milliseconds: 500),
-        () => _selectRestaurant(provider.restaurants[1], context),
-      );
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    //   Future.delayed(
+    //     Duration(milliseconds: 500),
+    //     () => _selectRestaurant(provider.restaurants[1], context),
+    //   );
+    // });
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
