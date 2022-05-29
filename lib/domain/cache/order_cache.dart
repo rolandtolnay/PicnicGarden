@@ -18,7 +18,11 @@ abstract class OrderCache implements Disposable {
 
   Iterable<OrderGroup> orderGroupList({required TableEntity table});
 
-  void groupSimilarOrders(TableEntity table);
+  Future<void> groupSimilarOrders(
+    TableEntity table, {
+    Duration interval = const Duration(minutes: 7),
+    Future<bool> Function(Duration)? shouldGroupBeyondInterval,
+  });
 }
 
 @LazySingleton(as: OrderCache)
@@ -69,28 +73,42 @@ class OrderCacheImpl implements OrderCache {
   }
 
   @override
-  void groupSimilarOrders(TableEntity table) {
-    final map = _tableOrderGroupMap[table];
-    if (map == null || map.isEmpty) return;
+  Future<void> groupSimilarOrders(
+    TableEntity table, {
+    Duration interval = const Duration(minutes: 7),
+    Future<bool> Function(Duration)? shouldGroupBeyondInterval,
+  }) async {
+    final orderList = _tableOrderGroupMap[table];
+    if (orderList == null || orderList.isEmpty) return;
 
-    _tableOrderGroupMap[table] = map.fold<List<OrderGroup>>(
-      [],
-      (result, group) {
-        final existing = result.firstWhereOrNull(
-          (e) =>
-              e.recipe.name == group.recipe.name &&
-              e.phase == group.phase &&
-              e.currentStatus == group.currentStatus &&
-              e.customNote == group.customNote,
-        );
-        if (existing == null) {
-          result.add(group);
+    bool? shouldGroup;
+    final result = <OrderGroup>[];
+    for (final group in orderList) {
+      final existing = result.firstWhereOrNull(
+        (e) =>
+            e.recipe.name == group.recipe.name &&
+            e.phase == group.phase &&
+            e.currentStatus == group.currentStatus &&
+            e.customNote == group.customNote,
+      );
+      if (existing == null) {
+        result.add(group);
+      } else {
+        if (existing.createdAt.difference(group.createdAt).inSeconds.abs() >
+            interval.inSeconds) {
+          shouldGroup ??=
+              await shouldGroupBeyondInterval?.call(interval) ?? true;
+          if (shouldGroup) {
+            existing.orderList.addAll(group.orderList);
+          } else {
+            result.add(group);
+          }
         } else {
           existing.orderList.addAll(group.orderList);
         }
-        return result;
-      },
-    );
+      }
+    }
+    _tableOrderGroupMap[table] = result;
   }
 }
 

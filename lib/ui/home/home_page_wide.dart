@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../domain/model/table_entity.dart';
 import '../../injection.dart';
 import '../order/order_add/order_add_dialog.dart';
+import '../order/order_list/order_group_button.dart';
 import '../order/order_list/order_list_dialog.dart';
 import '../order/order_list/order_list_page.dart';
 import '../order/order_provider.dart';
@@ -80,6 +81,7 @@ class HomePageWide extends StatelessWidget {
         child: filterButton,
       ),
       actions: [
+        // TODO: Extract this into common theme button and re-use
         TextButton.icon(
           onPressed: () {
             themeProvider.setThemeMode(
@@ -136,11 +138,6 @@ class _HomePageWideBody extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    final orderGroupButton = IconButton(
-      color: colorScheme.onPrimary,
-      onPressed: () => context.read<OrderProvider>().groupSimilarOrders(table),
-      icon: Icon(Icons.workspaces),
-    );
     final orderAddButton = IconButton(
       color: colorScheme.onPrimary,
       onPressed: () => OrderAddDialog.show(context, table: table),
@@ -166,7 +163,7 @@ class _HomePageWideBody extends StatelessWidget {
             ],
           ),
           Spacer(),
-          orderGroupButton,
+          OrderGroupButton(table: table),
           orderAddButton,
           const SizedBox(width: 16.0),
         ],

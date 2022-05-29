@@ -27,7 +27,11 @@ abstract class OrderProvider extends ChangeNotifier with ApiResponder {
     required List<OrderStatus> orderStatusList,
   });
 
-  void groupSimilarOrders(TableEntity table);
+  Future<void> groupSimilarOrders(
+    TableEntity table, {
+    Duration interval = const Duration(minutes: 7),
+    Future<bool> Function(Duration)? shouldGroupBeyondInterval,
+  });
 }
 
 @Injectable(as: OrderProvider)
@@ -89,8 +93,16 @@ class FIROrderProvider extends ChangeNotifier
   }
 
   @override
-  void groupSimilarOrders(TableEntity table) {
-    _cache.groupSimilarOrders(table);
+  Future<void> groupSimilarOrders(
+    TableEntity table, {
+    Duration interval = const Duration(minutes: 7),
+    Future<bool> Function(Duration)? shouldGroupBeyondInterval,
+  }) async {
+    await _cache.groupSimilarOrders(
+      table,
+      interval: interval,
+      shouldGroupBeyondInterval: shouldGroupBeyondInterval,
+    );
     notifyListeners();
   }
 }
