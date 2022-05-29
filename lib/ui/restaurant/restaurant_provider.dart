@@ -6,6 +6,8 @@ import 'package:picnicgarden/domain/cache/order_cache.dart';
 import '../../domain/model/restaurant.dart';
 import '../entity_provider.dart';
 
+// TODO: Make this a factory created by Provider at root
+// and remove dependencies from other providers
 abstract class RestaurantProvider extends EntityProvider {
   UnmodifiableListView<Restaurant> get restaurants;
 

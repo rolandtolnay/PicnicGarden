@@ -89,8 +89,8 @@ class _RestaurantPickerBody extends StatelessWidget {
 
   void _selectRestaurant(Restaurant restaurant, BuildContext context) {
     final provider = context.read<RestaurantProvider>();
-
     provider.selectRestaurant(restaurant);
+
     Navigator.of(context, rootNavigator: true).pushReplacement(
       MaterialPageRoute(
         builder: (_) => HomePage(),

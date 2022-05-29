@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../domain/model/restaurant.dart';
 import '../../../domain/model/table_entity.dart';
+import '../../../injection.dart';
 import '../../common/confirmation_dialog.dart';
 import '../../common/text_icon_button.dart';
+import '../../restaurant/restaurant_provider.dart';
 import '../order_provider.dart';
 
 class OrderGroupButton extends StatelessWidget {
@@ -34,8 +37,13 @@ class OrderGroupButton extends StatelessWidget {
 
   void onPressed(BuildContext context) {
     final provider = context.read<OrderProvider>();
+    final interval = getIt<RestaurantProvider>()
+            .selectedRestaurant
+            ?.orderGroupWarningInterval ??
+        Restaurant.defaultOrderGroupWarningInterval;
     provider.groupSimilarOrders(
       table,
+      interval: interval,
       shouldGroupBeyondInterval: (interval) async {
         final result = await ConfirmationDialog.show(
           context,

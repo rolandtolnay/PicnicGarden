@@ -29,7 +29,7 @@ abstract class OrderProvider extends ChangeNotifier with ApiResponder {
 
   Future<void> groupSimilarOrders(
     TableEntity table, {
-    Duration interval = const Duration(minutes: 7),
+    Duration interval = Restaurant.defaultOrderGroupWarningInterval,
     Future<bool> Function(Duration)? shouldGroupBeyondInterval,
   });
 }
@@ -95,7 +95,7 @@ class FIROrderProvider extends ChangeNotifier
   @override
   Future<void> groupSimilarOrders(
     TableEntity table, {
-    Duration interval = const Duration(minutes: 7),
+    Duration interval = Restaurant.defaultOrderGroupWarningInterval,
     Future<bool> Function(Duration)? shouldGroupBeyondInterval,
   }) async {
     await _cache.groupSimilarOrders(

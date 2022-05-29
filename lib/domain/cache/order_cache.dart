@@ -20,7 +20,7 @@ abstract class OrderCache implements Disposable {
 
   Future<void> groupSimilarOrders(
     TableEntity table, {
-    Duration interval = const Duration(minutes: 7),
+    Duration interval = Restaurant.defaultOrderGroupWarningInterval,
     Future<bool> Function(Duration)? shouldGroupBeyondInterval,
   });
 }
@@ -75,7 +75,7 @@ class OrderCacheImpl implements OrderCache {
   @override
   Future<void> groupSimilarOrders(
     TableEntity table, {
-    Duration interval = const Duration(minutes: 7),
+    Duration interval = Restaurant.defaultOrderGroupWarningInterval,
     Future<bool> Function(Duration)? shouldGroupBeyondInterval,
   }) async {
     final orderList = _tableOrderGroupMap[table];
