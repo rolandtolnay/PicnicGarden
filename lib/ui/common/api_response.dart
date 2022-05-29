@@ -1,11 +1,8 @@
-import 'package:connectivity/connectivity.dart';
-import 'package:either_option/either_option.dart';
-
-import 'pg_error.dart';
+import '../../domain/service_error.dart';
 
 class ApiResponse {
   final ApiStatus status;
-  final PGError? error;
+  final ServiceError? error;
 
   ApiResponse.initial()
       : status = ApiStatus.initial,
@@ -16,10 +13,14 @@ class ApiResponse {
   ApiResponse.completed()
       : status = ApiStatus.completed,
         error = null;
-  ApiResponse.error(PGError error)
+  ApiResponse.error(ServiceError error)
       : status = ApiStatus.error,
         // ignore: prefer_initializing_formals
         error = error;
+
+  ApiResponse.fromErrorResult(ServiceError? result)
+      : status = result == null ? ApiStatus.completed : ApiStatus.error,
+        error = result;
 }
 
 enum ApiStatus {
@@ -34,12 +35,4 @@ enum ApiStatus {
 
   /// An error occured while performing request
   error
-}
-
-Future<Option<PGError>> checkConnectivity() async {
-  final connectivityResult = await Connectivity().checkConnectivity();
-  return Option.cond(
-    connectivityResult == ConnectivityResult.none,
-    PGError.noInternet(),
-  );
 }

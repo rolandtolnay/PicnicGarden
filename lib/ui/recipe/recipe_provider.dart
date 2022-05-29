@@ -1,5 +1,7 @@
 import 'dart:collection';
 
+import 'package:injectable/injectable.dart';
+
 import '../../domain/model/recipe.dart';
 import '../entity_provider.dart';
 import '../restaurant/restaurant_provider.dart';
@@ -10,6 +12,7 @@ abstract class RecipeProvider extends EntityProvider {
   Future fetchRecipes();
 }
 
+@Injectable(as: RecipeProvider)
 class FIRRecipeProvider extends FIREntityProvider<Recipe>
     implements RecipeProvider {
   FIRRecipeProvider({
@@ -18,7 +21,9 @@ class FIRRecipeProvider extends FIREntityProvider<Recipe>
           'recipes',
           Recipe.fromJson,
           restaurant: restaurantProvider.selectedRestaurant,
-        );
+        ) {
+    fetchRecipes();
+  }
 
   @override
   UnmodifiableListView<Recipe> get recipes => UnmodifiableListView(entities);

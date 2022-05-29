@@ -6,25 +6,6 @@ extension StringUtility on String {
 
   /// Removes all white-space in the string
   String sanitized() => trim().replaceAll(' ', '');
-
-  _Name asName() => _Name.from(this);
-}
-
-class _Name {
-  late String first;
-  String? last;
-
-  _Name.from(String fullName) {
-    first = '';
-    last = '';
-    final nameList = fullName.split(' ');
-    if (nameList.isNotEmpty) {
-      first = nameList[0];
-    }
-    if (nameList.length > 1) {
-      last = fullName.substring(first.length).trim();
-    }
-  }
 }
 
 extension Utility on DateTime {

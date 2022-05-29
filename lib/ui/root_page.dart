@@ -11,11 +11,12 @@ class RootPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isAuthenticated = context.watch<AuthProvider>().isAuthenticated;
-
+    final isAuthenticated = context.select<AuthProvider, bool>(
+      (p) => p.isAuthenticated,
+    );
     return isAuthenticated
         ? ChangeNotifierProvider.value(
-            value: di<RestaurantProvider>(),
+            value: getIt<RestaurantProvider>(),
             child: RestaurantPicker(),
           )
         : const Scaffold(body: Center(child: CircularProgressIndicator()));

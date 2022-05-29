@@ -4,12 +4,13 @@ import 'package:collection/collection.dart' show IterableExtension;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:injectable/injectable.dart';
 
-import '../../../domain/api_response.dart';
+import '../../common/api_response.dart';
 import '../../../domain/model/notification.dart';
-import '../../../domain/model/order.dart';
+import '../../../domain/model/order/order.dart';
 import '../../../domain/model/table_entity.dart';
-import '../../../domain/pg_error.dart';
+import '../../../domain/service_error.dart';
 import '../../auth_provider.dart';
 import '../../entity_provider.dart';
 import '../../restaurant/restaurant_provider.dart';
@@ -24,11 +25,12 @@ abstract class NotificationProvider extends EntityProvider {
   );
   UnmodifiableListView<Notification> notificationsForTable(TableEntity table);
 
-  Future<PGError?> postForOrder(Order order);
+  Future<ServiceError?> postForOrder(Order order);
 
-  Future<PGError?> postForTableStatusChange(TableEntity table);
+  Future<ServiceError?> postForTableStatusChange(TableEntity table);
 }
 
+@LazySingleton(as: NotificationProvider)
 class FIRNotificationProvider extends FIREntityProvider<Notification>
     implements NotificationProvider {
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
@@ -52,7 +54,8 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
           Notification.fromJson,
           restaurant: restaurantProvider.selectedRestaurant,
         ) {
-    //
+    requestPermissions();
+
     response = ApiResponse.loading();
     if (authProvider.userId != null) {
       listenOnSnapshots(
@@ -117,7 +120,7 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
   }
 
   @override
-  Future<PGError?> postForOrder(Order order) {
+  Future<ServiceError?> postForOrder(Order order) {
     final notification = Notification.forOrder(
       order,
       createdBy: _authProvider.userId!,
@@ -126,7 +129,7 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
   }
 
   @override
-  Future<PGError?> postForTableStatusChange(TableEntity table) {
+  Future<ServiceError?> postForTableStatusChange(TableEntity table) {
     final notification = Notification.forTableStatusChange(
       table,
       createdBy: _authProvider.userId!,
@@ -141,7 +144,7 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
     return _topicProvider.isSubscribedToTopic(topic);
   }
 
-  Future<PGError?> _markAsReadNotifications(TableEntity table) {
+  Future<ServiceError?> _markAsReadNotifications(TableEntity table) {
     final notifications = notificationsForTable(table);
     return batchPutEntities(
       notifications.map((n) => n.id),

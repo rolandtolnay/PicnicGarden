@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
-import '../../../domain/model/order.dart';
+import '../../../domain/model/order/order.dart';
 import '../../../domain/model/table_entity.dart';
-import '../../../domain/pg_error.dart';
+import '../../../domain/service_error.dart';
 import '../../../injection.dart';
 import '../../common/common_dialog.dart';
 import '../../common/dialog_cancel_button.dart';
@@ -17,7 +17,7 @@ import '../order_list/order_status_provider.dart';
 import '../order_provider.dart';
 import 'order_builder.dart';
 
-class OrderAddDialog extends StatelessWidget {
+class OrderAddDialog extends StatefulWidget {
   const OrderAddDialog._({Key? key}) : super(key: key);
 
   static void show(BuildContext context, {required TableEntity table}) {
@@ -28,12 +28,17 @@ class OrderAddDialog extends StatelessWidget {
   }
 
   @override
+  State<OrderAddDialog> createState() => _OrderAddDialogState();
+}
+
+class _OrderAddDialogState extends State<OrderAddDialog> {
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final provider = context.watch<RecipeProvider>();
 
-    SchedulerBinding.instance!.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       provider.response.error?.showInDialog(context);
     });
     if (provider.isLoading) {
@@ -88,8 +93,11 @@ class OrderAddDialog extends StatelessWidget {
   }
 
   void _onOrderCreated(Order order, BuildContext context) async {
-    final error = await context.read<OrderProvider>().commitOrder(order);
-    if (error != null) return error.showInDialog(context);
+    final provider = context.read<OrderProvider>();
+    await provider.commitOrder(order);
+
+    if (!mounted) return;
+    if (provider.hasError) return context.showError(provider);
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBarBuilder.orderSucces(order, context),
@@ -101,7 +109,7 @@ extension on BuildContext {
   Widget buildOrderAdd({required TableEntity table}) {
     final provider = read<OrderStatusProvider>();
     return Provider(
-      create: (_) => di<OrderBuilder>()
+      create: (_) => getIt<OrderBuilder>()
         ..setTable(table)
         ..setOrderStatus(provider.orderStatusList.first),
       child: MultiProvider(

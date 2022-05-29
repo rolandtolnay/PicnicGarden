@@ -14,8 +14,8 @@ import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await configureInjection();
 
-  await configureDependencies();
   runApp(Application());
 }
 
@@ -29,7 +29,7 @@ class Application extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider.value(
-      value: di<ThemeModeProvider>(),
+      value: getIt<ThemeModeProvider>(),
       builder: (context, _) {
         return GestureDetector(
           onTap: () => _hideKeyboard(context),
@@ -48,7 +48,7 @@ class Application extends StatelessWidget {
                   );
                 }
                 return ChangeNotifierProvider.value(
-                  value: di<AuthProvider>(),
+                  value: getIt<AuthProvider>()..signIn(),
                   child: AnnotatedRegion(
                     value: SystemUiOverlayStyle.light,
                     child: RootPage(),

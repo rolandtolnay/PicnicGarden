@@ -3,10 +3,12 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'topic.g.dart';
 
+typedef TopicName = String;
+
 @JsonSerializable()
 class Topic extends Equatable {
   final String id;
-  final String name;
+  final TopicName name;
 
   @JsonKey(defaultValue: <String>[])
   final List<String> subscribedUserIds;

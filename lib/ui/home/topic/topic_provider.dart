@@ -1,9 +1,10 @@
 import 'dart:collection';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:injectable/injectable.dart';
 
-import '../../../domain/api_response.dart';
-import '../../../domain/pg_error.dart';
+import '../../common/api_response.dart';
+import '../../../domain/service_error.dart';
 import '../../../domain/model/topic.dart';
 import '../../auth_provider.dart';
 import '../../entity_provider.dart';
@@ -11,14 +12,15 @@ import '../../restaurant/restaurant_provider.dart';
 
 abstract class TopicProvider extends EntityProvider {
   UnmodifiableListView<Topic> get topics;
-  Future fetchTopics();
+  Future<void> fetchTopics();
 
   bool isSubscribedToTopic(Topic topic);
 
   // ignore: avoid_positional_boolean_parameters
-  Future setSubscribedToTopic(bool isSubscribed, {required Topic topic});
+  Future<void> setSubscribedToTopic(bool isSubscribed, {required Topic topic});
 }
 
+@LazySingleton(as: TopicProvider)
 class FIRTopicProvider extends FIREntityProvider<Topic>
     implements TopicProvider {
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
@@ -32,22 +34,23 @@ class FIRTopicProvider extends FIREntityProvider<Topic>
           'topics',
           Topic.fromJson,
           restaurant: restaurantProvider.selectedRestaurant,
-        );
+        ) {
+    fetchTopics();
+  }
 
   @override
   UnmodifiableListView<Topic> get topics => UnmodifiableListView(entities);
 
   @override
-  Future fetchTopics() {
-    return fetchEntities();
-  }
+  Future<void> fetchTopics() => fetchEntities();
 
   @override
   bool isSubscribedToTopic(Topic topic) =>
       topic.subscribedUserIds.contains(_authProvider.userId);
 
   @override
-  Future setSubscribedToTopic(bool isSubscribed, {required Topic topic}) async {
+  Future<void> setSubscribedToTopic(bool isSubscribed,
+      {required Topic topic}) async {
     response = ApiResponse.loading();
     notifyListeners();
 
@@ -68,7 +71,7 @@ class FIRTopicProvider extends FIREntityProvider<Topic>
         response = ApiResponse.error(error);
       }
     } catch (e) {
-      response = ApiResponse.error(PGError.unknown('$e', error: e));
+      response = ApiResponse.error(ServiceError.unknown('$e', error: e));
     }
     notifyListeners();
   }

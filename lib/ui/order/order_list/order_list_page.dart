@@ -1,20 +1,21 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:picnicgarden/ui/home/table/table_filter_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/model/attribute.dart';
-import '../../../domain/pg_error.dart';
+import '../../../domain/model/order/order_status.dart';
+import '../../../domain/model/phase.dart';
 import '../../../domain/model/table_entity.dart';
-import '../order_provider.dart';
-import 'order_status_provider.dart';
+import '../../../domain/service_error.dart';
+import '../../home/table/table_filter_provider.dart';
 import '../../phase/phase_provider.dart';
+import '../order_provider.dart';
 import 'order_list_item_builder.dart';
 import 'order_list_phase_item.dart';
+import 'order_status_provider.dart';
 
-class OrderListPage extends StatelessWidget {
+class OrderListPage extends StatefulWidget {
   final TableEntity table;
   final bool showTimer;
   final bool scrollable;
@@ -27,42 +28,50 @@ class OrderListPage extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<OrderListPage> createState() => _OrderListPageState();
+}
+
+class _OrderListPageState extends State<OrderListPage> {
+  @override
   Widget build(BuildContext context) {
     final provider = context.watch<OrderProvider>();
-    final phases = context.watch<PhaseProvider>().phases;
+    if (provider.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    final phases = context.select<PhaseProvider, Iterable<Phase>>(
+      (p) => p.phases,
+    );
     final orderStatusList =
-        context.watch<OrderStatusProvider>().orderStatusList;
+        context.select<OrderStatusProvider, List<OrderStatus>>(
+      (p) => p.orderStatusList,
+    );
     final enabledAttributes =
         context.select<TableFilterProvider, Iterable<Attribute>>(
       (p) => p.enabledAttributes,
     );
 
-    SchedulerBinding.instance!.addPostFrameCallback((_) {
-      provider.response.error?.showInDialog(context);
-    });
-    if (provider.isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
     final builder = OrderListItemBuilder(
-      orders: provider
-          .ordersForTable(table)
+      orderGroupList: provider
+          .orderGroupList(table: widget.table)
           .filteredBy(enabledAttributes: enabledAttributes),
-      phases: phases,
-      showTimer: showTimer,
-      onOrderTapped: (order) async {
+      phaseList: phases,
+      showTimer: widget.showTimer,
+      onOrderTapped: (orderGroup) async {
         final provider = context.read<OrderProvider>();
-        final error = await provider.commitNextFlow(
-          order: order,
+        await provider.commitNextFlow(
+          orderGroup: orderGroup,
           orderStatusList: orderStatusList,
         );
-        error?.showInDialog(context);
+
+        if (!mounted) return;
+        if (provider.hasError) context.showError(provider);
       },
     );
     return _OrderList(
       items: builder.buildListItems(),
-      showTimer: showTimer,
-      scrollable: scrollable,
+      showTimer: widget.showTimer,
+      scrollable: widget.scrollable,
     );
   }
 }

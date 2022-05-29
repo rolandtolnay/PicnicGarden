@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:uuid/uuid.dart';
 
 import '../compact_map.dart';
-import 'order.dart';
+import 'order/order.dart';
 import 'table_entity.dart';
 
 part 'notification.g.dart';
@@ -31,14 +31,14 @@ class Notification extends Equatable {
 
   factory Notification.forOrder(Order order, {required String createdBy}) {
     final topicNames = order.recipe.attributes.fold<Set<String>>(
-      <String>{},
-      (topicNames, attribute) {
-        order.currentStatus.notifyTopics.forEach((key, value) {
-          if (value.contains(attribute.id)) {
-            topicNames.add(key.toLowerCase());
+      {},
+      (topicNameList, attribute) {
+        order.currentStatus.notifyTopics.forEach((topicName, attrIdList) {
+          if (attrIdList.contains(attribute.id)) {
+            topicNameList.add(topicName.toLowerCase());
           }
         });
-        return topicNames;
+        return topicNameList;
       },
     );
 

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../domain/model/table_entity.dart';
 import '../../injection.dart';
 import '../order/order_add/order_add_dialog.dart';
+import '../order/order_list/order_group_button.dart';
 import '../order/order_list/order_list_dialog.dart';
 import '../order/order_list/order_list_page.dart';
 import '../order/order_provider.dart';
@@ -13,7 +14,6 @@ import '../theme_provider.dart';
 import 'table/table_filter_dialog.dart';
 import 'table/table_filter_provider.dart';
 import 'table/table_provider.dart';
-import 'table/table_status_provider.dart';
 import 'table/widgets/table_name_widget.dart';
 import 'table/widgets/table_status_popup_button.dart';
 
@@ -26,10 +26,7 @@ class HomePageWide extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(context),
-      body: ChangeNotifierProvider(
-        create: (_) => di<TableStatusProvider>(),
-        child: _HomePageWideBody(),
-      ),
+      body: _HomePageWideBody(),
     );
   }
 
@@ -74,7 +71,7 @@ class HomePageWide extends StatelessWidget {
       ),
     );
 
-    final restaurant = di<RestaurantProvider>().selectedRestaurant;
+    final restaurant = getIt<RestaurantProvider>().selectedRestaurant;
     return AppBar(
       title: Text(restaurant?.name ?? ''),
       leadingWidth: 240,
@@ -84,13 +81,14 @@ class HomePageWide extends StatelessWidget {
         child: filterButton,
       ),
       actions: [
+        // TODO: Extract this into common theme button and re-use
         TextButton.icon(
           onPressed: () {
             themeProvider.setThemeMode(
               isDarkMode ? ThemeMode.light : ThemeMode.dark,
             );
           },
-          icon: Icon(isDarkMode ? Icons.light_mode : Icons.dark_mode),
+          icon: Icon(isDarkMode ? Icons.dark_mode : Icons.light_mode),
           label: Text(isDarkMode ? 'DARK THEME' : 'LIGHT THEME'),
           style: TextButton.styleFrom(primary: colorScheme.onPrimary),
         )
@@ -165,6 +163,7 @@ class _HomePageWideBody extends StatelessWidget {
             ],
           ),
           Spacer(),
+          OrderGroupButton(table: table),
           orderAddButton,
           const SizedBox(width: 16.0),
         ],
@@ -186,7 +185,7 @@ extension on Iterable<TableEntity> {
     // Return tables that have at least one order with an enabled attribute
     return where(
       (table) => orderProvider
-          .ordersForTable(table)
+          .orderGroupList(table: table)
           .filteredBy(enabledAttributes: enabled)
           .isNotEmpty,
     ).toList();

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../domain/model/order.dart';
+import '../../domain/model/order/order.dart';
 
 extension SnackBarBuilder on SnackBar {
   static SnackBar orderSucces(Order order, BuildContext context) {

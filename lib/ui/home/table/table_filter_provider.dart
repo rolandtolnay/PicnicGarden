@@ -1,3 +1,5 @@
+import 'package:injectable/injectable.dart';
+
 import '../../../domain/model/attribute.dart';
 import '../../entity_provider.dart';
 import '../../restaurant/restaurant_provider.dart';
@@ -19,6 +21,7 @@ extension Convenience on TableFilterProvider {
   }
 }
 
+@LazySingleton(as: TableFilterProvider)
 class TableFilterProviderImpl extends FIREntityProvider<Attribute>
     implements TableFilterProvider {
   TableFilterProviderImpl({
@@ -27,7 +30,9 @@ class TableFilterProviderImpl extends FIREntityProvider<Attribute>
           'attributes',
           Attribute.fromJson,
           restaurant: restaurantProvider.selectedRestaurant,
-        );
+        ) {
+    fetchAttributes();
+  }
 
   bool _showingEmptyTables = true;
   Map<Attribute, bool> _showingAttributes = {};

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../domain/model/order.dart';
+import '../../domain/model/order/order.dart';
 import '../../domain/model/recipe.dart';
 import 'recipe_picker.dart';
 

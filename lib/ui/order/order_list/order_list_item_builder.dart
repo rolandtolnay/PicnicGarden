@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../domain/model/order.dart';
+import '../../../domain/model/order/order_group.dart';
 import '../../../domain/model/phase.dart';
 import 'order_list_order_item.dart';
 import 'order_list_phase_item.dart';
@@ -12,52 +12,47 @@ abstract class OrderListItem<T> {
 }
 
 class OrderListItemBuilder {
-  final Iterable<Phase> phases;
-  final Iterable<Order> orders;
+  final Iterable<Phase> phaseList;
+  final Iterable<OrderGroup> orderGroupList;
 
   final bool showTimer;
-  final ValueChanged<Order>? onOrderTapped;
+  final ValueChanged<OrderGroup>? onOrderTapped;
 
   OrderListItemBuilder({
-    required this.phases,
-    required this.orders,
+    required this.phaseList,
+    required this.orderGroupList,
     required this.showTimer,
     this.onOrderTapped,
   });
 
   List<OrderListItem> buildListItems() {
-    final sortedPhases = List.from(phases);
+    final sortedPhases = List.from(phaseList);
     sortedPhases.sort((a, b) => a.number.compareTo(b.number));
 
-    // Creates a map of phase id, and matching list of orders
-    // ignore: omit_local_variable_types
-    final Map<String, List<Order>> phaseMap =
-        orders.fold(<String, List<Order>>{}, (map, order) {
-      final phaseKey = order.phase.id;
-      if (map[phaseKey] == null) {
-        map[phaseKey] = [order];
-      } else {
-        map[phaseKey]!.add(order);
-      }
+    // Creates a map of phase id, and matching list of order groups
+    final phaseGroupMap = orderGroupList.fold<Map<String, List<OrderGroup>>>({},
+        (map, orderGroup) {
+      final key = orderGroup.phase.id;
+      map[key] ??= <OrderGroup>[];
+      map[key]?.add(orderGroup);
       return map;
     });
-    for (var orderList in phaseMap.values) {
-      orderList.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+    for (final orderGroupList in phaseGroupMap.values) {
+      orderGroupList.sort((a, b) => a.createdAt.compareTo(b.createdAt));
     }
 
-    return sortedPhases.fold(<OrderListItem>[], (list, phase) {
+    return sortedPhases.fold([], (list, phase) {
       list.add(OrderListPhaseItem(phase));
-      if (phaseMap[phase.id] != null) {
-        list.addAll(
-          phaseMap[phase.id]!.map(
-            (order) => OrderListOrderItem(
-              order,
-              showTimer: showTimer,
-              onTapped: onOrderTapped,
-            ),
-          ),
-        );
-      }
+      final items = phaseGroupMap[phase.id]?.map(
+        (orderGroup) {
+          return OrderListOrderItem(
+            orderGroup,
+            showTimer: showTimer,
+            onTapped: onOrderTapped,
+          );
+        },
+      );
+      if (items != null) list.addAll(items);
       return list;
     });
   }

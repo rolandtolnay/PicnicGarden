@@ -1,6 +1,8 @@
 import 'dart:collection';
 
-import '../../../domain/model/order_status.dart';
+import 'package:injectable/injectable.dart';
+
+import '../../../domain/model/order/order_status.dart';
 import '../../entity_provider.dart';
 import '../../restaurant/restaurant_provider.dart';
 
@@ -10,6 +12,7 @@ abstract class OrderStatusProvider extends EntityProvider {
   Future fetchOrderStatusList();
 }
 
+@Injectable(as: OrderStatusProvider)
 class FIROrderStatusProvider extends FIREntityProvider<OrderStatus>
     implements OrderStatusProvider {
   FIROrderStatusProvider({
@@ -18,7 +21,9 @@ class FIROrderStatusProvider extends FIREntityProvider<OrderStatus>
           'orderStatus',
           OrderStatus.fromJson,
           restaurant: restaurantProvider.selectedRestaurant,
-        );
+        ) {
+    fetchOrderStatusList();
+  }
 
   @override
   UnmodifiableListView<OrderStatus> get orderStatusList =>

@@ -2,14 +2,14 @@ import 'package:flutter/material.dart' hide Table;
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
-import '../../domain/pg_error.dart';
+import '../../domain/service_error.dart';
 import '../common/empty_refreshable.dart';
 import '../order/order_add/order_add_floating_button.dart';
 import '../phase/phase_loader.dart';
 import 'home_page_tight_app_bar.dart';
 import 'table/table_picker_dialog.dart';
 import 'table/table_provider.dart';
-import 'table/widgets/table_status_bar.dart';
+import 'table/widgets/table_action_bar.dart';
 
 class HomePageTight extends StatelessWidget {
   const HomePageTight({Key? key}) : super(key: key);
@@ -34,7 +34,7 @@ class _HomePageTightBody extends StatelessWidget {
     final provider = context.watch<TableProvider>();
     final colorScheme = Theme.of(context).colorScheme;
 
-    SchedulerBinding.instance!.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       provider.response.error?.showInDialog(context);
     });
     final selectedTable = provider.selectedTable;
@@ -63,7 +63,7 @@ class _HomePageTightBody extends StatelessWidget {
           },
         ),
         Divider(height: 0, color: colorScheme.primaryContainer),
-        TableStatusBar(table: selectedTable),
+        TableActionBar(table: selectedTable),
         Expanded(child: PhaseLoader()),
       ],
     );

@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'attribute.dart';
@@ -5,7 +6,7 @@ import 'attribute.dart';
 part 'recipe.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class Recipe {
+class Recipe extends Equatable {
   final String id;
   final String name;
 
@@ -13,7 +14,7 @@ class Recipe {
   final int number;
   final String? autoPhase;
 
-  List<Attribute> attributes;
+  final List<Attribute> attributes;
 
   Recipe({
     required this.id,
@@ -27,4 +28,7 @@ class Recipe {
   factory Recipe.fromJson(Map<String, dynamic> json) => _$RecipeFromJson(json);
 
   Map<String, dynamic> toJson() => _$RecipeToJson(this);
+
+  @override
+  List<Object?> get props => [id];
 }
