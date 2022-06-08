@@ -1,30 +1,39 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:picnicgarden/ui/theme_provider.dart';
 import 'package:provider/provider.dart';
 
-import 'ui/auth_provider.dart';
-import 'injection.dart';
-import 'ui/root_page.dart';
-
 import 'firebase_options.dart';
+import 'injection.dart';
+import 'ui/auth_provider.dart';
+import 'ui/root_page.dart';
+import 'ui/theme_provider.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await configureInjection();
+  runZonedGuarded<Future<void>>(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await configureInjection();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
-  runApp(Application());
+    if (kDebugMode) {
+      await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
+    }
+
+    runApp(Application());
+  }, (e, st) => FirebaseCrashlytics.instance.recordError(e, st));
 }
 
 class Application extends StatelessWidget {
-  final Future<FirebaseApp> _initialization = Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
-  Application({Key? key}) : super(key: key);
+  const Application({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -39,22 +48,12 @@ class Application extends StatelessWidget {
             theme: ThemeBuilder.light,
             darkTheme: ThemeBuilder.dark,
             themeMode: context.watch<ThemeModeProvider>().themeMode,
-            home: FutureBuilder(
-              future: _initialization,
-              builder: (_, snapshot) {
-                if (snapshot.connectionState != ConnectionState.done) {
-                  return Scaffold(
-                    body: Center(child: CircularProgressIndicator()),
-                  );
-                }
-                return ChangeNotifierProvider.value(
-                  value: getIt<AuthProvider>()..signIn(),
-                  child: AnnotatedRegion(
-                    value: SystemUiOverlayStyle.light,
-                    child: RootPage(),
-                  ),
-                );
-              },
+            home: ChangeNotifierProvider.value(
+              value: getIt<AuthProvider>()..signIn(),
+              child: AnnotatedRegion(
+                value: SystemUiOverlayStyle.light,
+                child: RootPage(),
+              ),
             ),
           ),
         );

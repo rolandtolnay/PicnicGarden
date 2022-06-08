@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:either_option/either_option.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import '../domain/service_error.dart';
 import '../domain/model/restaurant.dart';
@@ -66,14 +67,18 @@ class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
           entities = _entitiesFromSnapshot(snapshot);
           print('Successfully fetched ${entities.length} $T entities.');
           response = ApiResponse.completed();
-        } catch (e, stacktrace) {
+        } catch (e, st) {
           print('[ERROR] Failed fetching $T: $e');
-          print(stacktrace);
+          print(st);
+          await FirebaseCrashlytics.instance
+              .recordError(e, st, reason: 'Failed fetching $T');
           response = ApiResponse.error(ServiceError.backend('$e', error: e));
         }
         notifyListeners();
       },
-      (error) {
+      (error) async {
+        await FirebaseCrashlytics.instance
+            .recordError(error, null, reason: 'Failed fetching $T');
         response = ApiResponse.error(error);
         notifyListeners();
       },
@@ -87,9 +92,11 @@ class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
         try {
           await collection.doc(id).set(entity);
           return null;
-        } catch (e, stacktrace) {
+        } catch (e, st) {
           print('[ERROR] Failed putting $T: $e');
-          print(stacktrace);
+          print(st);
+          await FirebaseCrashlytics.instance
+              .recordError(e, st, reason: 'Failed putting $T');
           return ServiceError.backend('$e', error: e);
         }
       },
@@ -110,9 +117,11 @@ class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
           }
           await batch.commit();
           return null;
-        } catch (e, stacktrace) {
+        } catch (e, st) {
           print('[ERROR] Failed putting $T: $e');
-          print(stacktrace);
+          print(st);
+          await FirebaseCrashlytics.instance
+              .recordError(e, st, reason: 'Failed putting $T');
           return ServiceError.backend('$e', error: e);
         }
       },
@@ -126,9 +135,11 @@ class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
         try {
           await collection.doc(id).delete();
           return null;
-        } catch (e, stacktrace) {
+        } catch (e, st) {
           print('[ERROR] Failed deleting $T: $e');
-          print(stacktrace);
+          print(st);
+          await FirebaseCrashlytics.instance
+              .recordError(e, st, reason: 'Failed deleting $T');
           return ServiceError.backend('$e', error: e);
         }
       },
@@ -144,9 +155,11 @@ class FIREntityProvider<T> extends ChangeNotifier implements EntityProvider {
       print('Received $T snapshot with ${entities.length} entities.');
       response = ApiResponse.completed();
       notifyListeners();
-    }, onError: (e, stacktrace) {
+    }, onError: (e, st) async {
       print('[ERROR] Received snapshot error listening on $T: $e');
-      print(stacktrace);
+      print(st);
+      await FirebaseCrashlytics.instance.recordError(e, st,
+          reason: 'Received snapshot error listening on $T');
       response = ApiResponse.error(ServiceError.backend('$e', error: e));
       notifyListeners();
     });
