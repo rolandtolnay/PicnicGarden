@@ -167,12 +167,12 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
       android: settingsAndroid,
     );
 
-    await _localNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification: (tableId) async {
-      if (tableId != null) {
-        _selectTableId(tableId);
-      }
-    });
+    await _localNotificationsPlugin.initialize(
+      initializationSettings,
+      onSelectNotification: (tableId) async {
+        if (tableId != null) _selectTableId(tableId);
+      },
+    );
     print('Successfully initialized local notifications.');
   }
 
@@ -243,7 +243,9 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
 
   void _listenOnTableStatusChange() {
     _tableProvider.onTableStatusChanged.listen((table) {
-      postForTableStatusChange(table);
+      if ((table.status?.notifyTopics ?? []).isNotEmpty) {
+        postForTableStatusChange(table);
+      }
     });
   }
 
