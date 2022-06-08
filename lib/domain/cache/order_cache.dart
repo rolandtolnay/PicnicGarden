@@ -1,22 +1,22 @@
 import 'dart:async';
+import 'dart:developer' as dev;
 
 import 'package:collection/collection.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
-import 'package:picnicgarden/domain/model/order/order_update.dart';
-import 'package:picnicgarden/domain/model/restaurant.dart';
-import 'package:picnicgarden/domain/model/table_entity.dart';
+import 'package:rxdart/subjects.dart';
 
 import '../model/order/order.dart';
 import '../model/order/order_group.dart';
+import '../model/order/order_update.dart';
+import '../model/restaurant.dart';
+import '../model/table_entity.dart';
 import '../repository/order_repository.dart';
-
-import 'dart:developer' as dev;
 
 abstract class OrderCache implements Disposable {
   void listenOnOrderUpdates(Restaurant restaurant);
 
-  Iterable<OrderGroup> orderGroupList({required TableEntity table});
+  Stream<Map<TableEntity, List<OrderGroup>>> orderGroupList();
 
   Future<void> groupSimilarOrders(
     TableEntity table, {
@@ -33,6 +33,8 @@ class OrderCacheImpl implements OrderCache {
 
   StreamSubscription? _listener;
   final Map<TableEntity, List<OrderGroup>> _tableOrderGroupMap = {};
+  final _orderGroupController =
+      BehaviorSubject<Map<TableEntity, List<OrderGroup>>>();
 
   @override
   void listenOnOrderUpdates(Restaurant restaurant) {
@@ -41,12 +43,13 @@ class OrderCacheImpl implements OrderCache {
       for (final update in updateList) {
         _process(update);
       }
+      _orderGroupController.add(_tableOrderGroupMap);
     });
   }
 
   @override
-  Iterable<OrderGroup> orderGroupList({required TableEntity table}) =>
-      _tableOrderGroupMap[table] ?? [];
+  Stream<Map<TableEntity, List<OrderGroup>>> orderGroupList() =>
+      _orderGroupController.stream;
 
   @override
   FutureOr onDispose() {
@@ -109,6 +112,7 @@ class OrderCacheImpl implements OrderCache {
       }
     }
     _tableOrderGroupMap[table] = result;
+    _orderGroupController.add(_tableOrderGroupMap);
   }
 }
 

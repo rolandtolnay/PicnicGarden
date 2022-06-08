@@ -43,12 +43,20 @@ class FIROrderProvider extends ChangeNotifier
   final OrderCache _cache;
   final Restaurant _restaurant;
 
+  late final StreamSubscription _listener;
+  Map<TableEntity, List<OrderGroup>> _tableOrderGroupMap = {};
+
   FIROrderProvider(
     this._repository,
     this._cache,
     this._notificationProvider, {
     required RestaurantProvider restaurantProvider,
-  }) : _restaurant = restaurantProvider.selectedRestaurant!;
+  }) : _restaurant = restaurantProvider.selectedRestaurant! {
+    _listener = _cache.orderGroupList().listen((map) {
+      _tableOrderGroupMap = map;
+      notifyListeners();
+    });
+  }
 
   ApiResponse _response = ApiResponse.initial();
 
@@ -57,7 +65,7 @@ class FIROrderProvider extends ChangeNotifier
 
   @override
   Iterable<OrderGroup> orderGroupList({required TableEntity table}) =>
-      _cache.orderGroupList(table: table);
+      _tableOrderGroupMap[table] ?? [];
 
   @override
   Future<void> commitOrder(Order order) async {
@@ -104,6 +112,12 @@ class FIROrderProvider extends ChangeNotifier
       shouldGroupBeyondInterval: shouldGroupBeyondInterval,
     );
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _listener.cancel();
+    super.dispose();
   }
 }
 
