@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:collection';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -35,7 +36,7 @@ class FIRTopicProvider extends FIREntityProvider<Topic>
           Topic.fromJson,
           restaurant: restaurantProvider.selectedRestaurant,
         ) {
-    fetchTopics();
+    fetchTopics().then(_ensureSubscribedToTopics);
   }
 
   @override
@@ -62,8 +63,8 @@ class FIRTopicProvider extends FIREntityProvider<Topic>
       }
       final userId = _authProvider.userId;
       final updatedTopic = isSubscribed
-          ? Topic.subscribingTo(topic, byUserId: userId!)
-          : Topic.unsubscribingFrom(topic, byUserId: userId!);
+          ? Topic.subscribingTo(topic, userId: userId!)
+          : Topic.unsubscribingFrom(topic, userId: userId!);
       final error = await postEntity(topic.id, updatedTopic.toJson());
       if (error == null) {
         response = ApiResponse.completed();
@@ -74,5 +75,15 @@ class FIRTopicProvider extends FIREntityProvider<Topic>
       response = ApiResponse.error(ServiceError.unknown('$e', error: e));
     }
     notifyListeners();
+  }
+
+  Future<void> _ensureSubscribedToTopics(_) async {
+    if (topics.isNotEmpty) {
+      for (final topic in topics) {
+        if (isSubscribedToTopic(topic)) {
+          await _messaging.subscribeToTopic(topic.name.toLowerCase());
+        }
+      }
+    }
   }
 }

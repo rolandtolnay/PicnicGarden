@@ -19,9 +19,9 @@ class Topic extends Equatable {
     required this.subscribedUserIds,
   });
 
-  factory Topic.subscribingTo(Topic topic, {required String byUserId}) {
+  factory Topic.subscribingTo(Topic topic, {required String userId}) {
     final subscribedUserIds = topic.subscribedUserIds;
-    subscribedUserIds.add(byUserId);
+    subscribedUserIds.add(userId);
     return Topic(
       id: topic.id,
       name: topic.name,
@@ -29,9 +29,9 @@ class Topic extends Equatable {
     );
   }
 
-  factory Topic.unsubscribingFrom(Topic topic, {required String byUserId}) {
+  factory Topic.unsubscribingFrom(Topic topic, {required String userId}) {
     final subscribedUserIds = topic.subscribedUserIds;
-    subscribedUserIds.remove(byUserId);
+    subscribedUserIds.remove(userId);
     return Topic(
       id: topic.id,
       name: topic.name,

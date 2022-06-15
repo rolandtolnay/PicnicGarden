@@ -243,7 +243,10 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
 
   void _listenOnTableStatusChange() {
     _tableProvider.onTableStatusChanged.listen((table) {
-      if ((table.status?.notifyTopics ?? []).isNotEmpty) {
+      final status = table.status;
+      if (status != null &&
+          status.notifyTopics.isNotEmpty &&
+          status.notifyTopics.any((e) => e.isNotEmpty)) {
         postForTableStatusChange(table);
       }
     });
