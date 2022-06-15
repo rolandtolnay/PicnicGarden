@@ -24,21 +24,39 @@ class HomePage extends StatelessWidget {
       providers: [
         ChangeNotifierProvider.value(value: getIt<TableProvider>()),
         ChangeNotifierProvider.value(value: getIt<TopicProvider>()),
-        ChangeNotifierProvider.value(value: getIt<NotificationProvider>()),
         ChangeNotifierProvider.value(value: getIt<TableFilterProvider>()),
+        ChangeNotifierProvider.value(value: getIt<NotificationProvider>()),
         ChangeNotifierProvider(create: (_) => getIt<RecipeProvider>()),
         ChangeNotifierProvider(create: (_) => getIt<PhaseProvider>()),
         ChangeNotifierProvider(create: (_) => getIt<OrderStatusProvider>()),
         ChangeNotifierProvider(create: (_) => getIt<TableStatusProvider>()),
         ChangeNotifierProvider(create: (_) => getIt<OrderProvider>()),
       ],
-      child: Container(
-        color: Theme.of(context).colorScheme.primary,
-        child: LayoutBuilder(builder: (context, constraints) {
-          if (constraints.maxWidth >= kTabletWidth) return HomePageWide();
-          return HomePageTight();
-        }),
-      ),
+      builder: (context, _) {
+        final provider = context.read<NotificationProvider>();
+        return Container(
+          color: Theme.of(context).colorScheme.primary,
+          child: FutureBuilder(
+            future: provider.initialize(),
+            builder: (_, snapshot) {
+              if (snapshot.connectionState != ConnectionState.done) {
+                return Scaffold(
+                  body: Center(child: CircularProgressIndicator()),
+                );
+              }
+
+              WidgetsBinding.instance.addPostFrameCallback(
+                (_) => provider.listenOnNotificationUpdates(),
+              );
+
+              return LayoutBuilder(builder: (_, constraints) {
+                if (constraints.maxWidth >= kTabletWidth) return HomePageWide();
+                return HomePageTight();
+              });
+            },
+          ),
+        );
+      },
     );
   }
 }

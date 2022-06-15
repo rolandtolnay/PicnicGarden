@@ -6,19 +6,21 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../common/api_response.dart';
 import '../../../domain/model/notification.dart';
 import '../../../domain/model/order/order.dart';
 import '../../../domain/model/table_entity.dart';
 import '../../../domain/service_error.dart';
 import '../../auth_provider.dart';
+import '../../common/api_response.dart';
 import '../../entity_provider.dart';
 import '../../restaurant/restaurant_provider.dart';
 import '../table/table_provider.dart';
 import 'topic_provider.dart';
 
 abstract class NotificationProvider extends EntityProvider {
-  Future requestPermissions();
+  Future<void> initialize();
+
+  void listenOnNotificationUpdates();
 
   UnmodifiableListView<Notification> notificationsExcludingTable(
     TableEntity table,
@@ -53,42 +55,28 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
           'notifications',
           Notification.fromJson,
           restaurant: restaurantProvider.selectedRestaurant,
-        ) {
-    requestPermissions();
+        );
 
-    response = ApiResponse.loading();
-    if (authProvider.userId != null) {
-      listenOnSnapshots(
-        query: collection.where('createdBy', isNotEqualTo: authProvider.userId),
-      );
-    } else {
-      print('[ERROR] NotificationProvider init with no authenticated user');
-    }
-
+  @override
+  Future<void> initialize() async {
     if (!kIsWeb) {
-      _initLocalNotifications();
-      _listenOnPushNotifications();
+      await _requestPermissions();
+      await _initLocalNotifications();
+      await _listenOnPushNotifications();
     }
+
     _listenOnTableSelected();
     _listenOnSubscribedTopic();
     _listenOnTableStatusChange();
   }
 
   @override
-  Future requestPermissions() async {
-    if (kIsWeb) return;
-
-    try {
-      final settings = await _messaging.requestPermission();
-      if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-        print('Push Notifications authorized.');
-      } else {
-        print('Push Notifications not authorized');
-      }
-    } catch (e) {
-      print('[ERROR] Failed setting up notifications: $e');
-    }
-    return Future.value();
+  void listenOnNotificationUpdates() {
+    response = ApiResponse.loading();
+    final userId = _authProvider.userId;
+    listenOnSnapshots(
+      query: collection.where('createdBy', isNotEqualTo: userId),
+    );
   }
 
   @override
@@ -137,22 +125,21 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
     return postEntity(notification.id, notification.toJson());
   }
 
-  bool _isSubscribedToTopic(String topicName) {
-    final topic = _topicProvider.topics.firstWhereOrNull(
-        (t) => t.name.toLowerCase() == topicName.toLowerCase());
-    if (topic == null) return false;
-    return _topicProvider.isSubscribedToTopic(topic);
+  Future<void> _requestPermissions() async {
+    try {
+      final settings = await _messaging.requestPermission();
+      if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+        print('Push Notifications authorized.');
+      } else {
+        print('Push Notifications not authorized');
+      }
+    } catch (e) {
+      print('[ERROR] Failed setting up notifications: $e');
+    }
+    return Future.value();
   }
 
-  Future<ServiceError?> _markAsReadNotifications(TableEntity table) {
-    final notifications = notificationsForTable(table);
-    return batchPutEntities(
-      notifications.map((n) => n.id),
-      {'readBy.${_authProvider.userId}': true},
-    );
-  }
-
-  Future _initLocalNotifications() async {
+  Future<void> _initLocalNotifications() async {
     final settingsIos = IOSInitializationSettings(
         requestAlertPermission: false,
         requestBadgePermission: false,
@@ -259,5 +246,20 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
     if (table != null) {
       _tableProvider.selectTable(table);
     }
+  }
+
+  bool _isSubscribedToTopic(String topicName) {
+    final topic = _topicProvider.topics.firstWhereOrNull(
+        (t) => t.name.toLowerCase() == topicName.toLowerCase());
+    if (topic == null) return false;
+    return _topicProvider.isSubscribedToTopic(topic);
+  }
+
+  Future<ServiceError?> _markAsReadNotifications(TableEntity table) {
+    final notifications = notificationsForTable(table);
+    return batchPutEntities(
+      notifications.map((n) => n.id),
+      {'readBy.${_authProvider.userId}': true},
+    );
   }
 }

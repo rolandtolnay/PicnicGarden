@@ -17,11 +17,11 @@ import 'ui/theme_provider.dart';
 Future<void> main() async {
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
-    await configureInjection();
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
     FlutterError.onError = CrashReporting.instance.recordFlutterFatalError;
+    await configureInjection();
 
     runApp(Application());
   }, (e, st) => CrashReporting.instance.recordError(e, st, fatal: true));

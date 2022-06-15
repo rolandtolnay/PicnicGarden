@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../domain/service_error.dart';
 import '../../domain/model/restaurant.dart';
+import '../../injection.dart';
 import 'restaurant_provider.dart';
 import '../common/empty_refreshable.dart';
 import '../home/home_page.dart';
@@ -13,7 +14,10 @@ class RestaurantPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: _RestaurantPickerBody());
+    return ChangeNotifierProvider.value(
+      value: getIt<RestaurantProvider>(),
+      child: Scaffold(body: _RestaurantPickerBody()),
+    );
   }
 }
 

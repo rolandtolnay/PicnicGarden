@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'auth_provider.dart';
-import '../injection.dart';
-import 'restaurant/restaurant_provider.dart';
 import 'restaurant/restaurant_picker.dart';
 
 class RootPage extends StatelessWidget {
@@ -14,11 +12,8 @@ class RootPage extends StatelessWidget {
     final isAuthenticated = context.select<AuthProvider, bool>(
       (p) => p.isAuthenticated,
     );
-    return isAuthenticated
-        ? ChangeNotifierProvider.value(
-            value: getIt<RestaurantProvider>(),
-            child: RestaurantPicker(),
-          )
-        : const Scaffold(body: Center(child: CircularProgressIndicator()));
+
+    const loading = Scaffold(body: Center(child: CircularProgressIndicator()));
+    return isAuthenticated ? RestaurantPicker() : loading;
   }
 }
