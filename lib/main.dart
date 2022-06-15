@@ -1,14 +1,13 @@
 import 'dart:async';
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
+import 'domain/repository/crash_reporting.dart';
 import 'firebase_options.dart';
 import 'injection.dart';
 import 'ui/auth_provider.dart';
@@ -22,14 +21,10 @@ Future<void> main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-
-    if (kDebugMode) {
-      await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
-    }
+    FlutterError.onError = CrashReporting.instance.recordFlutterFatalError;
 
     runApp(Application());
-  }, (e, st) => FirebaseCrashlytics.instance.recordError(e, st));
+  }, (e, st) => CrashReporting.instance.recordError(e, st, fatal: true));
 }
 
 class Application extends StatelessWidget {

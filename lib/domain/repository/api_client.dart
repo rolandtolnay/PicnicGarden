@@ -1,10 +1,10 @@
 import 'dart:developer' as dev;
 
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:injectable/injectable.dart';
 
 import '../service_error.dart';
 import 'connectivity_checker.dart';
+import 'crash_reporting.dart';
 
 @Injectable()
 class ApiClient with ConnectivityChecker {
@@ -16,7 +16,7 @@ class ApiClient with ConnectivityChecker {
           return null;
         } catch (e, st) {
           dev.log('[ERROR] ${e.toString()}', error: e, stackTrace: st);
-          await FirebaseCrashlytics.instance
+          await CrashReporting.instance
               .recordError(e, st, reason: '$ApiClient error');
           return ServiceError.backend('$e', error: e);
         }
