@@ -68,13 +68,6 @@ class Order extends Equatable {
   String get userFriendlyDescription =>
       '${recipe.name} @ ${table.name} ${phase.name}';
 
-  bool get shouldNotifyStatus {
-    final attributeIds = recipe.attributes.map((a) => a.id);
-    final notifyAttributeIds =
-        currentStatus.notifyTopics.values.expand((e) => e);
-    return attributeIds.any(notifyAttributeIds.contains);
-  }
-
   Order moveToNextFlow({required List<OrderStatus> orderStatusList}) {
     final currentFlow = currentStatus.flow;
     final nextFlow = currentFlow + 1;

@@ -17,4 +17,11 @@ class OrderGroup {
   String? get customNote => _alphaOrder.customNote;
   OrderStatus get currentStatus => _alphaOrder.currentStatus;
   Duration get currentDuration => _alphaOrder.currentDuration;
+
+  bool get shouldNotifyStatus {
+    final attributeIds = recipe.attributes.map((a) => a.id);
+    final notifyAttributeIds =
+        currentStatus.notifyTopics.values.expand((e) => e);
+    return attributeIds.any(notifyAttributeIds.contains);
+  }
 }

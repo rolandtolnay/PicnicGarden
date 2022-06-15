@@ -72,13 +72,14 @@ class FIROrderProvider extends ChangeNotifier
     _response = ApiResponse.loading();
     notifyListeners();
 
+    final group = OrderGroup([order]);
     var error = await _repository.commitOrderGroup(
-      OrderGroup([order]),
+      group,
       restaurant: _restaurant,
     );
 
-    if (error == null && order.shouldNotifyStatus) {
-      error = await _notificationProvider.postForOrder(order);
+    if (error == null && group.shouldNotifyStatus) {
+      error = await _notificationProvider.postForOrderGroup(group);
     }
 
     _response = ApiResponse.fromErrorResult(error);
@@ -90,11 +91,15 @@ class FIROrderProvider extends ChangeNotifier
     required OrderGroup orderGroup,
     required List<OrderStatus> orderStatusList,
   }) async {
-    final error = await _repository.commitNextFlow(
+    var error = await _repository.commitNextFlow(
       orderGroup,
       orderStatusList: orderStatusList,
       restaurant: _restaurant,
     );
+
+    if (error == null && orderGroup.shouldNotifyStatus) {
+      error = await _notificationProvider.postForOrderGroup(orderGroup);
+    }
 
     _response = ApiResponse.fromErrorResult(error);
     notifyListeners();

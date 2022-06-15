@@ -7,7 +7,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../domain/model/notification.dart';
-import '../../../domain/model/order/order.dart';
+import '../../../domain/model/order/order_group.dart';
 import '../../../domain/model/table_entity.dart';
 import '../../../domain/service_error.dart';
 import '../../auth_provider.dart';
@@ -27,7 +27,7 @@ abstract class NotificationProvider extends EntityProvider {
   );
   UnmodifiableListView<Notification> notificationsForTable(TableEntity table);
 
-  Future<ServiceError?> postForOrder(Order order);
+  Future<ServiceError?> postForOrderGroup(OrderGroup orderGroup);
 
   Future<ServiceError?> postForTableStatusChange(TableEntity table);
 }
@@ -61,6 +61,7 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
   Future<void> initialize() async {
     if (!kIsWeb) {
       await _requestPermissions();
+
       await _initLocalNotifications();
       await _listenOnPushNotifications();
     }
@@ -108,9 +109,11 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
   }
 
   @override
-  Future<ServiceError?> postForOrder(Order order) {
+  Future<ServiceError?> postForOrderGroup(OrderGroup orderGroup) {
+    if (orderGroup.orderList.isEmpty) return Future.value(null);
+
     final notification = Notification.forOrder(
-      order,
+      orderGroup.orderList.first,
       createdBy: _authProvider.userId!,
     );
     return postEntity(notification.id, notification.toJson());
@@ -164,6 +167,12 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
   }
 
   Future<void> _listenOnPushNotifications() async {
+    await _messaging.setForegroundNotificationPresentationOptions(
+      alert: false,
+      badge: false,
+      sound: false,
+    );
+
     FirebaseMessaging.onMessage.listen((message) {
       print('Message data: ${message.data}');
 
@@ -181,12 +190,14 @@ class FIRNotificationProvider extends FIREntityProvider<Notification>
           message.notification!.title,
           null,
           NotificationDetails(
-              iOS: IOSNotificationDetails(
-            presentAlert: presentAlert,
-            presentBadge: true,
-            presentSound: true,
-            sound: message.data['sound'],
-          )),
+            iOS: IOSNotificationDetails(
+              presentAlert: presentAlert,
+              presentBadge: true,
+              presentSound: true,
+              sound: message.data['sound'],
+            ),
+            // TODO: Add android channel
+          ),
           payload: tableId,
         );
       }
